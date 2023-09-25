@@ -1,7 +1,8 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Game/game_ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Market/market_ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Newsfeed/newsfeed_ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Watch/watch_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Game/game_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Market/market_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/menu_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/newsfeed_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Watch/watch_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +39,7 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
                 ),
                 bottom: TabBar(
                     controller: tabController,
-                    labelPadding: EdgeInsets.all(8),
+                    labelPadding: const EdgeInsets.all(8),
                     tabs: [
                       Icon(
                         tabController.index != 0
@@ -81,7 +82,7 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
               WatchUI(),
               GameUI(),
               Text("Noti"),
-              Text("Menu")
+              MenuUI()
             ])));
   }
 }

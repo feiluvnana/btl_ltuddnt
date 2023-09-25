@@ -1,5 +1,5 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Newsfeed/create_status_top_bar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Newsfeed/post.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/create_status_top_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/post.dart';
 import 'package:flutter/material.dart';
 
 class NewsfeedUI extends StatelessWidget {
