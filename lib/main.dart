@@ -1,5 +1,6 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/ForgetPassword/forget_password_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/signup_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/login_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +13,11 @@ GoRouter router = GoRouter(initialLocation: "/login", routes: [
   GoRoute(path: "/login", builder: (context, state) => const LoginUI()),
   GoRoute(path: "/home", builder: (context, state) => const HomeUI()),
   GoRoute(
-      path: "/forget", builder: (context, state) => const ForgetPasswordUI())
+      path: "/forget", builder: (context, state) => const ForgetPasswordUI()),
+  GoRoute(
+    path: "/signup",
+    builder: (context, state) => const SignupUI(),
+  )
 ]);
 
 class AFB extends StatelessWidget {
