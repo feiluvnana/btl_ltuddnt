@@ -60,12 +60,6 @@ class Validators {
     return null;
   }
 
-  ///Xác thực giới tính khi đăng ký.
-  static String? signupGenderValidator(Gender? gender) {
-    if (gender == null || gender == Gender.empty) return "Phải chọn giới tính";
-    return null;
-  }
-
   ///Xác thực email khi đăng ký.
   static String? signupEmailValidator(String? email) {
     if (email?.isEmpty != false) return "Không để trống email";

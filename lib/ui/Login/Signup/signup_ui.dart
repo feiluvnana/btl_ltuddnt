@@ -13,8 +13,8 @@ class SignupUI extends StatelessWidget {
     ThemeData themeData = Theme.of(context);
     return BlocProvider<SignupBloc>(
       create: (context) => SignupBloc(),
-      child: BlocBuilder<SignupBloc, SignupState>(
-        builder: (context, state) {
+      child: Builder(
+        builder: (context) {
           return SafeArea(
               child: Scaffold(
             appBar: TransparentAppBar(

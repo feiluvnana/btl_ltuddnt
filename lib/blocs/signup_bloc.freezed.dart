@@ -19,7 +19,6 @@ mixin _$SignupState {
   String get firstName => throw _privateConstructorUsedError;
   String get lastName => throw _privateConstructorUsedError;
   DateTime get dob => throw _privateConstructorUsedError;
-  Gender get gender => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
   bool get saveInfo => throw _privateConstructorUsedError;
@@ -39,7 +38,6 @@ abstract class $SignupStateCopyWith<$Res> {
       {String firstName,
       String lastName,
       DateTime dob,
-      Gender gender,
       String email,
       String password,
       bool saveInfo});
@@ -61,7 +59,6 @@ class _$SignupStateCopyWithImpl<$Res, $Val extends SignupState>
     Object? firstName = null,
     Object? lastName = null,
     Object? dob = null,
-    Object? gender = null,
     Object? email = null,
     Object? password = null,
     Object? saveInfo = null,
@@ -79,10 +76,6 @@ class _$SignupStateCopyWithImpl<$Res, $Val extends SignupState>
           ? _value.dob
           : dob // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      gender: null == gender
-          ? _value.gender
-          : gender // ignore: cast_nullable_to_non_nullable
-              as Gender,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -111,7 +104,6 @@ abstract class _$$SignupStateImplCopyWith<$Res>
       {String firstName,
       String lastName,
       DateTime dob,
-      Gender gender,
       String email,
       String password,
       bool saveInfo});
@@ -131,7 +123,6 @@ class __$$SignupStateImplCopyWithImpl<$Res>
     Object? firstName = null,
     Object? lastName = null,
     Object? dob = null,
-    Object? gender = null,
     Object? email = null,
     Object? password = null,
     Object? saveInfo = null,
@@ -149,10 +140,6 @@ class __$$SignupStateImplCopyWithImpl<$Res>
           ? _value.dob
           : dob // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      gender: null == gender
-          ? _value.gender
-          : gender // ignore: cast_nullable_to_non_nullable
-              as Gender,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -176,7 +163,6 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
       {this.firstName = "",
       this.lastName = "",
       required this.dob,
-      this.gender = Gender.empty,
       this.email = "",
       this.password = "",
       this.saveInfo = false});
@@ -191,9 +177,6 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
   final DateTime dob;
   @override
   @JsonKey()
-  final Gender gender;
-  @override
-  @JsonKey()
   final String email;
   @override
   @JsonKey()
@@ -204,7 +187,7 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'SignupState(firstName: $firstName, lastName: $lastName, dob: $dob, gender: $gender, email: $email, password: $password, saveInfo: $saveInfo)';
+    return 'SignupState(firstName: $firstName, lastName: $lastName, dob: $dob, email: $email, password: $password, saveInfo: $saveInfo)';
   }
 
   @override
@@ -215,7 +198,6 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
       ..add(DiagnosticsProperty('firstName', firstName))
       ..add(DiagnosticsProperty('lastName', lastName))
       ..add(DiagnosticsProperty('dob', dob))
-      ..add(DiagnosticsProperty('gender', gender))
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('password', password))
       ..add(DiagnosticsProperty('saveInfo', saveInfo));
@@ -231,7 +213,6 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
             (identical(other.dob, dob) || other.dob == dob) &&
-            (identical(other.gender, gender) || other.gender == gender) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password) &&
@@ -241,7 +222,7 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, firstName, lastName, dob, gender, email, password, saveInfo);
+      runtimeType, firstName, lastName, dob, email, password, saveInfo);
 
   @JsonKey(ignore: true)
   @override
@@ -255,7 +236,6 @@ abstract class _SignupState implements SignupState {
       {final String firstName,
       final String lastName,
       required final DateTime dob,
-      final Gender gender,
       final String email,
       final String password,
       final bool saveInfo}) = _$SignupStateImpl;
@@ -266,8 +246,6 @@ abstract class _SignupState implements SignupState {
   String get lastName;
   @override
   DateTime get dob;
-  @override
-  Gender get gender;
   @override
   String get email;
   @override

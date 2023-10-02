@@ -1,4 +1,3 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/enum.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -35,15 +34,6 @@ class SignupEmailChange extends SignupEvent {
   List<Object?> get props => [email];
 }
 
-class SignupGenderChange extends SignupEvent {
-  final Gender gender;
-
-  const SignupGenderChange({required this.gender});
-
-  @override
-  List<Object> get props => [gender];
-}
-
 class SignupPasswordChange extends SignupEvent {
   final String? password;
   const SignupPasswordChange({required this.password});
@@ -66,7 +56,6 @@ class SignupState with _$SignupState {
       {@Default("") String firstName,
       @Default("") String lastName,
       required DateTime dob,
-      @Default(Gender.empty) Gender gender,
       @Default("") String email,
       @Default("") String password,
       @Default(false) bool saveInfo}) = _SignupState;
@@ -81,9 +70,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     });
     on<SignupDobChange>((event, emit) {
       emit(state.copyWith(dob: event.dob));
-    });
-    on<SignupGenderChange>((event, emit) {
-      emit(state.copyWith(gender: event.gender));
     });
     on<SignupEmailChange>((event, emit) {
       emit(state.copyWith(email: event.email ?? state.email));

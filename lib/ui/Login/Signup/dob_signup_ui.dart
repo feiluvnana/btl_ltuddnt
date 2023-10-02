@@ -1,5 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/gender_signup_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/email_signup_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -105,7 +105,7 @@ class DobSignupUI extends StatelessWidget {
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
                     return BlocProvider.value(
                       value: BlocProvider.of<SignupBloc>(context),
-                      child: GenderSignupUI(),
+                      child: EmailSignupUI(),
                     );
                   }));
                 },
