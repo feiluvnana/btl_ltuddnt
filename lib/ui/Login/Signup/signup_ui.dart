@@ -23,7 +23,7 @@ class SignupUI extends StatelessWidget {
                 style: themeData.textTheme.titleMedium,
               ),
               leading: IconButton(
-                  onPressed: () => context.pop(),
+                  onPressed: () => context.go("/login"),
                   icon: const Icon(Icons.arrow_back)),
             ),
             body: Padding(
@@ -38,11 +38,9 @@ class SignupUI extends StatelessWidget {
                   const Text(
                       "Tạo tài khoản để kết nối với bạn bè, người thân và cộng đồng có chung sở thích."),
                   ElevatedButton(
-                      style: ButtonStyle(
-                          foregroundColor:
-                              const MaterialStatePropertyAll(Colors.white),
-                          backgroundColor:
-                              MaterialStatePropertyAll(themeData.primaryColor)),
+                      style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: themeData.primaryColor),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return BlocProvider.value(

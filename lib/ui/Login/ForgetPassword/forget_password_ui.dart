@@ -12,7 +12,7 @@ class ForgetPasswordUI extends StatelessWidget {
         child: Scaffold(
       appBar: TransparentAppBar(
         leading: IconButton(
-            onPressed: () => context.pop(context),
+            onPressed: () => context.go("/login"),
             icon: const Icon(Icons.arrow_back)),
       ),
       body: Padding(
@@ -33,11 +33,9 @@ class ForgetPasswordUI extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-                style: ButtonStyle(
-                    foregroundColor:
-                        const MaterialStatePropertyAll(Colors.white),
-                    backgroundColor:
-                        MaterialStatePropertyAll(themeData.primaryColor)),
+                style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: themeData.primaryColor),
                 onPressed: () {},
                 child: const Text("Tìm tài khoản")),
             Center(

@@ -55,12 +55,11 @@ class _MenuShortcutsState extends State<MenuShortcuts> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           child: ElevatedButton(
-            style: ButtonStyle(
-                shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4))),
-                elevation: const MaterialStatePropertyAll(1),
-                surfaceTintColor:
-                    const MaterialStatePropertyAll(Colors.black26)),
+            style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4)),
+                elevation: 2,
+                surfaceTintColor: Colors.black26),
             onPressed: () {
               setState(() {
                 isCollapsed = !isCollapsed;

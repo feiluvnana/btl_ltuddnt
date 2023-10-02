@@ -1,15 +1,21 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/dob_signup_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/save_info_signup_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class NameSignupUI extends StatelessWidget {
-  NameSignupUI({super.key});
+class PasswordSignupUI extends StatefulWidget {
+  PasswordSignupUI({super.key});
 
+  @override
+  State<PasswordSignupUI> createState() => _PasswordSignupUIState();
+}
+
+class _PasswordSignupUIState extends State<PasswordSignupUI> {
   final formKey = GlobalKey<FormState>();
+  bool isHidden = true;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,7 @@ class NameSignupUI extends StatelessWidget {
         child: Scaffold(
       appBar: TransparentAppBar(
         title: Text(
-          "Tên",
+          "Mật khẩu",
           style: themeData.textTheme.titleMedium,
         ),
         leading: IconButton(
@@ -29,58 +35,43 @@ class NameSignupUI extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Bạn tên gì?",
+            Text("Tạo mật khẩu",
                 style: themeData.textTheme.headlineSmall
                     ?.copyWith(fontWeight: FontWeight.bold)),
-            const Text("Nhập tên bạn sử dụng trong đời thực."),
+            const Text(
+                "Tạo mật khẩu gồm <wait_for_description>. Bạn nên chọn mật khẩu thật khó đoán."),
+            const SizedBox(height: 10),
             BlocBuilder<SignupBloc, SignupState>(
               buildWhen: (previous, current) =>
-                  previous.firstName != current.firstName ||
-                  previous.lastName != current.lastName,
+                  previous.password != current.password,
               builder: (context, state) {
                 return Form(
                   key: formKey,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            initialValue: state.lastName,
-                            validator: Validators.signupLastnameValidator,
-                            onChanged: (lastName) {
-                              context
-                                  .read<SignupBloc>()
-                                  .add(SignupNameChange(lastName: lastName));
+                  child: TextFormField(
+                    initialValue: state.password,
+                    validator: Validators.signupPasswordValidator,
+                    obscureText: isHidden,
+                    onChanged: (value) {
+                      context
+                          .read<SignupBloc>()
+                          .add(SignupPasswordChange(password: value));
+                    },
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(15),
+                        label: const Text("Mật khẩu"),
+                        suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isHidden = !isHidden;
+                              });
                             },
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15),
-                                label: const Text("Họ"),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            initialValue: state.firstName,
-                            validator: Validators.signupFirstnameValidator,
-                            onChanged: (firstName) {
-                              context
-                                  .read<SignupBloc>()
-                                  .add(SignupNameChange(firstName: firstName));
-                            },
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15),
-                                label: const Text("Tên"),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                          ),
-                        ),
-                      ),
-                    ],
+                            child: Icon(
+                                isHidden
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                                size: 30)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                 );
               },
@@ -94,7 +85,7 @@ class NameSignupUI extends StatelessWidget {
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
                     return BlocProvider.value(
                       value: BlocProvider.of<SignupBloc>(context),
-                      child: DobSignupUI(),
+                      child: const SaveInfoSignupUI(),
                     );
                   }));
                 },

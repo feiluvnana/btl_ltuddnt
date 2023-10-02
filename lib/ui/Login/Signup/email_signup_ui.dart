@@ -1,13 +1,14 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/dob_signup_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/password_signup_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class NameSignupUI extends StatelessWidget {
-  NameSignupUI({super.key});
+class EmailSignupUI extends StatelessWidget {
+  EmailSignupUI({super.key});
 
   final formKey = GlobalKey<FormState>();
 
@@ -18,7 +19,7 @@ class NameSignupUI extends StatelessWidget {
         child: Scaffold(
       appBar: TransparentAppBar(
         title: Text(
-          "Tên",
+          "Email",
           style: themeData.textTheme.titleMedium,
         ),
         leading: IconButton(
@@ -29,62 +30,45 @@ class NameSignupUI extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Bạn tên gì?",
+            Text("Email của bạn là gì?",
                 style: themeData.textTheme.headlineSmall
                     ?.copyWith(fontWeight: FontWeight.bold)),
-            const Text("Nhập tên bạn sử dụng trong đời thực."),
+            const Text(
+                "Nhập email có thể dùng để liên hệ với bạn. Thông tin này sẽ không hiển thị với ai khác trên trang cá nhân của bạn."),
+            const SizedBox(height: 10),
             BlocBuilder<SignupBloc, SignupState>(
-              buildWhen: (previous, current) =>
-                  previous.firstName != current.firstName ||
-                  previous.lastName != current.lastName,
+              buildWhen: (previous, current) => previous.email != current.email,
               builder: (context, state) {
                 return Form(
                   key: formKey,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            initialValue: state.lastName,
-                            validator: Validators.signupLastnameValidator,
-                            onChanged: (lastName) {
-                              context
-                                  .read<SignupBloc>()
-                                  .add(SignupNameChange(lastName: lastName));
-                            },
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15),
-                                label: const Text("Họ"),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            initialValue: state.firstName,
-                            validator: Validators.signupFirstnameValidator,
-                            onChanged: (firstName) {
-                              context
-                                  .read<SignupBloc>()
-                                  .add(SignupNameChange(firstName: firstName));
-                            },
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15),
-                                label: const Text("Tên"),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: TextFormField(
+                    initialValue: state.email,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: Validators.signupEmailValidator,
+                    onChanged: (value) {
+                      context
+                          .read<SignupBloc>()
+                          .add(SignupEmailChange(email: value));
+                    },
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(15),
+                        label: const Text("Email"),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                 );
               },
             ),
+            Text.rich(TextSpan(children: [
+              const TextSpan(
+                  text:
+                      "Bạn cũng sẽ nhận được email từ chúng tôi và có thể lựa chọn loại bỏ email bất cứ lúc nào. "),
+              TextSpan(
+                  text: "Tìm hiểu thêm.",
+                  style: themeData.textTheme.bodyMedium
+                      ?.copyWith(color: themeData.primaryColor),
+                  recognizer: TapGestureRecognizer()..onTap = () {})
+            ])),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
@@ -94,7 +78,7 @@ class NameSignupUI extends StatelessWidget {
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
                     return BlocProvider.value(
                       value: BlocProvider.of<SignupBloc>(context),
-                      child: DobSignupUI(),
+                      child: PasswordSignupUI(),
                     );
                   }));
                 },

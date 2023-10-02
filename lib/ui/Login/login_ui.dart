@@ -83,18 +83,19 @@ class _LoginUIState extends State<LoginUI> {
                 ),
                 const SizedBox(height: 15),
                 ElevatedButton(
-                    style: ButtonStyle(
-                        foregroundColor:
-                            const MaterialStatePropertyAll(Colors.white),
-                        backgroundColor: _password.text.isNotEmpty &&
-                                _username.text.isNotEmpty
-                            ? MaterialStatePropertyAll(themeData.primaryColor)
-                            : null),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor:
+                          _password.text.isNotEmpty && _username.text.isNotEmpty
+                              ? themeData.primaryColor
+                              : null,
+                    ),
                     onPressed:
                         (_password.text.isNotEmpty && _username.text.isNotEmpty)
-                            ? () {
-                                if (formKey.currentState?.validate() != true)
+                            ? () async {
+                                if (formKey.currentState?.validate() != true) {
                                   return;
+                                }
                                 context.go("/home");
                               }
                             : null,
@@ -107,13 +108,13 @@ class _LoginUIState extends State<LoginUI> {
                     )),
                 GestureDetector(
                     onTap: () {
-                      context.push("/forget");
+                      context.go("/forget");
                     },
                     child: const Center(child: Text("Bạn quên mật khẩu ư?"))),
                 const Spacer(),
                 ElevatedButton(
                     onPressed: () {
-                      context.push("/signup");
+                      context.go("/signup");
                     },
                     child: const Text("Tạo tài khoản mới")),
               ],
