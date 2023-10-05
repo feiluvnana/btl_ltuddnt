@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MenuSelection extends StatelessWidget {
-  const MenuSelection({required this.data});
+  const MenuSelection({super.key, required this.data});
 
   final Map<String, dynamic> data;
 
@@ -10,11 +10,10 @@ class MenuSelection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: ElevatedButton(
-        style: ButtonStyle(
-            shape: MaterialStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
-            padding: const MaterialStatePropertyAll(EdgeInsets.all(10)),
-            elevation: const MaterialStatePropertyAll(2)),
+        style: ElevatedButton.styleFrom(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            padding: const EdgeInsets.all(10)),
         onPressed: data["action"],
         child: Row(
           children: [

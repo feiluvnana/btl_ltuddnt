@@ -7,6 +7,5 @@ class TransparentAppBar extends AppBar {
       {super.key, super.title, super.leading, super.actions, super.bottom})
       : super(
             automaticallyImplyLeading: false,
-            centerTitle: true,
             backgroundColor: Colors.transparent);
 }
