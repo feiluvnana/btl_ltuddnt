@@ -4,7 +4,6 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/menu_profile.dar
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/menu_settings.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/menu_shortcuts.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class MenuUI extends StatelessWidget {
   const MenuUI({super.key});
@@ -44,7 +43,8 @@ class _MenuLogoutButton extends StatelessWidget {
             elevation: 2,
             surfaceTintColor: Colors.black26),
         onPressed: () {
-          context.go("/login");
+          Navigator.pushNamedAndRemoveUntil(
+              context, "/login", (route) => false);
         },
         child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -21,16 +21,9 @@ class _PostState extends State<Post> {
 
   @override
   void initState() {
-    isLoading = true;
+    isLoading = false;
     isShowEmoji = false;
     globalOffset = Offset.zero;
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    });
     super.initState();
   }
 

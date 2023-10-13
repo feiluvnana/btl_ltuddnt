@@ -1,5 +1,3 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/enum.dart';
-
 class Validators {
   ///Xác thực tài khoản khi đăng nhập.
   static String? loginUsernameValidator(String? username) {

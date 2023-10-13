@@ -1,6 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginUI extends StatefulWidget {
   const LoginUI({super.key});
@@ -96,7 +95,8 @@ class _LoginUIState extends State<LoginUI> {
                                 if (formKey.currentState?.validate() != true) {
                                   return;
                                 }
-                                context.go("/home");
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, "/home", (route) => false);
                               }
                             : null,
                     child: const Row(
@@ -108,13 +108,15 @@ class _LoginUIState extends State<LoginUI> {
                     )),
                 GestureDetector(
                     onTap: () {
-                      context.go("/forget");
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, "/forget", (route) => false);
                     },
                     child: const Center(child: Text("Bạn quên mật khẩu ư?"))),
                 const Spacer(),
                 ElevatedButton(
                     onPressed: () {
-                      context.go("/signup");
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, "/signup", (route) => false);
                     },
                     child: const Text("Tạo tài khoản mới")),
               ],

@@ -3,7 +3,6 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/name_signup_u
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class SignupUI extends StatelessWidget {
   const SignupUI({super.key});
@@ -23,7 +22,8 @@ class SignupUI extends StatelessWidget {
                 style: themeData.textTheme.titleMedium,
               ),
               leading: IconButton(
-                  onPressed: () => context.go("/login"),
+                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                      context, "/login", (route) => false),
                   icon: const Icon(Icons.arrow_back)),
             ),
             body: Padding(
@@ -52,7 +52,7 @@ class SignupUI extends StatelessWidget {
                       child: const Text("Bắt đầu")),
                   ElevatedButton(
                       onPressed: () {
-                        context.pop();
+                        Navigator.maybePop(context);
                       },
                       child: const Text("Tôi có tài khoản rồi")),
                 ],

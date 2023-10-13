@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:intl/intl.dart';
 
 class DobSignupUI extends StatelessWidget {
@@ -27,7 +27,8 @@ class DobSignupUI extends StatelessWidget {
           style: themeData.textTheme.titleMedium,
         ),
         leading: IconButton(
-            onPressed: () => context.pop(), icon: const Icon(Icons.arrow_back)),
+            onPressed: () => Navigator.maybePop(context),
+            icon: const Icon(Icons.arrow_back)),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -116,7 +117,8 @@ class DobSignupUI extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go("/login");
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/login", (route) => false);
                   },
                   child: Text(
                     "Bạn đã có tài khoản ư?",
