@@ -24,9 +24,6 @@ Built by gskinner.com with Flex 3 [adobe.com/go/flex] and Spelling Plus Library 
     "disappointed": "25",
     "is_rated": "false",
     "is_marked": "true",
-    "image": [
-      {"id": "1", "url": "https://mock.com/img.jpg"}
-    ],
     "author": {
       "id": "1",
       "name": "This is author's name",
@@ -74,7 +71,21 @@ Cảm ơn các bạn đã đọc! Và nên nhớ, tất cả chỉ là giả thu
     "is_rated": "false",
     "is_marked": "true",
     "image": [
-      {"id": "1", "url": "https://mock.com/img.jpg"}
+      {
+        "id": "1",
+        "url":
+            "https://scontent.fhan14-2.fna.fbcdn.net/v/t39.30808-6/387187619_687099340143593_1893220638679309781_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_ohc=PlBgP1YZ8bQAX9wRl8W&_nc_ht=scontent.fhan14-2.fna&oh=00_AfB7rjEvEG4FUax1oweytqLBLL1uW_2XUcbzqyIbPe58HQ&oe=6530DD71"
+      },
+      {
+        "id": "2",
+        "url":
+            "https://www.online-image-editor.com/styles/2019/images/power_girl.png"
+      },
+      {
+        "id": "3",
+        "url":
+            "https://scontent.fhan14-2.fna.fbcdn.net/v/t39.30808-6/387187619_687099340143593_1893220638679309781_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_ohc=PlBgP1YZ8bQAX9wRl8W&_nc_ht=scontent.fhan14-2.fna&oh=00_AfB7rjEvEG4FUax1oweytqLBLL1uW_2XUcbzqyIbPe58HQ&oe=6530DD71"
+      },
     ],
     "author": {
       "id": "1",

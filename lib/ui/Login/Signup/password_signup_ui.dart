@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PasswordSignupUI extends StatefulWidget {
-  PasswordSignupUI({super.key});
+  const PasswordSignupUI({super.key});
 
   @override
   State<PasswordSignupUI> createState() => _PasswordSignupUIState();

@@ -81,9 +81,7 @@ class AgreementSignupUI extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: themeData.primaryColor),
-                onPressed: () {
-                  print("Completed");
-                },
+                onPressed: () {},
                 child: const Text("Tôi đồng ý")),
             const Spacer(),
             Center(

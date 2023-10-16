@@ -78,7 +78,7 @@ class EmailSignupUI extends StatelessWidget {
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
                     return BlocProvider.value(
                       value: BlocProvider.of<SignupBloc>(context),
-                      child: PasswordSignupUI(),
+                      child: const PasswordSignupUI(),
                     );
                   }));
                 },

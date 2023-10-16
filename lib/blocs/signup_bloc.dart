@@ -1,11 +1,10 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
 part 'signup_bloc.freezed.dart';
 
-abstract class SignupEvent extends Equatable {
+abstract class SignupEvent {
   const SignupEvent();
 }
 
@@ -13,41 +12,26 @@ class SignupNameChange extends SignupEvent {
   final String? firstName, lastName;
 
   const SignupNameChange({this.firstName, this.lastName});
-
-  @override
-  List<Object?> get props => [firstName, lastName];
 }
 
 class SignupDobChange extends SignupEvent {
   final DateTime dob;
   const SignupDobChange({required this.dob});
-
-  @override
-  List<Object?> get props => [dob];
 }
 
 class SignupEmailChange extends SignupEvent {
   final String? email;
   const SignupEmailChange({required this.email});
-
-  @override
-  List<Object?> get props => [email];
 }
 
 class SignupPasswordChange extends SignupEvent {
   final String? password;
   const SignupPasswordChange({required this.password});
-
-  @override
-  List<Object?> get props => [password];
 }
 
 class SignupSaveInfoChange extends SignupEvent {
   final bool saveInfo;
   const SignupSaveInfoChange({required this.saveInfo});
-
-  @override
-  List<Object?> get props => [saveInfo];
 }
 
 @freezed

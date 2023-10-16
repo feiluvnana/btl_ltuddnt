@@ -2,7 +2,11 @@
 
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/post_media_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/emoji.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/reaction_display.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/skeleton_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -40,6 +44,7 @@ class _PostUIState extends State<PostUI> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Divider(thickness: 5),
             Row(
               children: [
                 Padding(
@@ -52,16 +57,14 @@ class _PostUIState extends State<PostUI> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SkeletonWrapper(
-                        enabled: isLoading,
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Text(
-                            widget.post.author.name,
-                            style: themeData.textTheme.bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        )),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        widget.post.author.name,
+                        style: themeData.textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     SkeletonWrapper(
                         enabled: isLoading,
                         child: GestureDetector(
@@ -77,23 +80,81 @@ class _PostUIState extends State<PostUI> {
                 ),
                 const Spacer(),
                 Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: SkeletonWrapper(
-                        enabled: isLoading,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                                onTap: () {},
-                                child: const Icon(Icons.more_horiz,
-                                    color: Colors.grey)),
-                            const SizedBox(width: 10),
-                            GestureDetector(
-                                onTap: () {},
-                                child: const Icon(Icons.cancel_outlined,
-                                    color: Colors.grey)),
-                          ],
-                        ))),
+                  padding: const EdgeInsets.only(right: 10),
+                  child: GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(),
+                            builder: (context) => Column(
+                                  children: [
+                                    InkWell(
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(children: [
+                                            const Icon(Icons.notifications),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                                "Tắt thông báo về bài viết này",
+                                                style: themeData
+                                                    .textTheme.bodyLarge)
+                                          ]),
+                                        )),
+                                    InkWell(
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(children: [
+                                            const Icon(Icons.save),
+                                            const SizedBox(width: 10),
+                                            Text("Lưu bài viết",
+                                                style: themeData
+                                                    .textTheme.bodyLarge)
+                                          ]),
+                                        )),
+                                    InkWell(
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(children: [
+                                            const Icon(Icons.delete),
+                                            const SizedBox(width: 10),
+                                            Text("Xóa",
+                                                style: themeData
+                                                    .textTheme.bodyLarge)
+                                          ]),
+                                        )),
+                                    InkWell(
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(children: [
+                                            const Icon(Icons.edit),
+                                            const SizedBox(width: 10),
+                                            Text("Chỉnh sửa bài viết",
+                                                style: themeData
+                                                    .textTheme.bodyLarge)
+                                          ]),
+                                        )),
+                                    InkWell(
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(children: [
+                                            const Icon(Icons.link),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                                "Tắt thông báo về bài viết này",
+                                                style: themeData
+                                                    .textTheme.bodyLarge)
+                                          ]),
+                                        ))
+                                  ],
+                                ));
+                      },
+                      child: const Icon(Icons.more_horiz, color: Colors.grey)),
+                ),
               ],
             ),
             Padding(
@@ -147,26 +208,23 @@ class _PostUIState extends State<PostUI> {
                             maxLines: 10000000,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: Container(
-                                  color: themeData.colorScheme.surface,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        isExpanded = !isExpanded;
-                                      });
-                                    },
-                                    child: Text(
-                                      "Thu gọn",
-                                      style: themeData.textTheme.bodyMedium
-                                          ?.copyWith(
-                                              color: themeData
-                                                  .colorScheme.inverseSurface,
-                                              fontWeight: FontWeight.w500),
-                                    ),
-                                  )))
+                          Container(
+                              color: themeData.colorScheme.surface,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isExpanded = !isExpanded;
+                                  });
+                                },
+                                child: Text(
+                                  "Thu gọn",
+                                  style: themeData.textTheme.bodyMedium
+                                      ?.copyWith(
+                                          color: themeData
+                                              .colorScheme.inverseSurface,
+                                          fontWeight: FontWeight.w500),
+                                ),
+                              ))
                         ]);
                   } else {
                     return Text.rich(
@@ -177,13 +235,34 @@ class _PostUIState extends State<PostUI> {
                 }),
               ),
             ),
+            if ((widget.post.image?.length ?? 0) > 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: GridMediaView(
+                      onClickMedia: (index) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PostMediaUI(post: widget.post)));
+                      },
+                      medias: List.generate(
+                          widget.post.image?.length ?? 0,
+                          (index) => Image.network(
+                                widget.post.image![index].url,
+                                fit: BoxFit.cover,
+                              ))),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: SkeletonWrapper(
                   enabled: isLoading,
                   child: Row(
                     children: [
-                      _ReactionDisplay(),
+                      const ReactionDisplay(),
                       Text(" ${widget.post.kudos + widget.post.disappointed}",
                           style: themeData.textTheme.bodySmall?.copyWith(
                               fontWeight: FontWeight.w300, color: Colors.grey)),
@@ -269,6 +348,35 @@ class _PostUIState extends State<PostUI> {
                                   color: Colors.grey)))
                     ],
                   )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: CircleUserAvatar(
+                        imageUrl: widget.post.author.avatar, radius: 16),
+                  ),
+                  Expanded(
+                      child: TextField(
+                    inputFormatters: const [EmojiInputFormatter()],
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            gapPadding: 0),
+                        hintText: "Viết bình luận...",
+                        contentPadding:
+                            const EdgeInsets.only(left: 15, top: 5, bottom: 5),
+                        suffixIcon: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.send),
+                        )),
+                  ))
+                ],
+              ),
             ),
           ],
         ),
@@ -405,35 +513,6 @@ class _ReactionSliderItem extends StatelessWidget {
               width: enlarged ? 70 : 40, height: enlarged ? 70 : 40),
         ),
       ],
-    );
-  }
-}
-
-class _ReactionDisplay extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 20 + 32,
-      height: 20,
-      child: Stack(
-        children: [
-          Positioned(
-            left: 0,
-            child: SvgPicture.asset("assets/emojis/like.svg",
-                width: 20, height: 20),
-          ),
-          Positioned(
-            left: 16,
-            child: SvgPicture.asset("assets/emojis/love.svg",
-                width: 20, height: 20),
-          ),
-          Positioned(
-            left: 32,
-            child: SvgPicture.asset("assets/emojis/haha.svg",
-                width: 20, height: 20),
-          ),
-        ],
-      ),
     );
   }
 }

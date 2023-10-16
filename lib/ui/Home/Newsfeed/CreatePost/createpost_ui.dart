@@ -1,8 +1,8 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/emoji.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class CreatePostUI extends StatefulWidget {
   const CreatePostUI({super.key});
@@ -141,13 +141,17 @@ class _CreatePostUIState extends State<CreatePostUI> {
         body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Row(
                 children: [
-                  CircleUserAvatar(),
-                  SizedBox(width: 10),
-                  _CreatePostAuthor(),
+                  const CircleUserAvatar(),
+                  const SizedBox(width: 10),
+                  Text(
+                    "Author Placeholder",
+                    style: themeData.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  )
                 ],
               ),
             ),
@@ -164,7 +168,12 @@ class _CreatePostUIState extends State<CreatePostUI> {
                     hintText: "Bạn đang nghĩ gì?",
                   ),
                 )),
-            AspectRatio(aspectRatio: 1, child: MediaView(medias: medias)),
+            AspectRatio(
+                aspectRatio: 1,
+                child: GridMediaView(
+                  medias: medias,
+                  onClickMedia: (index) {},
+                )),
             SizedBox(height: !isExpanded ? 50 : 150)
           ]),
         ),
@@ -215,61 +224,6 @@ class _CreatePostUIState extends State<CreatePostUI> {
         ),
       )),
     );
-  }
-}
-
-class _CreatePostAuthor extends StatelessWidget {
-  final String? author;
-
-  const _CreatePostAuthor({this.author});
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return GestureDetector(
-      onTap: () {},
-      child: Text(
-        author ?? "Author Placeholder",
-        style: themeData.textTheme.bodyMedium
-            ?.copyWith(fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
-
-class MediaView extends StatelessWidget {
-  final List<Widget> medias;
-
-  const MediaView({super.key, required this.medias});
-
-  @override
-  Widget build(BuildContext context) {
-    return switch (medias.length) {
-      1 => medias.first,
-      2 => GridView.count(
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          childAspectRatio: 1 / 2,
-          children: medias),
-      3 => Row(children: [
-          Expanded(
-              child: Column(
-            children: medias
-                .sublist(0, 2)
-                .map((e) => AspectRatio(
-                      aspectRatio: 1,
-                      child: e,
-                    ))
-                .toList(),
-          )),
-          Expanded(child: AspectRatio(aspectRatio: 1 / 2, child: medias[2]))
-        ]),
-      _ => GridView.count(
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          childAspectRatio: 1,
-          children: medias)
-    };
   }
 }
 
