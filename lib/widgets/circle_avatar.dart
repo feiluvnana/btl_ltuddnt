@@ -10,10 +10,7 @@ class CircleUserAvatar extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: CircleAvatar(
-        child: Image.network(
-          imageUrl ?? "imageUrl",
-          errorBuilder: (context, error, stackTrace) => const FlutterLogo(),
-        ),
+        foregroundImage: NetworkImage(imageUrl ?? "imageUrl"),
       ),
     );
   }

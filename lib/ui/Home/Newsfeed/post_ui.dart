@@ -1,22 +1,27 @@
 // ignore_for_file: unused_element
 
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/skeleton_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class Post extends StatefulWidget {
-  const Post({super.key});
+class PostUI extends StatefulWidget {
+  final Post post;
+
+  const PostUI({super.key, required this.post});
 
   @override
-  State<Post> createState() => _PostState();
+  State<PostUI> createState() => _PostUIState();
 }
 
-class _PostState extends State<Post> {
+class _PostUIState extends State<PostUI> {
   late bool isLoading;
   late bool isShowEmoji;
   late Offset globalOffset;
+  late bool isExpanded = false;
   late List<bool> emojiEnlarged = List.generate(7, (index) => false);
 
   @override
@@ -40,18 +45,33 @@ class _PostState extends State<Post> {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: SkeletonWrapper(
-                      enabled: isLoading, child: const CircleUserAvatar()),
+                      enabled: isLoading,
+                      child: CircleUserAvatar(
+                          imageUrl: widget.post.author.avatar)),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SkeletonWrapper(
-                        enabled: isLoading, child: const _PostAuthor()),
+                        enabled: isLoading,
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                            widget.post.author.name,
+                            style: themeData.textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        )),
                     SkeletonWrapper(
                         enabled: isLoading,
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [_PostTime(), _PostPrivacy()],
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                            formatPostCreatedTime(widget.post.created),
+                            style: themeData.textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w300,
+                                color: Colors.grey),
+                          ),
                         )),
                   ],
                 ),
@@ -59,18 +79,121 @@ class _PostState extends State<Post> {
                 Padding(
                     padding: const EdgeInsets.only(right: 10),
                     child: SkeletonWrapper(
-                        enabled: isLoading, child: const _PostAction())),
+                        enabled: isLoading,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                                onTap: () {},
+                                child: const Icon(Icons.more_horiz,
+                                    color: Colors.grey)),
+                            const SizedBox(width: 10),
+                            GestureDetector(
+                                onTap: () {},
+                                child: const Icon(Icons.cancel_outlined,
+                                    color: Colors.grey)),
+                          ],
+                        ))),
               ],
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: SkeletonWrapper(
-                  enabled: isLoading, child: const _PostTextContent()),
+                enabled: isLoading,
+                child: LayoutBuilder(builder: (context, size) {
+                  var tp = TextPainter(
+                    maxLines: isExpanded ? null : 5,
+                    textAlign: TextAlign.left,
+                    textDirection: TextDirection.ltr,
+                    text: formatPostDescribed(widget.post.described, themeData),
+                  );
+                  tp.layout(maxWidth: size.maxWidth);
+                  var exceeded = tp.didExceedMaxLines;
+                  if (exceeded) {
+                    return Stack(children: <Widget>[
+                      Text.rich(
+                        formatPostDescribed(widget.post.described, themeData),
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                              color: themeData.colorScheme.surface,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isExpanded = !isExpanded;
+                                  });
+                                },
+                                child: Text(
+                                  "...Xem thêm",
+                                  style: themeData.textTheme.bodyMedium
+                                      ?.copyWith(
+                                          color: themeData
+                                              .colorScheme.inverseSurface,
+                                          fontWeight: FontWeight.w500),
+                                ),
+                              )))
+                    ]);
+                  } else if (isExpanded) {
+                    return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text.rich(
+                            formatPostDescribed(
+                                widget.post.described, themeData),
+                            maxLines: 10000000,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                  color: themeData.colorScheme.surface,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        isExpanded = !isExpanded;
+                                      });
+                                    },
+                                    child: Text(
+                                      "Thu gọn",
+                                      style: themeData.textTheme.bodyMedium
+                                          ?.copyWith(
+                                              color: themeData
+                                                  .colorScheme.inverseSurface,
+                                              fontWeight: FontWeight.w500),
+                                    ),
+                                  )))
+                        ]);
+                  } else {
+                    return Text.rich(
+                      formatPostDescribed(widget.post.described, themeData),
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  }
+                }),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: SkeletonWrapper(
-                  enabled: isLoading, child: const _PostReaction()),
+                  enabled: isLoading,
+                  child: Row(
+                    children: [
+                      _ReactionDisplay(),
+                      Text(" ${widget.post.kudos + widget.post.disappointed}",
+                          style: themeData.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w300, color: Colors.grey)),
+                      const Spacer(),
+                      Text(
+                          " ${(widget.post.fake + widget.post.trust).toString()} bình luận",
+                          style: themeData.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w300, color: Colors.grey)),
+                    ],
+                  )),
             ),
             const Divider(indent: 10, endIndent: 10),
             Padding(
@@ -286,27 +409,6 @@ class _ReactionSliderItem extends StatelessWidget {
   }
 }
 
-class _PostReaction extends StatelessWidget {
-  const _PostReaction();
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return Row(
-      children: [
-        _ReactionDisplay(),
-        Text(" 18",
-            style: themeData.textTheme.bodySmall
-                ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
-        const Spacer(),
-        Text(" 18 bình luận • 18 lượt chia sẻ",
-            style: themeData.textTheme.bodySmall
-                ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
-      ],
-    );
-  }
-}
-
 class _ReactionDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -333,90 +435,5 @@ class _ReactionDisplay extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class _PostTextContent extends StatelessWidget {
-  final String? content;
-
-  const _PostTextContent({this.content});
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return Text(
-      content ??
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      style: themeData.textTheme.bodyMedium,
-    );
-  }
-}
-
-class _PostAuthor extends StatelessWidget {
-  final String? author;
-
-  const _PostAuthor({this.author});
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return GestureDetector(
-      onTap: () {},
-      child: Text(
-        author ?? "Author Placeholder",
-        style: themeData.textTheme.bodyMedium
-            ?.copyWith(fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
-
-class _PostTime extends StatelessWidget {
-  final String? time;
-
-  const _PostTime({this.time});
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return GestureDetector(
-      onTap: () {},
-      child: Text(
-        time ?? "Time Placeholder • ",
-        style: themeData.textTheme.bodySmall
-            ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
-      ),
-    );
-  }
-}
-
-class _PostAction extends StatelessWidget {
-  const _PostAction();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        GestureDetector(
-            onTap: () {},
-            child: const Icon(Icons.more_horiz, color: Colors.grey)),
-        const SizedBox(width: 10),
-        GestureDetector(
-            onTap: () {},
-            child: const Icon(Icons.cancel_outlined, color: Colors.grey)),
-      ],
-    );
-  }
-}
-
-class _PostPrivacy extends StatelessWidget {
-  const _PostPrivacy();
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return Icon(Icons.public,
-        color: Colors.grey, size: themeData.textTheme.bodySmall?.fontSize);
   }
 }

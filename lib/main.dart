@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 var secureStorage = const FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true));
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,7 @@ class AFB extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: ThemeData(
           primaryTextTheme: Theme.of(context).primaryTextTheme.apply(
               fontFamilyFallback: ["Roboto", "Helvetica", "NotoColorEmoji"]),
