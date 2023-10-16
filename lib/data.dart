@@ -1,3 +1,41 @@
+///postData: chứa data mock cho các bài post.
+/// - Kiểu dữ liệu: List\<Post\>
+/// - Template cho một Post (chỉ điền dữ liệu vào các chỉ thị dạng <miêu tả: kiểu dữ liệu>, không thay đổi các dấu "" hay bất cứ thứ gì khác):
+///
+/// {
+///
+///     "id": "<id bài post: int>",
+///     "name": "<tên bài post: String>",
+///     "created": "<thời điểm tạo bài: int>",
+///     "described": """<Nội dung bài post: String>""",
+///     "modified": "<thời điểm chỉnh sửa: int>",
+///     "fake": "<số mark fake: int>",
+///     "trust": "<số mark trust: int>",
+///     "kudos": "<số react kudos: int>",
+///     "disappointed": "<số react disappointed: int>",
+///     "is_rated": "<có được đánh giá không: bool>",
+///     "is_marked": "<có được mark không: bool>",
+///     "author": {
+///       "id": "<id tác giả: int>",
+///       "name": "<tên tác giả: String>",
+///       "avatar": "<url avatar: String>",
+///       "coins": "<Số coin: int>",
+///       "listing": "<Hiện chưa cần quan tâm, cứ để là "">"
+///     },
+///     "category": {
+///       "id": "<id danh mục: int>",
+///       "name": "<tên danh mục: String>",
+///       "has_name": "<chưa cần quan tâm: bool>"
+///     },
+///     "state": "<trạng thái: String>",
+///     "is_blocked": "<có bị chặn không: bool>",
+///     "can_edit": "<có thể chỉnh sửa không: bool>",
+///     "banned": "<có bị cấm không: bool>",
+///     "can_mark": "<có thể mark không: int (-5<=x<=5)>",
+///     "can_rate": "<có thể đánh dấu không: int (-5<=x<=5)>",
+///     "url": "<url bài viết: String>",
+///     "messages": "<Hiện chưa cần quan tâm, cứ để là "">"
+///}
 var postData = [
   {
     "id": "1",
