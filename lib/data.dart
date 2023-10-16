@@ -1,6 +1,8 @@
 ///postData: chứa data mock cho các bài post.
 /// - Kiểu dữ liệu: List\<Post\>
-/// - Template cho một Post (chỉ điền dữ liệu vào các chỉ thị dạng <miêu tả: kiểu dữ liệu>, không thay đổi các dấu "" hay bất cứ thứ gì khác):
+/// - Lưu ý: Có video thì thôi image và ngược lại, chỉ có tối đa 4 image hoặc 1 video. Có thể không có gì.
+/// - Template cho một Post (chỉ điền dữ liệu vào các chỉ thị dạng <miêu tả: kiểu dữ liệu>,
+/// không thay đổi các dấu "" hay bất cứ thứ gì khác):
 ///
 /// {
 ///
@@ -15,6 +17,17 @@
 ///     "disappointed": "<số react disappointed: int>",
 ///     "is_rated": "<có được đánh giá không: bool>",
 ///     "is_marked": "<có được mark không: bool>",
+///     "image": [
+///       {
+///         "id": "<id hình ảnh: int>",
+///         "url": "<url ảnh: String>"
+///       },
+///     ],
+///     "video": {
+///         "id": "<id video: int>",
+///         "url": "<url video: String>",
+///         "thumb": "<url thumbnail: String>"
+///     },
 ///     "author": {
 ///       "id": "<id tác giả: int>",
 ///       "name": "<tên tác giả: String>",
