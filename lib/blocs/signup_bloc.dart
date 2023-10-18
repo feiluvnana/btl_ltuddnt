@@ -40,10 +40,6 @@ class SignupRequest extends SignupEvent {
   const SignupRequest();
 }
 
-class SignupRequest extends SignupEvent {
-  const SignupRequest();
-}
-
 @freezed
 class SignupState with _$SignupState {
   const factory SignupState(
