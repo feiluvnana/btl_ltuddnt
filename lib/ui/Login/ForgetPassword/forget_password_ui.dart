@@ -1,6 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class ForgetPasswordUI extends StatelessWidget {
   const ForgetPasswordUI({super.key});
@@ -12,7 +11,8 @@ class ForgetPasswordUI extends StatelessWidget {
         child: Scaffold(
       appBar: TransparentAppBar(
         leading: IconButton(
-            onPressed: () => context.go("/login"),
+            onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                context, "/login", (route) => false),
             icon: const Icon(Icons.arrow_back)),
       ),
       body: Padding(

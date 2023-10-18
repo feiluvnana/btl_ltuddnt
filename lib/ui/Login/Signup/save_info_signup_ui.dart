@@ -3,7 +3,6 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/agreement_sig
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class SaveInfoSignupUI extends StatelessWidget {
   const SaveInfoSignupUI({super.key});
@@ -19,7 +18,8 @@ class SaveInfoSignupUI extends StatelessWidget {
           style: themeData.textTheme.titleMedium,
         ),
         leading: IconButton(
-            onPressed: () => context.pop(), icon: const Icon(Icons.arrow_back)),
+            onPressed: () => Navigator.maybePop(context),
+            icon: const Icon(Icons.arrow_back)),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -66,7 +66,8 @@ class SaveInfoSignupUI extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: () {
-                          context.go("/login");
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, "/login", (route) => false);
                         },
                         child: Text(
                           "Bạn đã có tài khoản ư?",
