@@ -22,8 +22,8 @@ class SignupUI extends StatelessWidget {
                 style: themeData.textTheme.titleMedium,
               ),
               leading: IconButton(
-                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                      context, "/login", (route) => false),
+                  onPressed: () =>
+                      Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
                   icon: const Icon(Icons.arrow_back)),
             ),
             body: Padding(
@@ -32,15 +32,14 @@ class SignupUI extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text("Tham gia Anti Fakebook",
-                      style: themeData.textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold)),
+                      style:
+                          themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
                   const FlutterLogo(size: 100),
                   const Text(
                       "Tạo tài khoản để kết nối với bạn bè, người thân và cộng đồng có chung sở thích."),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: themeData.primaryColor),
+                          foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return BlocProvider.value(
@@ -52,8 +51,7 @@ class SignupUI extends StatelessWidget {
                       child: const Text("Bắt đầu")),
                   ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, "/login", (route) => false);
+                        Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
                       },
                       child: const Text("Tôi có tài khoản rồi")),
                 ],

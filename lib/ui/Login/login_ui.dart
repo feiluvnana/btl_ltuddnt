@@ -56,8 +56,7 @@ class _LoginUIState extends State<LoginUI> {
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(15),
                       label: const Text("Số di động hoặc email"),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
@@ -77,28 +76,22 @@ class _LoginUIState extends State<LoginUI> {
                             });
                           },
                           child: Icon(
-                              isHidden
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
+                              isHidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                               size: 30)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
                 ),
                 const SizedBox(height: 15),
                 BlocConsumer<AuthenBloc, AuthenState>(
-                  listenWhen: (previous, current) =>
-                      previous.status == AuthenStatus.authenticating,
+                  listenWhen: (previous, current) => previous.status == AuthenStatus.authenticating,
                   listener: (context, state) {
                     if (state.status == AuthenStatus.authenticated) {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, "/home", (route) => false);
+                      Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
                     } else {
                       showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
                                 title: const Text("Thông báo"),
-                                content:
-                                    const Text("Sai tài khoản hoặc mật khẩu!"),
+                                content: const Text("Sai tài khoản hoặc mật khẩu!"),
                                 actions: [
                                   TextButton(
                                       onPressed: () {
@@ -109,14 +102,12 @@ class _LoginUIState extends State<LoginUI> {
                               ));
                     }
                   },
-                  buildWhen: (previous, current) =>
-                      previous.status != current.status,
+                  buildWhen: (previous, current) => previous.status != current.status,
                   builder: (context, state) {
                     return ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          backgroundColor: _password.text.isNotEmpty &&
-                                  _username.text.isNotEmpty
+                          backgroundColor: _password.text.isNotEmpty && _username.text.isNotEmpty
                               ? themeData.primaryColor
                               : null,
                         ),
@@ -127,20 +118,17 @@ class _LoginUIState extends State<LoginUI> {
                                 if (formKey.currentState?.validate() != true) {
                                   return;
                                 }
-                                BlocProvider.of<AuthenBloc>(context).add(
-                                    AuthenLogin(
-                                        _username.text, _password.text));
+                                BlocProvider.of<AuthenBloc>(context)
+                                    .add(AuthenLogin(_username.text, _password.text));
                               }
                             : null,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             BlocBuilder<AuthenBloc, AuthenState>(
-                              buildWhen: (previous, current) =>
-                                  previous.status != current.status,
+                              buildWhen: (previous, current) => previous.status != current.status,
                               builder: (context, state) {
-                                return state.status ==
-                                        AuthenStatus.authenticating
+                                return state.status == AuthenStatus.authenticating
                                     ? const CupertinoActivityIndicator()
                                     : const Icon(Icons.login);
                               },
@@ -152,15 +140,13 @@ class _LoginUIState extends State<LoginUI> {
                 ),
                 GestureDetector(
                     onTap: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, "/forget", (route) => false);
+                      Navigator.pushNamedAndRemoveUntil(context, "/forget", (route) => false);
                     },
                     child: const Center(child: Text("Bạn quên mật khẩu ư?"))),
                 const Spacer(),
                 ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, "/signup", (route) => false);
+                      Navigator.pushNamedAndRemoveUntil(context, "/signup", (route) => false);
                     },
                     child: const Text("Tạo tài khoản mới")),
               ],
