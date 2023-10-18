@@ -43,8 +43,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
           style: themeData.textTheme.titleMedium,
         ),
         leading: IconButton(
-            onPressed: () => Navigator.maybePop(context),
-            icon: const Icon(Icons.arrow_back)),
+            onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -57,8 +56,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
                   padding: const EdgeInsets.all(10),
                   child: SkeletonWrapper(
                       enabled: isLoading,
-                      child: CircleUserAvatar(
-                          imageUrl: widget.post.author.avatar)),
+                      child: CircleUserAvatar(imageUrl: widget.post.author.avatar)),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,9 +77,8 @@ class _PostMediaUIState extends State<PostMediaUI> {
                           onTap: () {},
                           child: Text(
                             formatPostCreatedTime(widget.post.created),
-                            style: themeData.textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w300,
-                                color: Colors.grey),
+                            style: themeData.textTheme.bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
                           ),
                         )),
                   ],
@@ -103,10 +100,8 @@ class _PostMediaUIState extends State<PostMediaUI> {
                                           child: Row(children: [
                                             const Icon(Icons.notifications),
                                             const SizedBox(width: 10),
-                                            Text(
-                                                "Tắt thông báo về bài viết này",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
+                                            Text("Tắt thông báo về bài viết này",
+                                                style: themeData.textTheme.bodyLarge)
                                           ]),
                                         )),
                                     InkWell(
@@ -117,8 +112,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
                                             const Icon(Icons.save),
                                             const SizedBox(width: 10),
                                             Text("Lưu bài viết",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
+                                                style: themeData.textTheme.bodyLarge)
                                           ]),
                                         )),
                                     InkWell(
@@ -128,9 +122,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
                                           child: Row(children: [
                                             const Icon(Icons.delete),
                                             const SizedBox(width: 10),
-                                            Text("Xóa",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
+                                            Text("Xóa", style: themeData.textTheme.bodyLarge)
                                           ]),
                                         )),
                                     InkWell(
@@ -141,8 +133,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
                                             const Icon(Icons.edit),
                                             const SizedBox(width: 10),
                                             Text("Chỉnh sửa bài viết",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
+                                                style: themeData.textTheme.bodyLarge)
                                           ]),
                                         )),
                                     InkWell(
@@ -152,10 +143,8 @@ class _PostMediaUIState extends State<PostMediaUI> {
                                           child: Row(children: [
                                             const Icon(Icons.link),
                                             const SizedBox(width: 10),
-                                            Text(
-                                                "Tắt thông báo về bài viết này",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
+                                            Text("Tắt thông báo về bài viết này",
+                                                style: themeData.textTheme.bodyLarge)
                                           ]),
                                         ))
                                   ],
@@ -198,42 +187,35 @@ class _PostMediaUIState extends State<PostMediaUI> {
                                 },
                                 child: Text(
                                   "...Xem thêm",
-                                  style: themeData.textTheme.bodyMedium
-                                      ?.copyWith(
-                                          color: themeData
-                                              .colorScheme.inverseSurface,
-                                          fontWeight: FontWeight.w500),
+                                  style: themeData.textTheme.bodyMedium?.copyWith(
+                                      color: themeData.colorScheme.inverseSurface,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               )))
                     ]);
                   } else if (isExpanded) {
-                    return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text.rich(
-                            formatPostDescribed(
-                                widget.post.described, themeData),
-                            maxLines: 10000000,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Container(
-                              color: themeData.colorScheme.surface,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isExpanded = !isExpanded;
-                                  });
-                                },
-                                child: Text(
-                                  "Thu gọn",
-                                  style: themeData.textTheme.bodyMedium
-                                      ?.copyWith(
-                                          color: themeData
-                                              .colorScheme.inverseSurface,
-                                          fontWeight: FontWeight.w500),
-                                ),
-                              ))
-                        ]);
+                    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                      Text.rich(
+                        formatPostDescribed(widget.post.described, themeData),
+                        maxLines: 10000000,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Container(
+                          color: themeData.colorScheme.surface,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isExpanded = !isExpanded;
+                              });
+                            },
+                            child: Text(
+                              "Thu gọn",
+                              style: themeData.textTheme.bodyMedium?.copyWith(
+                                  color: themeData.colorScheme.inverseSurface,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ))
+                    ]);
                   } else {
                     return Text.rich(
                       formatPostDescribed(widget.post.described, themeData),
@@ -249,15 +231,17 @@ class _PostMediaUIState extends State<PostMediaUI> {
                   enabled: isLoading,
                   child: Row(
                     children: [
-                      const ReactionDisplay(),
+                      ReactionDisplay(
+                        kudos: widget.post.kudos,
+                        dissapointed: widget.post.disappointed,
+                      ),
                       Text(" ${widget.post.kudos + widget.post.disappointed}",
-                          style: themeData.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w300, color: Colors.grey)),
+                          style: themeData.textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                       const Spacer(),
-                      Text(
-                          " ${(widget.post.fake + widget.post.trust).toString()} bình luận",
-                          style: themeData.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w300, color: Colors.grey)),
+                      Text(" ${(widget.post.fake + widget.post.trust).toString()} bình luận",
+                          style: themeData.textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                     ],
                   )),
             ),

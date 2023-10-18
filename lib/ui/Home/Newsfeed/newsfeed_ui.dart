@@ -4,7 +4,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'CreatePost/createpost_ui.dart';
+import 'Create&Update/post_create_update_ui.dart';
 
 class NewsfeedUI extends StatelessWidget {
   const NewsfeedUI({super.key});
@@ -26,8 +26,7 @@ class NewsfeedUI extends StatelessWidget {
                     ),
                     Expanded(
                       child: Container(
-                        padding:
-                            const EdgeInsets.only(left: 15, top: 8, bottom: 8),
+                        padding: const EdgeInsets.only(left: 15, top: 8, bottom: 8),
                         decoration: BoxDecoration(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(20),
@@ -42,15 +41,13 @@ class NewsfeedUI extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CreatePostUI()));
+                                    builder: (context) => const PostCreateUpdateUI()));
                           },
                           child: const Icon(Icons.image)),
                     )
                   ],
                 ),
-                ...List.generate(state.posts.length,
-                    (index) => PostUI(post: state.posts[index])),
+                ...List.generate(state.posts.length, (index) => PostUI(post: state.posts[index])),
               ],
             );
           },

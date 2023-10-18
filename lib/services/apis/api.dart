@@ -1,19 +1,28 @@
 import 'dart:io';
 
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/data.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api_root.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 
 class Api {
   static Future<Map<String, String>?> signup(
-      String email, String password, String uuid) async {
-    return ApiRoot.post("/signup",
-        FormData.fromMap({"email": email, "password": password, "uuid": uuid}));
+      String email, String password) async {
+    return signup_res[0];
+    // var androidDeviceInfo = await DeviceInfoPlugin().androidInfo;
+    // var uuid = '${androidDeviceInfo.model}:${androidDeviceInfo.id}';
+    // return ApiRoot.post("/signup",
+    //     FormData.fromMap({"email": email, "password": password, "uuid": uuid}));
   }
 
-  static Future<Map<String, String>?> login(
+  static Future<Map<String, String>> login(
       String email, String password) async {
-    return ApiRoot.post(
-        "/login", FormData.fromMap({"email": email, "password": password}));
+    await Future.delayed(const Duration(seconds: 1), () {});
+    return (email == "doicoluu1234@gmail.com" && password == "abc12345")
+        ? login_res[0]
+        : login_res[1];
+    // return ApiRoot.post(
+    //     "/login", FormData.fromMap({"email": email, "password": password}));
   }
 
   static Future<Map<String, String>?> logout() async {

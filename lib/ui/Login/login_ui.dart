@@ -1,5 +1,9 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/enum.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginUI extends StatefulWidget {
   const LoginUI({super.key});
@@ -81,31 +85,71 @@ class _LoginUIState extends State<LoginUI> {
                           borderRadius: BorderRadius.circular(10))),
                 ),
                 const SizedBox(height: 15),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor:
-                          _password.text.isNotEmpty && _username.text.isNotEmpty
+                BlocConsumer<AuthenBloc, AuthenState>(
+                  listenWhen: (previous, current) =>
+                      previous.status == AuthenStatus.authenticating,
+                  listener: (context, state) {
+                    if (state.status == AuthenStatus.authenticated) {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, "/home", (route) => false);
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: const Text("Thông báo"),
+                                content:
+                                    const Text("Sai tài khoản hoặc mật khẩu!"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.maybePop(context);
+                                      },
+                                      child: const Text("Xác nhận"))
+                                ],
+                              ));
+                    }
+                  },
+                  buildWhen: (previous, current) =>
+                      previous.status != current.status,
+                  builder: (context, state) {
+                    return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: _password.text.isNotEmpty &&
+                                  _username.text.isNotEmpty
                               ? themeData.primaryColor
                               : null,
-                    ),
-                    onPressed:
-                        (_password.text.isNotEmpty && _username.text.isNotEmpty)
+                        ),
+                        onPressed: (_password.text.isNotEmpty &&
+                                _username.text.isNotEmpty &&
+                                state.status != AuthenStatus.authenticating)
                             ? () async {
                                 if (formKey.currentState?.validate() != true) {
                                   return;
                                 }
-                                Navigator.pushNamedAndRemoveUntil(
-                                    context, "/home", (route) => false);
+                                BlocProvider.of<AuthenBloc>(context).add(
+                                    AuthenLogin(
+                                        _username.text, _password.text));
                               }
                             : null,
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.login),
-                        Text(" Đăng nhập"),
-                      ],
-                    )),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            BlocBuilder<AuthenBloc, AuthenState>(
+                              buildWhen: (previous, current) =>
+                                  previous.status != current.status,
+                              builder: (context, state) {
+                                return state.status ==
+                                        AuthenStatus.authenticating
+                                    ? const CupertinoActivityIndicator()
+                                    : const Icon(Icons.login);
+                              },
+                            ),
+                            const Text(" Đăng nhập"),
+                          ],
+                        ));
+                  },
+                ),
                 GestureDetector(
                     onTap: () {
                       Navigator.pushNamedAndRemoveUntil(

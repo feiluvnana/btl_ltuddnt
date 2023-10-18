@@ -2,9 +2,12 @@
 
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Create&Update/post_create_update_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/post_report_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/post_media_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/emoji.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/expandable_text.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/reaction_display.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/skeleton_wrapper.dart';
@@ -26,7 +29,7 @@ class _PostUIState extends State<PostUI> {
   late bool isShowEmoji;
   late Offset globalOffset;
   late bool isExpanded = false;
-  late List<bool> emojiEnlarged = List.generate(7, (index) => false);
+  late List<bool> emojiEnlarged = List.generate(2, (index) => false);
 
   @override
   void initState() {
@@ -51,8 +54,7 @@ class _PostUIState extends State<PostUI> {
                   padding: const EdgeInsets.all(10),
                   child: SkeletonWrapper(
                       enabled: isLoading,
-                      child: CircleUserAvatar(
-                          imageUrl: widget.post.author.avatar)),
+                      child: CircleUserAvatar(imageUrl: widget.post.author.avatar)),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,8 +63,8 @@ class _PostUIState extends State<PostUI> {
                       onTap: () {},
                       child: Text(
                         widget.post.author.name,
-                        style: themeData.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                        style:
+                            themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
                     SkeletonWrapper(
@@ -71,9 +73,8 @@ class _PostUIState extends State<PostUI> {
                           onTap: () {},
                           child: Text(
                             formatPostCreatedTime(widget.post.created),
-                            style: themeData.textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w300,
-                                color: Colors.grey),
+                            style: themeData.textTheme.bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
                           ),
                         )),
                   ],
@@ -93,48 +94,106 @@ class _PostUIState extends State<PostUI> {
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Row(children: [
-                                            const Icon(Icons.notifications),
-                                            const SizedBox(width: 10),
-                                            Text(
-                                                "Tắt thông báo về bài viết này",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
                                             const Icon(Icons.save),
                                             const SizedBox(width: 10),
                                             Text("Lưu bài viết",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
+                                                style: themeData.textTheme.bodyLarge)
                                           ]),
                                         )),
                                     InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          showDialog<bool>(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                    title: Text(
+                                                      "Xóa bài viết?",
+                                                      style: themeData.textTheme.bodyLarge,
+                                                    ),
+                                                    content: const Text(
+                                                        "Bạn có thể chỉnh sửa bài viết nếu cần thay đổi."),
+                                                    actions: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          Navigator.maybePop(context);
+                                                        },
+                                                        child: Text("XÓA",
+                                                            style: themeData.textTheme.bodyMedium
+                                                                ?.copyWith(
+                                                                    color: themeData.primaryColor)),
+                                                      ),
+                                                      GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.maybePop(context)
+                                                                .whenComplete(() => Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (context) =>
+                                                                            PostCreateUpdateUI(
+                                                                                post:
+                                                                                    widget.post))));
+                                                          },
+                                                          child: const Text("CHỈNH SỬA")),
+                                                      GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.maybePop(context);
+                                                          },
+                                                          child: const Text("HỦY")),
+                                                    ],
+                                                  ));
+                                        },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Row(children: [
                                             const Icon(Icons.delete),
                                             const SizedBox(width: 10),
-                                            Text("Xóa",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
+                                            Text("Xóa", style: themeData.textTheme.bodyLarge)
                                           ]),
                                         )),
                                     InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => PostCreateUpdateUI(
+                                                        post: widget.post,
+                                                      )));
+                                        },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Row(children: [
                                             const Icon(Icons.edit),
                                             const SizedBox(width: 10),
                                             Text("Chỉnh sửa bài viết",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
+                                                style: themeData.textTheme.bodyLarge)
+                                          ]),
+                                        )),
+                                    const Divider(),
+                                    InkWell(
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(children: [
+                                            const Icon(Icons.notifications),
+                                            const SizedBox(width: 10),
+                                            Text("Tắt thông báo về bài viết này",
+                                                style: themeData.textTheme.bodyLarge)
+                                          ]),
+                                        )),
+                                    InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PostReportUI(post: widget.post)));
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(children: [
+                                            const Icon(Icons.report),
+                                            const SizedBox(width: 10),
+                                            Text("Báo cáo bài viết",
+                                                style: themeData.textTheme.bodyLarge)
                                           ]),
                                         )),
                                     InkWell(
@@ -144,10 +203,8 @@ class _PostUIState extends State<PostUI> {
                                           child: Row(children: [
                                             const Icon(Icons.link),
                                             const SizedBox(width: 10),
-                                            Text(
-                                                "Tắt thông báo về bài viết này",
-                                                style: themeData
-                                                    .textTheme.bodyLarge)
+                                            Text("Sao chép liên kết",
+                                                style: themeData.textTheme.bodyLarge)
                                           ]),
                                         ))
                                   ],
@@ -161,78 +218,7 @@ class _PostUIState extends State<PostUI> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: SkeletonWrapper(
                 enabled: isLoading,
-                child: LayoutBuilder(builder: (context, size) {
-                  var tp = TextPainter(
-                    maxLines: isExpanded ? null : 5,
-                    textAlign: TextAlign.left,
-                    textDirection: TextDirection.ltr,
-                    text: formatPostDescribed(widget.post.described, themeData),
-                  );
-                  tp.layout(maxWidth: size.maxWidth);
-                  var exceeded = tp.didExceedMaxLines;
-                  if (exceeded) {
-                    return Stack(children: <Widget>[
-                      Text.rich(
-                        formatPostDescribed(widget.post.described, themeData),
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                              color: themeData.colorScheme.surface,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isExpanded = !isExpanded;
-                                  });
-                                },
-                                child: Text(
-                                  "...Xem thêm",
-                                  style: themeData.textTheme.bodyMedium
-                                      ?.copyWith(
-                                          color: themeData
-                                              .colorScheme.inverseSurface,
-                                          fontWeight: FontWeight.w500),
-                                ),
-                              )))
-                    ]);
-                  } else if (isExpanded) {
-                    return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text.rich(
-                            formatPostDescribed(
-                                widget.post.described, themeData),
-                            maxLines: 10000000,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Container(
-                              color: themeData.colorScheme.surface,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isExpanded = !isExpanded;
-                                  });
-                                },
-                                child: Text(
-                                  "Thu gọn",
-                                  style: themeData.textTheme.bodyMedium
-                                      ?.copyWith(
-                                          color: themeData
-                                              .colorScheme.inverseSurface,
-                                          fontWeight: FontWeight.w500),
-                                ),
-                              ))
-                        ]);
-                  } else {
-                    return Text.rich(
-                      formatPostDescribed(widget.post.described, themeData),
-                      overflow: TextOverflow.ellipsis,
-                    );
-                  }
-                }),
+                child: ExpandableText(post: widget.post),
               ),
             ),
             if ((widget.post.image?.length ?? 0) > 0)
@@ -245,8 +231,7 @@ class _PostUIState extends State<PostUI> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    PostMediaUI(post: widget.post)));
+                                builder: (context) => PostMediaUI(post: widget.post)));
                       },
                       medias: List.generate(
                           widget.post.image?.length ?? 0,
@@ -262,15 +247,17 @@ class _PostUIState extends State<PostUI> {
                   enabled: isLoading,
                   child: Row(
                     children: [
-                      const ReactionDisplay(),
+                      ReactionDisplay(
+                        kudos: widget.post.kudos,
+                        dissapointed: widget.post.disappointed,
+                      ),
                       Text(" ${widget.post.kudos + widget.post.disappointed}",
-                          style: themeData.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w300, color: Colors.grey)),
+                          style: themeData.textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                       const Spacer(),
-                      Text(
-                          " ${(widget.post.fake + widget.post.trust).toString()} bình luận",
-                          style: themeData.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w300, color: Colors.grey)),
+                      Text(" ${(widget.post.fake + widget.post.trust).toString()} bình luận",
+                          style: themeData.textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                     ],
                   )),
             ),
@@ -316,13 +303,11 @@ class _PostUIState extends State<PostUI> {
                                 children: const [
                               WidgetSpan(
                                   alignment: PlaceholderAlignment.middle,
-                                  child:
-                                      Icon(Icons.favorite, color: Colors.grey)),
+                                  child: Icon(Icons.favorite, color: Colors.grey)),
                               TextSpan(text: " Thích")
                             ],
-                                style: themeData.textTheme.bodySmall?.copyWith(
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.grey))),
+                                style: themeData.textTheme.bodySmall
+                                    ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey))),
                       ),
                       RichText(
                           text: TextSpan(
@@ -332,9 +317,8 @@ class _PostUIState extends State<PostUI> {
                                 child: Icon(Icons.comment, color: Colors.grey)),
                             TextSpan(text: " Bình luận")
                           ],
-                              style: themeData.textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.grey))),
+                              style: themeData.textTheme.bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey))),
                       RichText(
                           text: TextSpan(
                               children: const [
@@ -343,9 +327,8 @@ class _PostUIState extends State<PostUI> {
                                 child: Icon(Icons.share, color: Colors.grey)),
                             TextSpan(text: " Chia sẻ")
                           ],
-                              style: themeData.textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.grey)))
+                              style: themeData.textTheme.bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)))
                     ],
                   )),
             ),
@@ -355,8 +338,7 @@ class _PostUIState extends State<PostUI> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),
-                    child: CircleUserAvatar(
-                        imageUrl: widget.post.author.avatar, radius: 16),
+                    child: CircleUserAvatar(imageUrl: widget.post.author.avatar, radius: 16),
                   ),
                   Expanded(
                       child: TextField(
@@ -365,11 +347,9 @@ class _PostUIState extends State<PostUI> {
                     maxLines: null,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            gapPadding: 0),
+                            borderRadius: BorderRadius.circular(20), gapPadding: 0),
                         hintText: "Viết bình luận...",
-                        contentPadding:
-                            const EdgeInsets.only(left: 15, top: 5, bottom: 5),
+                        contentPadding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
                         suffixIcon: IconButton(
                           onPressed: () {},
                           icon: const Icon(Icons.send),
@@ -399,7 +379,7 @@ class _PostUIState extends State<PostUI> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           _ReactionSliderItem(
-                            assetIcon: "assets/emojis/like.svg",
+                            assetIcon: "assets/emojis/haha.svg",
                             enlarged: emojiEnlarged[0],
                             setEnlarged: (value) {
                               setState(() {
@@ -409,61 +389,11 @@ class _PostUIState extends State<PostUI> {
                             globalOffset: globalOffset,
                           ),
                           _ReactionSliderItem(
-                            assetIcon: "assets/emojis/love.svg",
+                            assetIcon: "assets/emojis/sad.svg",
                             enlarged: emojiEnlarged[1],
                             setEnlarged: (value) {
                               setState(() {
                                 emojiEnlarged[1] = value;
-                              });
-                            },
-                            globalOffset: globalOffset,
-                          ),
-                          _ReactionSliderItem(
-                            assetIcon: "assets/emojis/care.svg",
-                            enlarged: emojiEnlarged[2],
-                            setEnlarged: (value) {
-                              setState(() {
-                                emojiEnlarged[2] = value;
-                              });
-                            },
-                            globalOffset: globalOffset,
-                          ),
-                          _ReactionSliderItem(
-                            assetIcon: "assets/emojis/haha.svg",
-                            enlarged: emojiEnlarged[3],
-                            setEnlarged: (value) {
-                              setState(() {
-                                emojiEnlarged[3] = value;
-                              });
-                            },
-                            globalOffset: globalOffset,
-                          ),
-                          _ReactionSliderItem(
-                            assetIcon: "assets/emojis/sad.svg",
-                            enlarged: emojiEnlarged[4],
-                            setEnlarged: (value) {
-                              setState(() {
-                                emojiEnlarged[4] = value;
-                              });
-                            },
-                            globalOffset: globalOffset,
-                          ),
-                          _ReactionSliderItem(
-                            assetIcon: "assets/emojis/wow.svg",
-                            enlarged: emojiEnlarged[5],
-                            setEnlarged: (value) {
-                              setState(() {
-                                emojiEnlarged[5] = value;
-                              });
-                            },
-                            globalOffset: globalOffset,
-                          ),
-                          _ReactionSliderItem(
-                            assetIcon: "assets/emojis/angry.svg",
-                            enlarged: emojiEnlarged[6],
-                            setEnlarged: (value) {
-                              setState(() {
-                                emojiEnlarged[6] = value;
                               });
                             },
                             globalOffset: globalOffset,
@@ -509,8 +439,7 @@ class _ReactionSliderItem extends StatelessWidget {
       children: [
         Padding(
           padding: enlarged ? EdgeInsets.zero : const EdgeInsets.all(0),
-          child: SvgPicture.asset(assetIcon,
-              width: enlarged ? 70 : 40, height: enlarged ? 70 : 40),
+          child: SvgPicture.asset(assetIcon, width: enlarged ? 70 : 40, height: enlarged ? 70 : 40),
         ),
       ],
     );

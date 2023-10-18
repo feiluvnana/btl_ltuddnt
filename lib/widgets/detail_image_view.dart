@@ -16,8 +16,7 @@ class DetailImageView extends StatefulWidget {
 
 class _DetailImageViewState extends State<DetailImageView> {
   bool isExpanded = false;
-  late final PageController ctrl =
-      PageController(initialPage: widget.initIndex);
+  late final PageController ctrl = PageController(initialPage: widget.initIndex);
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +50,7 @@ class _DetailImageViewState extends State<DetailImageView> {
                 color: Colors.black54,
                 padding: const EdgeInsets.all(8.0),
                 width: MediaQuery.sizeOf(context).width,
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.sizeOf(context).height / 3),
+                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height / 3),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,28 +58,25 @@ class _DetailImageViewState extends State<DetailImageView> {
                     children: [
                       Text(
                         widget.post!.author.name,
-                        style: themeData.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold, color: Colors.white),
+                        style: themeData.textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                       LayoutBuilder(builder: (context, size) {
                         var tp = TextPainter(
                           maxLines: isExpanded ? null : 5,
                           textAlign: TextAlign.left,
                           textDirection: TextDirection.ltr,
-                          text: formatPostDescribed(
-                              widget.post!.described, themeData),
+                          text: formatPostDescribed(widget.post!.described, themeData),
                         );
                         tp.layout(maxWidth: size.maxWidth);
                         var exceeded = tp.didExceedMaxLines;
                         if (exceeded) {
                           return Stack(children: <Widget>[
                             Text.rich(
-                              formatPostDescribed(
-                                  widget.post!.described, themeData),
+                              formatPostDescribed(widget.post!.described, themeData),
                               maxLines: 5,
                               overflow: TextOverflow.ellipsis,
-                              style: themeData.textTheme.bodyMedium
-                                  ?.copyWith(color: Colors.white),
+                              style: themeData.textTheme.bodyMedium?.copyWith(color: Colors.white),
                             ),
                             Positioned(
                                 bottom: 0,
@@ -96,11 +91,9 @@ class _DetailImageViewState extends State<DetailImageView> {
                                       },
                                       child: Text(
                                         "...Xem thêm",
-                                        style: themeData.textTheme.bodyMedium
-                                            ?.copyWith(
-                                                color: themeData
-                                                    .colorScheme.inverseSurface,
-                                                fontWeight: FontWeight.w500),
+                                        style: themeData.textTheme.bodyMedium?.copyWith(
+                                            color: themeData.colorScheme.inverseSurface,
+                                            fontWeight: FontWeight.w500),
                                       ),
                                     )))
                           ]);
@@ -109,12 +102,11 @@ class _DetailImageViewState extends State<DetailImageView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text.rich(
-                                  formatPostDescribed(
-                                      widget.post!.described, themeData),
+                                  formatPostDescribed(widget.post!.described, themeData),
                                   maxLines: 10000000,
                                   overflow: TextOverflow.ellipsis,
-                                  style: themeData.textTheme.bodyMedium
-                                      ?.copyWith(color: Colors.white),
+                                  style:
+                                      themeData.textTheme.bodyMedium?.copyWith(color: Colors.white),
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -124,47 +116,41 @@ class _DetailImageViewState extends State<DetailImageView> {
                                   },
                                   child: Text(
                                     "Thu gọn",
-                                    style: themeData.textTheme.bodyMedium
-                                        ?.copyWith(
-                                            color: themeData
-                                                .colorScheme.inverseSurface,
-                                            fontWeight: FontWeight.w500),
+                                    style: themeData.textTheme.bodyMedium?.copyWith(
+                                        color: themeData.colorScheme.inverseSurface,
+                                        fontWeight: FontWeight.w500),
                                   ),
                                 )
                               ]);
                         } else {
                           return Text.rich(
-                            formatPostDescribed(
-                                widget.post!.described, themeData),
+                            formatPostDescribed(widget.post!.described, themeData),
                             overflow: TextOverflow.ellipsis,
-                            style: themeData.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                            style: themeData.textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
                           );
                         }
                       }),
                       SizedBox(height: 5),
                       Text(
-                        formatPostCreatedTime(widget.post!.created)
-                            .toUpperCase(),
-                        style: themeData.textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w300, color: Colors.grey),
+                        formatPostCreatedTime(widget.post!.created).toUpperCase(),
+                        style: themeData.textTheme.bodySmall
+                            ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
                       ),
                       const Divider(),
                       Row(
                         children: [
-                          const ReactionDisplay(),
-                          Text(
-                              " ${widget.post!.kudos + widget.post!.disappointed}",
-                              style: themeData.textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.grey)),
+                          ReactionDisplay(
+                            kudos: widget.post!.kudos,
+                            dissapointed: widget.post!.disappointed,
+                          ),
+                          Text(" ${widget.post!.kudos + widget.post!.disappointed}",
+                              style: themeData.textTheme.bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                           const Spacer(),
-                          Text(
-                              " ${(widget.post!.fake + widget.post!.trust).toString()} bình luận",
-                              style: themeData.textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.grey)),
+                          Text(" ${(widget.post!.fake + widget.post!.trust).toString()} bình luận",
+                              style: themeData.textTheme.bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                         ],
                       )
                     ],

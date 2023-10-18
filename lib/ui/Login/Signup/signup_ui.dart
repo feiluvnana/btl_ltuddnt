@@ -52,7 +52,8 @@ class SignupUI extends StatelessWidget {
                       child: const Text("Bắt đầu")),
                   ElevatedButton(
                       onPressed: () {
-                        Navigator.maybePop(context);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, "/login", (route) => false);
                       },
                       child: const Text("Tôi có tài khoản rồi")),
                 ],

@@ -22,6 +22,7 @@ mixin _$SignupState {
   String get email => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
   bool get saveInfo => throw _privateConstructorUsedError;
+  SignupStatus get status => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SignupStateCopyWith<SignupState> get copyWith =>
@@ -40,7 +41,8 @@ abstract class $SignupStateCopyWith<$Res> {
       DateTime dob,
       String email,
       String password,
-      bool saveInfo});
+      bool saveInfo,
+      SignupStatus status});
 }
 
 /// @nodoc
@@ -62,6 +64,7 @@ class _$SignupStateCopyWithImpl<$Res, $Val extends SignupState>
     Object? email = null,
     Object? password = null,
     Object? saveInfo = null,
+    Object? status = null,
   }) {
     return _then(_value.copyWith(
       firstName: null == firstName
@@ -88,6 +91,10 @@ class _$SignupStateCopyWithImpl<$Res, $Val extends SignupState>
           ? _value.saveInfo
           : saveInfo // ignore: cast_nullable_to_non_nullable
               as bool,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as SignupStatus,
     ) as $Val);
   }
 }
@@ -106,7 +113,8 @@ abstract class _$$SignupStateImplCopyWith<$Res>
       DateTime dob,
       String email,
       String password,
-      bool saveInfo});
+      bool saveInfo,
+      SignupStatus status});
 }
 
 /// @nodoc
@@ -126,6 +134,7 @@ class __$$SignupStateImplCopyWithImpl<$Res>
     Object? email = null,
     Object? password = null,
     Object? saveInfo = null,
+    Object? status = null,
   }) {
     return _then(_$SignupStateImpl(
       firstName: null == firstName
@@ -152,6 +161,10 @@ class __$$SignupStateImplCopyWithImpl<$Res>
           ? _value.saveInfo
           : saveInfo // ignore: cast_nullable_to_non_nullable
               as bool,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as SignupStatus,
     ));
   }
 }
@@ -165,7 +178,8 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
       required this.dob,
       this.email = "",
       this.password = "",
-      this.saveInfo = false});
+      this.saveInfo = false,
+      this.status = SignupStatus.filling});
 
   @override
   @JsonKey()
@@ -184,10 +198,13 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
   @override
   @JsonKey()
   final bool saveInfo;
+  @override
+  @JsonKey()
+  final SignupStatus status;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'SignupState(firstName: $firstName, lastName: $lastName, dob: $dob, email: $email, password: $password, saveInfo: $saveInfo)';
+    return 'SignupState(firstName: $firstName, lastName: $lastName, dob: $dob, email: $email, password: $password, saveInfo: $saveInfo, status: $status)';
   }
 
   @override
@@ -200,7 +217,8 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
       ..add(DiagnosticsProperty('dob', dob))
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('password', password))
-      ..add(DiagnosticsProperty('saveInfo', saveInfo));
+      ..add(DiagnosticsProperty('saveInfo', saveInfo))
+      ..add(DiagnosticsProperty('status', status));
   }
 
   @override
@@ -217,12 +235,13 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
             (identical(other.password, password) ||
                 other.password == password) &&
             (identical(other.saveInfo, saveInfo) ||
-                other.saveInfo == saveInfo));
+                other.saveInfo == saveInfo) &&
+            (identical(other.status, status) || other.status == status));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, firstName, lastName, dob, email, password, saveInfo);
+      runtimeType, firstName, lastName, dob, email, password, saveInfo, status);
 
   @JsonKey(ignore: true)
   @override
@@ -238,7 +257,8 @@ abstract class _SignupState implements SignupState {
       required final DateTime dob,
       final String email,
       final String password,
-      final bool saveInfo}) = _$SignupStateImpl;
+      final bool saveInfo,
+      final SignupStatus status}) = _$SignupStateImpl;
 
   @override
   String get firstName;
@@ -252,6 +272,8 @@ abstract class _SignupState implements SignupState {
   String get password;
   @override
   bool get saveInfo;
+  @override
+  SignupStatus get status;
   @override
   @JsonKey(ignore: true)
   _$$SignupStateImplCopyWith<_$SignupStateImpl> get copyWith =>

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 ///postData: chứa data mock cho các bài post.
 /// - Kiểu dữ liệu: List\<Post\>
 /// - Lưu ý: Có video thì thôi image và ngược lại, chỉ có tối đa 4 image hoặc 1 video. Có thể không có gì.
@@ -82,11 +84,7 @@ Built by gskinner.com with Flex 3 [adobe.com/go/flex] and Spelling Plus Library 
       "coins": "4444",
       "listing": ""
     },
-    "category": {
-      "id": "1",
-      "name": "This is category's name",
-      "has_name": "true"
-    },
+    "category": {"id": "1", "name": "This is category's name", "has_name": "true"},
     "state": "This is state",
     "is_blocked": "false",
     "can_edit": "true",
@@ -100,8 +98,7 @@ Built by gskinner.com with Flex 3 [adobe.com/go/flex] and Spelling Plus Library 
     "id": "2",
     "name": "Nguyền Vương Giáo - 両面宿儺",
     "created": "1697271381000",
-    "described":
-        """Giả thuyết về sự liên kết đến tộc cổ Ainu của Itadori Yuuji, Kenjaku và Sukuna. 
+    "described": """Giả thuyết về sự liên kết đến tộc cổ Ainu của Itadori Yuuji, Kenjaku và Sukuna. 
 Xuyên suốt bộ truyện JJK, Gege-sensei dường như đã luôn hint cho chúng ta một điều gì đó về quá khứ của Itadori Yuuji, nên hôm nay mình muốn viết tí suy nghĩ của mình kết hợp với giả thuyết về sự liên kết giữa tộc Ainu - Yuuji đã được thảo luận bởi đọc giả Nhật từ trước.
 Một chút về tộc Ainu, trong Jujutsu Kaisen thì đây là một “cộng đồng chú thuật sư” được Gojo nhắc qua một lần ở vol 0 của JJK. Họ định cư ở Kamui-kotan (Vùng đất nơi thần linh trú ngự) thuộc khu vực Hokkaido. Ở chương 147, Tengen có nói Hokkaido là một vùng linh thiên, bất khả xâm phạm và không nằm trong phạm vi của trò chơi Tử Diệt Hồi Du vì nơi đó có “kết giới riêng” Trong sử sách Nhật Bản thì người Ainu là hậu duệ trực tiếp của người Jomon cổ đại sinh sống ở Nhật Bản từ 10.000 đến 12.000 năm về trước, tóm lại là một cộng đồng nhỏ nhưng với lịch sử khá lâu đời và sống gắn kết nhờ săn bắt từ thuở xa xưa.
 Có khá nhiều chi tiết để gắn kết nhân vật Yuuji với tộc Ainu, và sau đây mình xin được phép điểm qua một số chi tiết quan trọng đáng chú ý:
@@ -127,11 +124,7 @@ Cảm ơn các bạn đã đọc! Và nên nhớ, tất cả chỉ là giả thu
         "url":
             "https://scontent.fhan14-2.fna.fbcdn.net/v/t39.30808-6/387187619_687099340143593_1893220638679309781_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_ohc=PlBgP1YZ8bQAX9wRl8W&_nc_ht=scontent.fhan14-2.fna&oh=00_AfB7rjEvEG4FUax1oweytqLBLL1uW_2XUcbzqyIbPe58HQ&oe=6530DD71"
       },
-      {
-        "id": "2",
-        "url":
-            "https://www.online-image-editor.com/styles/2019/images/power_girl.png"
-      },
+      {"id": "2", "url": "https://www.online-image-editor.com/styles/2019/images/power_girl.png"},
       {
         "id": "3",
         "url":
@@ -146,11 +139,7 @@ Cảm ơn các bạn đã đọc! Và nên nhớ, tất cả chỉ là giả thu
       "coins": "4444",
       "listing": ""
     },
-    "category": {
-      "id": "2",
-      "name": "This is category's name",
-      "has_name": "true"
-    },
+    "category": {"id": "2", "name": "This is category's name", "has_name": "true"},
     "state": "This is state",
     "is_blocked": "false",
     "can_edit": "true",
@@ -164,7 +153,7 @@ Cảm ơn các bạn đã đọc! Và nên nhớ, tất cả chỉ là giả thu
     "id": "3",
     "name": "Nguyền Vương Giáo - 両面宿儺",
     "created": "1697271371000",
-    "described": """Sukuna never dies!!! @mention""",
+    "described": """\u{1f427} Sukuna never dies!!! @mention""",
     "modified": "1697271571056",
     "fake": "10",
     "trust": "15",
@@ -180,11 +169,7 @@ Cảm ơn các bạn đã đọc! Và nên nhớ, tất cả chỉ là giả thu
       "coins": "4444",
       "listing": ""
     },
-    "category": {
-      "id": "1",
-      "name": "This is category's name",
-      "has_name": "true"
-    },
+    "category": {"id": "1", "name": "This is category's name", "has_name": "true"},
     "state": "This is state",
     "is_blocked": "false",
     "can_edit": "true",
@@ -194,4 +179,24 @@ Cảm ơn các bạn đã đọc! Và nên nhớ, tất cả chỉ là giả thu
     "url": "https://mock.com/1",
     "messages": ""
   }
+];
+
+var login_res = [
+  {
+    "code": "1000",
+    "message": "OK",
+    "data": jsonEncode({
+      "id": "1",
+      "username": "doicoluu1234",
+      "token": "testing-token",
+      "avatar": "https://www.seiu1000.org/sites/main/files/main-images/camera_lense_0.jpeg",
+      "active": "1",
+      "coins": "100"
+    })
+  },
+  {"code": "9995", "message": "NOT OK", "data": jsonEncode({})}
+];
+
+var signup_res = [
+  {"code": "1000", "message": "OK", "data": jsonEncode({})}
 ];

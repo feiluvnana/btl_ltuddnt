@@ -54,14 +54,20 @@ class Emoji {
     }
     return str.substring(1, str.length - 1);
   }
+
+  static String revert(String str) {
+    for (var s in data.keys) {
+      str = str.replaceAll(data[s]!, s);
+    }
+    return str;
+  }
 }
 
 class EmojiInputFormatter extends TextInputFormatter {
   const EmojiInputFormatter();
 
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     return newValue.copyWith(text: Emoji.parse(newValue.text));
   }
 }

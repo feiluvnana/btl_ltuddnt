@@ -1,3 +1,5 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/enum.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
@@ -34,6 +36,10 @@ class SignupSaveInfoChange extends SignupEvent {
   const SignupSaveInfoChange({required this.saveInfo});
 }
 
+class SignupRequest extends SignupEvent {
+  const SignupRequest();
+}
+
 @freezed
 class SignupState with _$SignupState {
   const factory SignupState(
@@ -42,7 +48,8 @@ class SignupState with _$SignupState {
       required DateTime dob,
       @Default("") String email,
       @Default("") String password,
-      @Default(false) bool saveInfo}) = _SignupState;
+      @Default(false) bool saveInfo,
+      @Default(SignupStatus.filling) SignupStatus status}) = _SignupState;
 }
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
@@ -63,6 +70,9 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     });
     on<SignupSaveInfoChange>((event, emit) {
       emit(state.copyWith(saveInfo: event.saveInfo));
+    });
+    on<SignupRequest>((event, emit) async {
+      await Api.signup(state.email, state.password);
     });
   }
 }
