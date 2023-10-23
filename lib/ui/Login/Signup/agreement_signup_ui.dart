@@ -1,6 +1,9 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/verify_signup_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AgreementSignupUI extends StatelessWidget {
   const AgreementSignupUI({super.key});
@@ -16,8 +19,7 @@ class AgreementSignupUI extends StatelessWidget {
           style: themeData.textTheme.titleMedium,
         ),
         leading: IconButton(
-            onPressed: () => Navigator.maybePop(context),
-            icon: const Icon(Icons.arrow_back)),
+            onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -25,16 +27,14 @@ class AgreementSignupUI extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text("Đồng ý với điều khoản và chính sách của Anti Fakebook",
-                style: themeData.textTheme.headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+                style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
             Text.rich(TextSpan(children: [
               const TextSpan(
                   text:
                       "Những người dùng dịch vụ của chúng tôi có thể đã tải thông tin liên hệ của bạn lên Anti Fakebook. "),
               TextSpan(
                   text: "Tìm hiểu thêm.",
-                  style: themeData.textTheme.bodyMedium
-                      ?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
                   recognizer: TapGestureRecognizer()..onTap = () {})
             ])),
             const SizedBox(height: 10),
@@ -42,26 +42,21 @@ class AgreementSignupUI extends StatelessWidget {
               const TextSpan(text: "Bằng cách nhấn vào "),
               TextSpan(
                   text: "Tôi đồng ý, ",
-                  style: themeData.textTheme.bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.bold)),
-              const TextSpan(
-                  text: "bạn đồng ý tạo tài khoản, cũng như chấp thuận "),
+                  style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+              const TextSpan(text: "bạn đồng ý tạo tài khoản, cũng như chấp thuận "),
               TextSpan(
                   text: "Điều khoản",
-                  style: themeData.textTheme.bodyMedium
-                      ?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
                   recognizer: TapGestureRecognizer()..onTap = () {}),
               const TextSpan(text: ", "),
               TextSpan(
                   text: "Chính sách quyền riêng tư",
-                  style: themeData.textTheme.bodyMedium
-                      ?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
                   recognizer: TapGestureRecognizer()..onTap = () {}),
               const TextSpan(text: " và "),
               TextSpan(
                   text: "Chính sách cookie",
-                  style: themeData.textTheme.bodyMedium
-                      ?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
                   recognizer: TapGestureRecognizer()..onTap = () {}),
               const TextSpan(text: " của Anti Fakebook."),
             ])),
@@ -69,8 +64,7 @@ class AgreementSignupUI extends StatelessWidget {
             Text.rich(TextSpan(children: [
               TextSpan(
                   text: "Chính sách quyền riêng tư",
-                  style: themeData.textTheme.bodyMedium
-                      ?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
                   recognizer: TapGestureRecognizer()..onTap = () {}),
               const TextSpan(
                   text:
@@ -79,9 +73,15 @@ class AgreementSignupUI extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: themeData.primaryColor),
-                onPressed: () {},
+                    foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    return BlocProvider.value(
+                      value: BlocProvider.of<SignupBloc>(context),
+                      child: VerifySignupUI(),
+                    );
+                  }));
+                },
                 child: const Text("Tôi đồng ý")),
             const Spacer(),
             Center(
@@ -89,14 +89,12 @@ class AgreementSignupUI extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/login", (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
                   },
                   child: Text(
                     "Bạn đã có tài khoản ư?",
-                    style: themeData.textTheme.bodyLarge?.copyWith(
-                        color: themeData.primaryColor,
-                        fontWeight: FontWeight.bold),
+                    style: themeData.textTheme.bodyLarge
+                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

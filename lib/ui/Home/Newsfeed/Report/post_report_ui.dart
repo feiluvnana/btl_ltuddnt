@@ -1,4 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/other_problem_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -60,7 +61,9 @@ class _PostReportUIState extends State<PostReportUI> {
                   labelStyle: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
-              Chip(
+              ActionChip(
+                  onPressed: () => Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => const OtherProblemUI())),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                   label: const Row(mainAxisSize: MainAxisSize.min, children: [
                     Icon(Icons.search, size: 16),

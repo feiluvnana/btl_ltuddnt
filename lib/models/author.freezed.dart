@@ -24,9 +24,9 @@ mixin _$Author {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get avatar => throw _privateConstructorUsedError;
-  @IntegerConverter()
-  int get coins => throw _privateConstructorUsedError;
-  String get listing => throw _privateConstructorUsedError;
+  @IntegerOrNullConverter()
+  int? get coins => throw _privateConstructorUsedError;
+  String? get listing => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,8 +42,8 @@ abstract class $AuthorCopyWith<$Res> {
       {@IntegerConverter() int id,
       String name,
       String avatar,
-      @IntegerConverter() int coins,
-      String listing});
+      @IntegerOrNullConverter() int? coins,
+      String? listing});
 }
 
 /// @nodoc
@@ -62,8 +62,8 @@ class _$AuthorCopyWithImpl<$Res, $Val extends Author>
     Object? id = null,
     Object? name = null,
     Object? avatar = null,
-    Object? coins = null,
-    Object? listing = null,
+    Object? coins = freezed,
+    Object? listing = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -78,14 +78,14 @@ class _$AuthorCopyWithImpl<$Res, $Val extends Author>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String,
-      coins: null == coins
+      coins: freezed == coins
           ? _value.coins
           : coins // ignore: cast_nullable_to_non_nullable
-              as int,
-      listing: null == listing
+              as int?,
+      listing: freezed == listing
           ? _value.listing
           : listing // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -101,8 +101,8 @@ abstract class _$$AuthorImplCopyWith<$Res> implements $AuthorCopyWith<$Res> {
       {@IntegerConverter() int id,
       String name,
       String avatar,
-      @IntegerConverter() int coins,
-      String listing});
+      @IntegerOrNullConverter() int? coins,
+      String? listing});
 }
 
 /// @nodoc
@@ -119,8 +119,8 @@ class __$$AuthorImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? avatar = null,
-    Object? coins = null,
-    Object? listing = null,
+    Object? coins = freezed,
+    Object? listing = freezed,
   }) {
     return _then(_$AuthorImpl(
       null == id
@@ -135,14 +135,14 @@ class __$$AuthorImplCopyWithImpl<$Res>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String,
-      null == coins
+      freezed == coins
           ? _value.coins
           : coins // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == listing
+              as int?,
+      freezed == listing
           ? _value.listing
           : listing // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -152,7 +152,7 @@ class __$$AuthorImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$AuthorImpl with DiagnosticableTreeMixin implements _Author {
   const _$AuthorImpl(@IntegerConverter() this.id, this.name, this.avatar,
-      @IntegerConverter() this.coins, this.listing);
+      @IntegerOrNullConverter() this.coins, this.listing);
 
   factory _$AuthorImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthorImplFromJson(json);
@@ -165,10 +165,10 @@ class _$AuthorImpl with DiagnosticableTreeMixin implements _Author {
   @override
   final String avatar;
   @override
-  @IntegerConverter()
-  final int coins;
+  @IntegerOrNullConverter()
+  final int? coins;
   @override
-  final String listing;
+  final String? listing;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -223,8 +223,8 @@ abstract class _Author implements Author {
       @IntegerConverter() final int id,
       final String name,
       final String avatar,
-      @IntegerConverter() final int coins,
-      final String listing) = _$AuthorImpl;
+      @IntegerOrNullConverter() final int? coins,
+      final String? listing) = _$AuthorImpl;
 
   factory _Author.fromJson(Map<String, dynamic> json) = _$AuthorImpl.fromJson;
 
@@ -236,10 +236,10 @@ abstract class _Author implements Author {
   @override
   String get avatar;
   @override
-  @IntegerConverter()
-  int get coins;
+  @IntegerOrNullConverter()
+  int? get coins;
   @override
-  String get listing;
+  String? get listing;
   @override
   @JsonKey(ignore: true)
   _$$AuthorImplCopyWith<_$AuthorImpl> get copyWith =>

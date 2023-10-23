@@ -9,9 +9,10 @@ class AFBInAppWebView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Purchase Page"),
+        title: const Text("Web View"),
       ),
       body: InAppWebView(
+        contextMenu: ContextMenu(menuItems: [ContextMenuItem(title: "Id")]),
         initialUrlRequest: URLRequest(url: uri),
       ),
     );
