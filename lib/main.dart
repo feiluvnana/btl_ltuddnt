@@ -4,7 +4,6 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/ForgetPassword/forget_password_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/login_ui.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
