@@ -9,13 +9,17 @@ abstract class NewsfeedEvent {
   const NewsfeedEvent();
 }
 
+class NewsfeedPostRefresh extends NewsfeedEvent {
+  const NewsfeedPostRefresh();
+}
+
 @freezed
 class NewsfeedState with _$NewsfeedState {
   const factory NewsfeedState({@Default([]) List<Post> posts}) = _NewsfeedState;
 }
 
 class NewsfeedBloc extends Bloc<NewsfeedEvent, NewsfeedState> {
-  NewsfeedBloc() : super(NewsfeedState(posts: [])) {
+  NewsfeedBloc() : super(const NewsfeedState(posts: [])) {
     on<NewsfeedPostRefresh>((event, emit) async {
       var temp = state.posts;
       emit(state.copyWith(posts: []));

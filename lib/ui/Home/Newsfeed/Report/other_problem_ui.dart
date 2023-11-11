@@ -59,13 +59,3 @@ class OtherProblemUI extends StatelessWidget {
     );
   }
 }
-
-class A {
-  A();
-  A.first();
-}
-
-class B extends A {
-  final int abc;
-  B(this.abc);
-}

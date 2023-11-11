@@ -1,7 +1,10 @@
+
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/verify_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AgreementSignupUI extends StatelessWidget {
   const AgreementSignupUI({super.key});
@@ -73,9 +76,8 @@ class AgreementSignupUI extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) {
-                    return VerifySignupUI();
-                  }));
+                  context.read<SignupBloc>().add(SignupRequest(() => Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => VerifySignupUI()))));
                 },
                 child: const Text("Tôi đồng ý")),
             const Spacer(),

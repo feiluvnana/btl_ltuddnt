@@ -1,5 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/emoji.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/emoji.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';

@@ -18,7 +18,7 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    tabController = TabController(length: 6, vsync: this)
+    tabController = TabController(length: 5, vsync: this)
       ..addListener(() {
         setState(() {});
       });

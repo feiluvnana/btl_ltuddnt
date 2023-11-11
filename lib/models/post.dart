@@ -13,73 +13,73 @@ class Post with _$Post {
   @Assert("image == null || video == null")
   @JsonSerializable(explicitToJson: true)
   const factory Post(
+    ///Id của bài viết.
+    @IntegerConverter() @JsonKey(name: "id") int id,
+    String name,
 
-      ///Id của bài viết.
-      @IntegerConverter() @JsonKey(name: "id") int id,
-      String name,
+    ///Thời điểm tạo bài viết.
+    @DateTimeConverter() DateTime created,
 
-      ///Thời điểm tạo bài viết.
-      @DateTimeConverter() DateTime created,
+    ///Nội dung bài viết.
+    String described,
 
-      ///Nội dung bài viết.
-      String described,
+    ///Thời điểm chỉnh sửa bài viết.
+    @DateTimeOrNullConverter() DateTime? modified,
 
-      ///Thời điểm chỉnh sửa bài viết.
-      @DateTimeOrNullConverter() DateTime? modified,
+    ///Số người dùng đánh giá bài viết là fake.
+    @IntegerConverter() int fake,
 
-      ///Số người dùng đánh giá bài viết là fake.
-      @IntegerConverter() int fake,
+    ///Số người dùng đánh giá bài viết là trust.
+    @IntegerConverter() int trust,
 
-      ///Số người dùng đánh giá bài viết là trust.
-      @IntegerConverter() int trust,
+    ///Số người dùng bày tỏ cảm xúc là kudos.
+    @IntegerConverter() int kudos,
 
-      ///Số người dùng bày tỏ cảm xúc là kudos.
-      @IntegerConverter() int kudos,
+    ///Số người dùng bày tỏ cảm xúc là disappointed.
+    @IntegerConverter() int disappointed,
 
-      ///Số người dùng bày tỏ cảm xúc là disappointed.
-      @IntegerConverter() int disappointed,
+    ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
+    @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
 
-      ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
-      @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
+    ///Người dùng đã đánh giá cho bài viết này chưa.
+    @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
 
-      ///Người dùng đã đánh giá cho bài viết này chưa.
-      @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
+    ///Danh sách các hình ảnh cùng id và url, id này sẽ giúp ứng dụng phân biệt được người dùng muốn xóa/thay thế ảnh nào.
+    List<Image>? image,
 
-      ///Danh sách các hình ảnh cùng id và url, id này sẽ giúp ứng dụng phân biệt được người dùng muốn xóa/thay thế ảnh nào.
-      List<Image>? image,
+    ///Video tải lên và id cùng url.
+    Video? video,
 
-      ///Video tải lên và id cùng url.
-      Video? video,
+    ///Thông tin của người chủ bài viết, bao gồm cả ảnh avatar, số coins, listing: danh sách các id phiên bản cũ của bài viết.
+    Author author,
 
-      ///Thông tin của người chủ bài viết, bao gồm cả ảnh avatar, số coins, listing: danh sách các id phiên bản cũ của bài viết.
-      Author author,
+    ///Danh mục của bài viết, id và tên danh mục này.
+    Category category,
 
-      ///Danh mục của bài viết, id và tên danh mục này.
-      Category category,
+    ///Trạng thái của người viết bài.
+    String state,
 
-      ///Trạng thái của người viết bài.
-      String state,
+    ///Kiểm tra xem người chủ bài viết có chặn người dùng không?
+    @BooleanConverter() @JsonKey(name: "is_blocked") bool isBlocked,
 
-      ///Kiểm tra xem người chủ bài viết có chặn người dùng không?
-      @BooleanConverter() @JsonKey(name: "is_blocked") bool isBlocked,
+    ///Kiểm tra xem người dùng có sửa được bài viết hay không? Không sửa được nếu không phải chủ nhân hoặc đang bị khóa bài viết.
+    @BooleanConverter() @JsonKey(name: "can_edit") bool canEdit,
 
-      ///Kiểm tra xem người dùng có sửa được bài viết hay không? Không sửa được nếu không phải chủ nhân hoặc đang bị khóa bài viết.
-      @BooleanConverter() @JsonKey(name: "can_edit") bool canEdit,
+    ///1 bài viết đã bị khóa vì vi phạm tiêu chuẩn cộng đồng, 2 bài viết bị chặn ở một số quốc gia, 3: nội dung của tất cả hình ảnh hoặc video bị che đi. Trường hợp muốn che đi một số ảnh thì trả về một danh sách dạng xâu (chẳng hạn “3,0,2” sẽ che các ảnh số 0 và số 2).
+    @BooleanConverter() bool banned,
 
-      ///1 bài viết đã bị khóa vì vi phạm tiêu chuẩn cộng đồng, 2 bài viết bị chặn ở một số quốc gia, 3: nội dung của tất cả hình ảnh hoặc video bị che đi. Trường hợp muốn che đi một số ảnh thì trả về một danh sách dạng xâu (chẳng hạn “3,0,2” sẽ che các ảnh số 0 và số 2).
-      @BooleanConverter() bool banned,
+    ///Người đọc có thể viết mark cho bài hay không?
+    @IntegerConverter() @JsonKey(name: "can_mark") int canMark,
 
-      ///Người đọc có thể viết mark cho bài hay không?
-      @IntegerConverter() @JsonKey(name: "can_mark") int canMark,
+    ///Người đọc có thể rate: kudos/disappointed cho bài hay không?
+    @IntegerConverter() @JsonKey(name: "can_rate") int canRate,
 
-      ///Người đọc có thể rate: kudos/disappointed cho bài hay không?
-      @IntegerConverter() @JsonKey(name: "can_rate") int canRate,
+    ///Đường link share bài viết.
+    String url,
 
-      ///Đường link share bài viết.
-      String url,
-
-      ///Thông báo từ server.
-      String messages) = _Post;
+    ///Thông báo từ server.
+    String messages,
+  ) = _Post;
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
 }

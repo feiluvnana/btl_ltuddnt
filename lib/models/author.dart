@@ -9,7 +9,7 @@ part 'author.g.dart';
 class Author with _$Author {
   @JsonSerializable(explicitToJson: true)
   const factory Author(@IntegerConverter() int id, String name, String avatar,
-      @IntegerConverter() int coins, String listing) = _Author;
+      @IntegerOrNullConverter() int? coins, String? listing) = _Author;
 
   factory Author.fromJson(Map<String, dynamic> json) => _$AuthorFromJson(json);
 }

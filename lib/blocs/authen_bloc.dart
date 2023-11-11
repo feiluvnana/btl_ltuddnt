@@ -2,7 +2,6 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/user.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/enum.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

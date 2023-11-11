@@ -8,11 +8,6 @@ class ProblemDetailUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    var a = [1, 2, 3];
-    a
-      ..add(4)
-      ..remove(3)
-      ..clear();
     Text detail = switch (index) {
       (>= 0 && <= 3) || (>= 10 && <= 11) when index != 1 => Text.rich(TextSpan(children: [
           TextSpan(

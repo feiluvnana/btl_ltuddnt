@@ -31,7 +31,8 @@ class _LoginUIState extends State<LoginUI> {
         Navigator.push(context, MaterialPageRoute(builder: (_) => VerifySignupUI()));
         break;
       case -1:
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ChangeProfileAfterSignupUI()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => const ChangeProfileAfterSignupUI()));
         break;
       case null:
         showDialog(
