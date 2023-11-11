@@ -131,7 +131,7 @@ class _DetailImageViewState extends State<DetailImageView> {
                           );
                         }
                       }),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         formatPostCreatedTime(widget.post!.created).toUpperCase(),
                         style: themeData.textTheme.bodySmall

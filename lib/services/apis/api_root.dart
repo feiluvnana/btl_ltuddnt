@@ -1,5 +1,6 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class ApiRoot {
   static Future<Dio> _getDio() async {
@@ -27,12 +28,16 @@ class ApiRoot {
     try {
       Dio dio = await _getDio();
       var response = await dio.post(path, data: data, queryParameters: params);
-      print(
-          "Method:POST\nURL:${response.realUri}\nBody:$data\nStatus:${response.statusCode}\nResponse:${response.data}");
+      if (kDebugMode) {
+        print(
+            "Method:POST\nURL:${response.realUri}\nBody:$data\nStatus:${response.statusCode}\nResponse:${response.data}");
+      }
       return response.data;
     } on DioException catch (e) {
-      print(
-          "Method:POST\nURL:${e.response?.realUri}\nBody:$data\nStatus:${e.response?.statusCode}\nResponse:${e.response?.data}");
+      if (kDebugMode) {
+        print(
+            "Method:POST\nURL:${e.response?.realUri}\nBody:$data\nStatus:${e.response?.statusCode}\nResponse:${e.response?.data}");
+      }
       return e.response?.data;
     }
   }

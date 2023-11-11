@@ -390,7 +390,6 @@ class _ReactionSliderItem extends StatelessWidget {
   final void Function(bool value) setEnlarged;
   final bool enlarged;
   const _ReactionSliderItem({
-    super.key,
     required this.assetIcon,
     required this.globalOffset,
     required this.setEnlarged,
