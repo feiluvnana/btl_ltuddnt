@@ -1,7 +1,6 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/json_converter.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/author.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/category.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/mark.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/video.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/image.dart';

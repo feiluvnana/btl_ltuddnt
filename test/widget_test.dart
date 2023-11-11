@@ -9,7 +9,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/ForgetPassword/forget_password_ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/signup_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/login_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,8 +34,7 @@ void main() {
         ),
       ));
 
-      expect(find.text("Tôi có tài khoản rồi"), findsOneWidget,
-          reason: "Must have button");
+      expect(find.text("Tôi có tài khoản rồi"), findsOneWidget, reason: "Must have button");
       expect(find.byType(LoginUI), findsNothing, reason: "Not in login screen");
 
       await tester.tap(find.text("Tôi có tài khoản rồi"));

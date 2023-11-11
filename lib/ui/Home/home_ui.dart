@@ -43,7 +43,7 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   ),
                   Icon(
-                    tabController.index != 1 ? Icons.account_box_outlined : Icons.account_box,
+                    tabController.index != 1 ? Icons.store_outlined : Icons.store,
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   ),
                   Icon(
@@ -51,16 +51,27 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   ),
                   Icon(
-                    tabController.index != 3 ? Icons.notifications_outlined : Icons.notifications,
+                    tabController.index != 3
+                        ? Icons.videogame_asset_outlined
+                        : Icons.videogame_asset,
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   ),
                   Icon(
-                    tabController.index != 4 ? Icons.menu_outlined : Icons.menu,
+                    tabController.index != 4 ? Icons.notifications_outlined : Icons.notifications,
+                    size: themeData.textTheme.headlineMedium?.fontSize,
+                  ),
+                  Icon(
+                    tabController.index != 5 ? Icons.menu_outlined : Icons.menu,
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   )
                 ])),
-            body: TabBarView(
-                controller: tabController,
-                children: const [NewsfeedUI(), MarketUI(), WatchUI(), Text("Noti"), MenuUI()])));
+            body: TabBarView(controller: tabController, children: const [
+              NewsfeedUI(),
+              MarketUI(),
+              WatchUI(),
+              GameUI(),
+              Text("Noti"),
+              MenuUI()
+            ])));
   }
 }

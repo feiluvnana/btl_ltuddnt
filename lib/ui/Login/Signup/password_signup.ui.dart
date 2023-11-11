@@ -1,6 +1,6 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/save_info_signup_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/save_info_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,8 +27,7 @@ class _PasswordSignupUIState extends State<PasswordSignupUI> {
           style: themeData.textTheme.titleMedium,
         ),
         leading: IconButton(
-            onPressed: () => Navigator.maybePop(context),
-            icon: const Icon(Icons.arrow_back)),
+            onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -36,14 +35,12 @@ class _PasswordSignupUIState extends State<PasswordSignupUI> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text("Tạo mật khẩu",
-                style: themeData.textTheme.headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+                style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
             const Text(
                 "Tạo mật khẩu gồm <wait_for_description>. Bạn nên chọn mật khẩu thật khó đoán."),
             const SizedBox(height: 10),
             BlocBuilder<SignupBloc, SignupState>(
-              buildWhen: (previous, current) =>
-                  previous.password != current.password,
+              buildWhen: (previous, current) => previous.password != current.password,
               builder: (context, state) {
                 return Form(
                   key: formKey,
@@ -52,9 +49,7 @@ class _PasswordSignupUIState extends State<PasswordSignupUI> {
                     validator: Validators.signupPasswordValidator,
                     obscureText: isHidden,
                     onChanged: (value) {
-                      context
-                          .read<SignupBloc>()
-                          .add(SignupPasswordChange(password: value));
+                      context.read<SignupBloc>().add(SignupPasswordChange(password: value));
                     },
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(15),
@@ -70,24 +65,18 @@ class _PasswordSignupUIState extends State<PasswordSignupUI> {
                                     ? Icons.visibility_outlined
                                     : Icons.visibility_off_outlined,
                                 size: 30)),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10))),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
                   ),
                 );
               },
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: themeData.primaryColor),
+                    foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
                 onPressed: () {
                   if (formKey.currentState?.validate() != true) return;
-                  Navigator.push(context, MaterialPageRoute(builder: (_) {
-                    return BlocProvider.value(
-                      value: BlocProvider.of<SignupBloc>(context),
-                      child: const SaveInfoSignupUI(),
-                    );
-                  }));
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => const SaveInfoSignupUI()));
                 },
                 child: const Text("Tiếp")),
             const Spacer(),
@@ -96,14 +85,12 @@ class _PasswordSignupUIState extends State<PasswordSignupUI> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/login", (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
                   },
                   child: Text(
                     "Bạn đã có tài khoản ư?",
-                    style: themeData.textTheme.bodyLarge?.copyWith(
-                        color: themeData.primaryColor,
-                        fontWeight: FontWeight.bold),
+                    style: themeData.textTheme.bodyLarge
+                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

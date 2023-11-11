@@ -1,4 +1,3 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/data.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -20,7 +19,7 @@ class NewsfeedState with _$NewsfeedState {
 }
 
 class NewsfeedBloc extends Bloc<NewsfeedEvent, NewsfeedState> {
-  NewsfeedBloc() : super(NewsfeedState(posts: postData.map((e) => Post.fromJson(e)).toList())) {
+  NewsfeedBloc() : super(const NewsfeedState(posts: [])) {
     on<NewsfeedPostRefresh>((event, emit) async {
       var temp = state.posts;
       emit(state.copyWith(posts: []));
