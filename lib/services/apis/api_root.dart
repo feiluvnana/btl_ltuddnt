@@ -1,28 +1,18 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:dio/dio.dart';
 
 class ApiRoot {
   static Future<Dio> _getDio() async {
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // final String? token = prefs.getString('token');
-    // final String? dataUserId = prefs.getString('userId');
-
     BaseOptions options = BaseOptions(
-      baseUrl: "https://ABC.def/it4788",
+      baseUrl: "https://it4788.catan.io.vn/",
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
-      // headers: xHeader == true
-      //     ? {
-      //         'X-Auth-Token': "$token",
-      //         'X-User-Id': "$dataUserId",
-      //         'Content-Type': 'application/json'
-      //       }
-      //     : {'authorization': 'Bearer $token'},
+      headers: {'authorization': 'Bearer ${await secureStorage.read(key: "token")}'},
     );
     return Dio(options);
   }
 
-  static Future<Map<String, String>?> get(
-      String path, Map<String, dynamic>? params) async {
+  static Future<Map<String, String>?> get(String path, Map<String, dynamic>? params) async {
     try {
       Dio dio = await _getDio();
       var response = await dio.get(path, queryParameters: params);
@@ -32,13 +22,18 @@ class ApiRoot {
     }
   }
 
-  static Future<Map<String, String>?> post(String path, Object? data) async {
+  static Future<Map<String, dynamic>?> post(String path, Object? data,
+      [Map<String, dynamic>? params]) async {
     try {
       Dio dio = await _getDio();
-      var response = await dio.post(path, data: data);
+      var response = await dio.post(path, data: data, queryParameters: params);
+      print(
+          "Method:POST\nURL:${response.realUri}\nBody:$data\nStatus:${response.statusCode}\nResponse:${response.data}");
       return response.data;
-    } catch (e) {
-      return null;
+    } on DioException catch (e) {
+      print(
+          "Method:POST\nURL:${e.response?.realUri}\nBody:$data\nStatus:${e.response?.statusCode}\nResponse:${e.response?.data}");
+      return e.response?.data;
     }
   }
 

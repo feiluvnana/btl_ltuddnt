@@ -43,6 +43,8 @@ dependencies:
   intl: any
   flutter_inappwebview: ^5.8.0
   device_info_plus: ^9.1.0
+  fluttertoast: ^8.2.3
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:

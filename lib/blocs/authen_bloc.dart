@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/user.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
@@ -16,29 +14,27 @@ abstract class AuthenEvent {
 
 class AuthenLogin extends AuthenEvent {
   final String email, password;
-  const AuthenLogin(this.email, this.password);
+  final void Function(int? active) callback;
+  const AuthenLogin(this.email, this.password, this.callback);
 }
 
 @freezed
 class AuthenState with _$AuthenState {
   const factory AuthenState(
-      {@Default(AuthenStatus.unauthenticated) AuthenStatus status,
-      User? user}) = _AuthenState;
+      {@Default(AuthenStatus.unauthenticated) AuthenStatus status, User? user}) = _AuthenState;
 }
 
 class AuthenBloc extends Bloc<AuthenEvent, AuthenState> {
   AuthenBloc() : super(const AuthenState()) {
     on<AuthenLogin>((event, emit) async {
       emit(state.copyWith(status: AuthenStatus.authenticating));
-      var res = await Api.login(event.email, event.password);
-      if (res["code"] != "1000") {
+      var res = await Api().login(event.email, event.password);
+      if (res?["code"] != "1000") {
         emit(state.copyWith(status: AuthenStatus.unauthenticated));
       } else {
-        await secureStorage.write(
-            key: "token", value: jsonDecode(res["data"]!)["token"]);
-        emit(state.copyWith(
-            status: AuthenStatus.authenticated,
-            user: User.fromJson(jsonDecode(res["data"] ?? ""))));
+        await secureStorage.write(key: "token", value: res!["data"]["token"]);
+        emit(state.copyWith(status: AuthenStatus.authenticated, user: User.fromJson(res["data"])));
+        event.callback(state.user?.active);
       }
     });
   }

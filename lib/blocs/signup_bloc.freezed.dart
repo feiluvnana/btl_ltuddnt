@@ -16,9 +16,9 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SignupState {
-  String get firstName => throw _privateConstructorUsedError;
-  String get lastName => throw _privateConstructorUsedError;
-  DateTime get dob => throw _privateConstructorUsedError;
+/*@Default("") String firstName,
+      @Default("") String lastName,
+      required DateTime dob,*/
   String get email => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
   bool get saveInfo => throw _privateConstructorUsedError;
@@ -36,13 +36,7 @@ abstract class $SignupStateCopyWith<$Res> {
       _$SignupStateCopyWithImpl<$Res, SignupState>;
   @useResult
   $Res call(
-      {String firstName,
-      String lastName,
-      DateTime dob,
-      String email,
-      String password,
-      bool saveInfo,
-      SignupStatus status});
+      {String email, String password, bool saveInfo, SignupStatus status});
 }
 
 /// @nodoc
@@ -58,27 +52,12 @@ class _$SignupStateCopyWithImpl<$Res, $Val extends SignupState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? dob = null,
     Object? email = null,
     Object? password = null,
     Object? saveInfo = null,
     Object? status = null,
   }) {
     return _then(_value.copyWith(
-      firstName: null == firstName
-          ? _value.firstName
-          : firstName // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastName: null == lastName
-          ? _value.lastName
-          : lastName // ignore: cast_nullable_to_non_nullable
-              as String,
-      dob: null == dob
-          ? _value.dob
-          : dob // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -108,13 +87,7 @@ abstract class _$$SignupStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String firstName,
-      String lastName,
-      DateTime dob,
-      String email,
-      String password,
-      bool saveInfo,
-      SignupStatus status});
+      {String email, String password, bool saveInfo, SignupStatus status});
 }
 
 /// @nodoc
@@ -128,27 +101,12 @@ class __$$SignupStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? dob = null,
     Object? email = null,
     Object? password = null,
     Object? saveInfo = null,
     Object? status = null,
   }) {
     return _then(_$SignupStateImpl(
-      firstName: null == firstName
-          ? _value.firstName
-          : firstName // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastName: null == lastName
-          ? _value.lastName
-          : lastName // ignore: cast_nullable_to_non_nullable
-              as String,
-      dob: null == dob
-          ? _value.dob
-          : dob // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -173,22 +131,14 @@ class __$$SignupStateImplCopyWithImpl<$Res>
 
 class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
   const _$SignupStateImpl(
-      {this.firstName = "",
-      this.lastName = "",
-      required this.dob,
-      this.email = "",
+      {this.email = "",
       this.password = "",
       this.saveInfo = false,
       this.status = SignupStatus.filling});
 
-  @override
-  @JsonKey()
-  final String firstName;
-  @override
-  @JsonKey()
-  final String lastName;
-  @override
-  final DateTime dob;
+/*@Default("") String firstName,
+      @Default("") String lastName,
+      required DateTime dob,*/
   @override
   @JsonKey()
   final String email;
@@ -204,7 +154,7 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'SignupState(firstName: $firstName, lastName: $lastName, dob: $dob, email: $email, password: $password, saveInfo: $saveInfo, status: $status)';
+    return 'SignupState(email: $email, password: $password, saveInfo: $saveInfo, status: $status)';
   }
 
   @override
@@ -212,9 +162,6 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'SignupState'))
-      ..add(DiagnosticsProperty('firstName', firstName))
-      ..add(DiagnosticsProperty('lastName', lastName))
-      ..add(DiagnosticsProperty('dob', dob))
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('password', password))
       ..add(DiagnosticsProperty('saveInfo', saveInfo))
@@ -226,11 +173,6 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SignupStateImpl &&
-            (identical(other.firstName, firstName) ||
-                other.firstName == firstName) &&
-            (identical(other.lastName, lastName) ||
-                other.lastName == lastName) &&
-            (identical(other.dob, dob) || other.dob == dob) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password) &&
@@ -240,8 +182,8 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, firstName, lastName, dob, email, password, saveInfo, status);
+  int get hashCode =>
+      Object.hash(runtimeType, email, password, saveInfo, status);
 
   @JsonKey(ignore: true)
   @override
@@ -252,21 +194,14 @@ class _$SignupStateImpl with DiagnosticableTreeMixin implements _SignupState {
 
 abstract class _SignupState implements SignupState {
   const factory _SignupState(
-      {final String firstName,
-      final String lastName,
-      required final DateTime dob,
-      final String email,
+      {final String email,
       final String password,
       final bool saveInfo,
       final SignupStatus status}) = _$SignupStateImpl;
 
-  @override
-  String get firstName;
-  @override
-  String get lastName;
-  @override
-  DateTime get dob;
-  @override
+  @override /*@Default("") String firstName,
+      @Default("") String lastName,
+      required DateTime dob,*/
   String get email;
   @override
   String get password;
