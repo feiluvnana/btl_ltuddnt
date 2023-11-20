@@ -1,10 +1,7 @@
-// ignore_for_file: unused_element
-
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/detail_image_view.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/reaction_display.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/skeleton_wrapper.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';

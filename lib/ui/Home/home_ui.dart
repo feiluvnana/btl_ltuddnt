@@ -1,9 +1,11 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Market/market_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/menu_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/newsfeed_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Watch/watch_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeUI extends StatefulWidget {
   const HomeUI({super.key});
@@ -21,6 +23,7 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
       ..addListener(() {
         setState(() {});
       });
+      context.read<NewsfeedBloc>().add(const NewsfeedInit());
     super.initState();
   }
 
