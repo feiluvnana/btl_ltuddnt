@@ -39,12 +39,15 @@ void main() async {
       ));
     }
   }
-
-  runApp(const AFB());
+  var initialRoute = "/login";
+  await secureStorage.read(key: "user").then((value) => initialRoute = "/home");
+  runApp(AFB(initialRoute: initialRoute));
 }
 
 class AFB extends StatelessWidget {
-  const AFB({super.key});
+
+  final String initialRoute;
+  const AFB({super.key, required this.initialRoute});
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -71,7 +74,7 @@ class AFB extends StatelessWidget {
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
                 useMaterial3: true,
                 elevatedButtonTheme: const ElevatedButtonThemeData()),
-            initialRoute: "/login",
+            initialRoute: initialRoute,
             routes: {
               "/login": (context) => const LoginUI(),
               "/home": (context) => const HomeUI(),
