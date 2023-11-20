@@ -87,7 +87,7 @@
 //             ),
 //             ElevatedButton(
 //                 style: ElevatedButton.styleFrom(
-//                     foregroundColor: Colors.white,
+//                     foregroundColor: themeData.canvasColor,
 //                     backgroundColor: themeData.primaryColor),
 //                 onPressed: () {
 //                   if (formKey.currentState?.validate() != true) return;

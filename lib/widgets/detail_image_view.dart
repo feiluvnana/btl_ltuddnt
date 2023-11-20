@@ -25,9 +25,9 @@ class _DetailImageViewState extends State<DetailImageView> {
       appBar: TransparentAppBar(
           leading: IconButton(
               onPressed: () => Navigator.maybePop(context),
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back,
-                color: Colors.white,
+                color: themeData.canvasColor,
               ))),
       backgroundColor: Colors.black,
       body: Stack(
@@ -59,7 +59,7 @@ class _DetailImageViewState extends State<DetailImageView> {
                       Text(
                         widget.post!.author.name,
                         style: themeData.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                            ?.copyWith(fontWeight: FontWeight.bold, color: themeData.canvasColor),
                       ),
                       LayoutBuilder(builder: (context, size) {
                         var tp = TextPainter(
@@ -76,7 +76,8 @@ class _DetailImageViewState extends State<DetailImageView> {
                               formatPostDescribed(widget.post!.described, themeData),
                               maxLines: 5,
                               overflow: TextOverflow.ellipsis,
-                              style: themeData.textTheme.bodyMedium?.copyWith(color: Colors.white),
+                              style: themeData.textTheme.bodyMedium
+                                  ?.copyWith(color: themeData.canvasColor),
                             ),
                             Positioned(
                                 bottom: 0,
@@ -105,8 +106,8 @@ class _DetailImageViewState extends State<DetailImageView> {
                                   formatPostDescribed(widget.post!.described, themeData),
                                   maxLines: 10000000,
                                   overflow: TextOverflow.ellipsis,
-                                  style:
-                                      themeData.textTheme.bodyMedium?.copyWith(color: Colors.white),
+                                  style: themeData.textTheme.bodyMedium
+                                      ?.copyWith(color: themeData.canvasColor),
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -126,8 +127,8 @@ class _DetailImageViewState extends State<DetailImageView> {
                           return Text.rich(
                             formatPostDescribed(widget.post!.described, themeData),
                             overflow: TextOverflow.ellipsis,
-                            style: themeData.textTheme.bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                            style: themeData.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.bold, color: themeData.canvasColor),
                           );
                         }
                       }),
@@ -140,17 +141,17 @@ class _DetailImageViewState extends State<DetailImageView> {
                       const Divider(),
                       Row(
                         children: [
-                          ReactionDisplay(
-                            kudos: widget.post!.kudos,
-                            dissapointed: widget.post!.disappointed,
-                          ),
-                          Text(" ${widget.post!.kudos + widget.post!.disappointed}",
-                              style: themeData.textTheme.bodySmall
-                                  ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
-                          const Spacer(),
-                          Text(" ${(widget.post!.fake + widget.post!.trust).toString()} bình luận",
-                              style: themeData.textTheme.bodySmall
-                                  ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
+                          // ReactionDisplay(
+                          //   kudos: widget.post!.kudos,
+                          //   dissapointed: widget.post!.disappointed,
+                          // ),
+                          // Text(" ${widget.post!.kudos + widget.post!.disappointed}",
+                          //     style: themeData.textTheme.bodySmall
+                          //         ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
+                          // const Spacer(),
+                          // Text(" ${(widget.post!.fake + widget.post!.trust).toString()} bình luận",
+                          //     style: themeData.textTheme.bodySmall
+                          //         ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                         ],
                       )
                     ],

@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$NewsfeedState {
-  List<Post> get posts => throw _privateConstructorUsedError;
+  List<Post>? get posts => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $NewsfeedStateCopyWith<NewsfeedState> get copyWith =>
@@ -29,7 +29,7 @@ abstract class $NewsfeedStateCopyWith<$Res> {
           NewsfeedState value, $Res Function(NewsfeedState) then) =
       _$NewsfeedStateCopyWithImpl<$Res, NewsfeedState>;
   @useResult
-  $Res call({List<Post> posts});
+  $Res call({List<Post>? posts});
 }
 
 /// @nodoc
@@ -45,13 +45,13 @@ class _$NewsfeedStateCopyWithImpl<$Res, $Val extends NewsfeedState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? posts = null,
+    Object? posts = freezed,
   }) {
     return _then(_value.copyWith(
-      posts: null == posts
+      posts: freezed == posts
           ? _value.posts
           : posts // ignore: cast_nullable_to_non_nullable
-              as List<Post>,
+              as List<Post>?,
     ) as $Val);
   }
 }
@@ -64,7 +64,7 @@ abstract class _$$NewsfeedStateImplCopyWith<$Res>
       __$$NewsfeedStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Post> posts});
+  $Res call({List<Post>? posts});
 }
 
 /// @nodoc
@@ -78,13 +78,13 @@ class __$$NewsfeedStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? posts = null,
+    Object? posts = freezed,
   }) {
     return _then(_$NewsfeedStateImpl(
-      posts: null == posts
+      posts: freezed == posts
           ? _value._posts
           : posts // ignore: cast_nullable_to_non_nullable
-              as List<Post>,
+              as List<Post>?,
     ));
   }
 }
@@ -94,16 +94,16 @@ class __$$NewsfeedStateImplCopyWithImpl<$Res>
 class _$NewsfeedStateImpl
     with DiagnosticableTreeMixin
     implements _NewsfeedState {
-  const _$NewsfeedStateImpl({final List<Post> posts = const []})
-      : _posts = posts;
+  const _$NewsfeedStateImpl({final List<Post>? posts}) : _posts = posts;
 
-  final List<Post> _posts;
+  final List<Post>? _posts;
   @override
-  @JsonKey()
-  List<Post> get posts {
+  List<Post>? get posts {
+    final value = _posts;
+    if (value == null) return null;
     if (_posts is EqualUnmodifiableListView) return _posts;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_posts);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
@@ -139,10 +139,10 @@ class _$NewsfeedStateImpl
 }
 
 abstract class _NewsfeedState implements NewsfeedState {
-  const factory _NewsfeedState({final List<Post> posts}) = _$NewsfeedStateImpl;
+  const factory _NewsfeedState({final List<Post>? posts}) = _$NewsfeedStateImpl;
 
   @override
-  List<Post> get posts;
+  List<Post>? get posts;
   @override
   @JsonKey(ignore: true)
   _$$NewsfeedStateImplCopyWith<_$NewsfeedStateImpl> get copyWith =>

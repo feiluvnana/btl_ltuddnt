@@ -6,11 +6,11 @@ class DateTimeConverter implements JsonConverter<DateTime, String> {
 
   @override
   DateTime fromJson(String timestamp) {
-    return DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp));
+    return DateTime.parse(timestamp);
   }
 
   @override
-  String toJson(DateTime date) => date.millisecondsSinceEpoch.toString();
+  String toJson(DateTime date) => date.toIso8601String();
 }
 
 class DateTimeOrNullConverter implements JsonConverter<DateTime?, String?> {
@@ -54,11 +54,11 @@ class BooleanConverter implements JsonConverter<bool, String> {
 
   @override
   bool fromJson(String value) {
-    return bool.parse(value, caseSensitive: false);
+    return value == "1" ? true : false;
   }
 
   @override
-  String toJson(bool value) => value.toString();
+  String toJson(bool value) => value ? "1" : "0";
 }
 
 class MarkTypeConverter implements JsonConverter<MarkType, String> {

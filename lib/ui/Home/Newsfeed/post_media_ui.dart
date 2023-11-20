@@ -231,17 +231,17 @@ class _PostMediaUIState extends State<PostMediaUI> {
                   enabled: isLoading,
                   child: Row(
                     children: [
-                      ReactionDisplay(
-                        kudos: widget.post.kudos,
-                        dissapointed: widget.post.disappointed,
-                      ),
-                      Text(" ${widget.post.kudos + widget.post.disappointed}",
-                          style: themeData.textTheme.bodySmall
-                              ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
-                      const Spacer(),
-                      Text(" ${(widget.post.fake + widget.post.trust).toString()} bình luận",
-                          style: themeData.textTheme.bodySmall
-                              ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
+                      // ReactionDisplay(
+                      //   kudos: widget.post.kudos,
+                      //   dissapointed: widget.post.disappointed,
+                      // ),
+                      // Text(" ${widget.post.kudos + widget.post.disappointed}",
+                      //     style: themeData.textTheme.bodySmall
+                      //         ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
+                      // const Spacer(),
+                      // Text(" ${(widget.post.fake + widget.post.trust).toString()} bình luận",
+                      //     style: themeData.textTheme.bodySmall
+                      //         ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                     ],
                   )),
             ),

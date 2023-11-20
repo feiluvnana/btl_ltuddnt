@@ -11,63 +11,63 @@ class NewsfeedUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => NewsfeedBloc(),
-      child: Builder(builder: (context) {
-        return RefreshIndicator(
-          onRefresh: () async {
-            context.read<NewsfeedBloc>().add(const NewsfeedPostRefresh());
-          },
-          child: SingleChildScrollView(
-            child: BlocBuilder<NewsfeedBloc, NewsfeedState>(
-              builder: (context, state) {
-                return Column(
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<NewsfeedBloc>().add(const NewsfeedPostRefresh());
+      },
+      child: SingleChildScrollView(
+        child: BlocBuilder<NewsfeedBloc, NewsfeedState>(
+          buildWhen: (previous, current) => previous.posts != current.posts,
+          builder: (context, state) {
+            return Column(
+              children: [
+                Row(
                   children: [
-                    Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: CircleUserAvatar(),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(left: 15, top: 8, bottom: 8),
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all()),
-                            child: const Text("Bạn đang nghĩ gì?"),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const PostCreateUpdateUI()));
-                              },
-                              child: const Icon(Icons.image)),
-                        )
-                      ],
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircleUserAvatar(),
                     ),
-                    ...List.generate(
-                        state.posts.length, (index) => PostUI(post: state.posts[index])),
-                    if (state.posts.isEmpty)
-                      const Center(
-                          child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(),
-                      )),
-                    if (state.posts.isEmpty) const Center(child: Text("Đang tải bài viết..."))
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 15, top: 8, bottom: 8),
+                        decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all()),
+                        child: const Text("Bạn đang nghĩ gì?"),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const PostCreateUpdateUI()));
+                          },
+                          child: const Icon(Icons.image)),
+                    )
                   ],
-                );
-              },
-            ),
-          ),
-        );
-      }),
+                ),
+                switch (state.posts?.isEmpty) {
+                  true => const Center(
+                        child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    )),
+                  false => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(
+                          state.posts?.length ?? 0, (index) => PostUI(post: state.posts![index])),
+                    ),
+                  null => const Center(child: Text("Không có bài viết..."))
+                }
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }

@@ -31,38 +31,33 @@ mixin _$Post {
   DateTime get created => throw _privateConstructorUsedError;
 
   ///Nội dung bài viết.
-  String get described => throw _privateConstructorUsedError;
-
-  ///Thời điểm chỉnh sửa bài viết.
-  @DateTimeOrNullConverter()
-  DateTime? get modified => throw _privateConstructorUsedError;
-
-  ///Số người dùng đánh giá bài viết là fake.
-  @IntegerConverter()
-  int get fake => throw _privateConstructorUsedError;
-
-  ///Số người dùng đánh giá bài viết là trust.
-  @IntegerConverter()
-  int get trust => throw _privateConstructorUsedError;
-
+  String get described =>
+      throw _privateConstructorUsedError; // ///Thời điểm chỉnh sửa bài viết.
+// @DateTimeOrNullConverter() DateTime? modified,
+// ///Số người dùng đánh giá bài viết là fake.
+// @IntegerOrNullConverter() int? fake,
+// ///Số người dùng đánh giá bài viết là trust.
+// @IntegerOrNullConverter() int? trust,
+// ///Số người dùng bày tỏ cảm xúc là kudos.
+// @IntegerOrNullConverter() int? kudos,
   ///Số người dùng bày tỏ cảm xúc là kudos.
-  @IntegerConverter()
-  int get kudos => throw _privateConstructorUsedError;
+  @IntegerOrNullConverter()
+  int? get feel => throw _privateConstructorUsedError;
 
-  ///Số người dùng bày tỏ cảm xúc là disappointed.
-  @IntegerConverter()
-  int get disappointed => throw _privateConstructorUsedError;
-
+  ///Số bình luận và mark
+  @IntegerOrNullConverter()
+  @JsonKey(name: "comment_mark")
+  int? get commentMark =>
+      throw _privateConstructorUsedError; // ///Số người dùng bày tỏ cảm xúc là disappointed.
+// @IntegerOrNullConverter() int? disappointed,
+// ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
+// @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
   ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
   @BooleanConverter()
-  @JsonKey(name: "is_rated")
-  bool get isRated => throw _privateConstructorUsedError;
-
-  ///Người dùng đã đánh giá cho bài viết này chưa.
-  @BooleanConverter()
-  @JsonKey(name: "is_marked")
-  bool get isMarked => throw _privateConstructorUsedError;
-
+  @JsonKey(name: "is_felt")
+  bool get isFelt =>
+      throw _privateConstructorUsedError; // ///Người dùng đã đánh giá cho bài viết này chưa.
+// @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
   ///Danh sách các hình ảnh cùng id và url, id này sẽ giúp ứng dụng phân biệt được người dùng muốn xóa/thay thế ảnh nào.
   List<Image>? get image => throw _privateConstructorUsedError;
 
@@ -70,11 +65,9 @@ mixin _$Post {
   Video? get video => throw _privateConstructorUsedError;
 
   ///Thông tin của người chủ bài viết, bao gồm cả ảnh avatar, số coins, listing: danh sách các id phiên bản cũ của bài viết.
-  Author get author => throw _privateConstructorUsedError;
-
-  ///Danh mục của bài viết, id và tên danh mục này.
-  Category get category => throw _privateConstructorUsedError;
-
+  Author get author =>
+      throw _privateConstructorUsedError; // ///Danh mục của bài viết, id và tên danh mục này.
+// Category? category,
   ///Trạng thái của người viết bài.
   String get state => throw _privateConstructorUsedError;
 
@@ -89,24 +82,8 @@ mixin _$Post {
   bool get canEdit => throw _privateConstructorUsedError;
 
   ///1 bài viết đã bị khóa vì vi phạm tiêu chuẩn cộng đồng, 2 bài viết bị chặn ở một số quốc gia, 3: nội dung của tất cả hình ảnh hoặc video bị che đi. Trường hợp muốn che đi một số ảnh thì trả về một danh sách dạng xâu (chẳng hạn “3,0,2” sẽ che các ảnh số 0 và số 2).
-  @BooleanConverter()
-  bool get banned => throw _privateConstructorUsedError;
-
-  ///Người đọc có thể viết mark cho bài hay không?
   @IntegerConverter()
-  @JsonKey(name: "can_mark")
-  int get canMark => throw _privateConstructorUsedError;
-
-  ///Người đọc có thể rate: kudos/disappointed cho bài hay không?
-  @IntegerConverter()
-  @JsonKey(name: "can_rate")
-  int get canRate => throw _privateConstructorUsedError;
-
-  ///Đường link share bài viết.
-  String get url => throw _privateConstructorUsedError;
-
-  ///Thông báo từ server.
-  String get messages => throw _privateConstructorUsedError;
+  int get banned => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -123,29 +100,19 @@ abstract class $PostCopyWith<$Res> {
       String name,
       @DateTimeConverter() DateTime created,
       String described,
-      @DateTimeOrNullConverter() DateTime? modified,
-      @IntegerConverter() int fake,
-      @IntegerConverter() int trust,
-      @IntegerConverter() int kudos,
-      @IntegerConverter() int disappointed,
-      @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
-      @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
+      @IntegerOrNullConverter() int? feel,
+      @IntegerOrNullConverter() @JsonKey(name: "comment_mark") int? commentMark,
+      @BooleanConverter() @JsonKey(name: "is_felt") bool isFelt,
       List<Image>? image,
       Video? video,
       Author author,
-      Category category,
       String state,
       @BooleanConverter() @JsonKey(name: "is_blocked") bool isBlocked,
       @BooleanConverter() @JsonKey(name: "can_edit") bool canEdit,
-      @BooleanConverter() bool banned,
-      @IntegerConverter() @JsonKey(name: "can_mark") int canMark,
-      @IntegerConverter() @JsonKey(name: "can_rate") int canRate,
-      String url,
-      String messages});
+      @IntegerConverter() int banned});
 
   $VideoCopyWith<$Res>? get video;
   $AuthorCopyWith<$Res> get author;
-  $CategoryCopyWith<$Res> get category;
 }
 
 /// @nodoc
@@ -165,25 +132,16 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
     Object? name = null,
     Object? created = null,
     Object? described = null,
-    Object? modified = freezed,
-    Object? fake = null,
-    Object? trust = null,
-    Object? kudos = null,
-    Object? disappointed = null,
-    Object? isRated = null,
-    Object? isMarked = null,
+    Object? feel = freezed,
+    Object? commentMark = freezed,
+    Object? isFelt = null,
     Object? image = freezed,
     Object? video = freezed,
     Object? author = null,
-    Object? category = null,
     Object? state = null,
     Object? isBlocked = null,
     Object? canEdit = null,
     Object? banned = null,
-    Object? canMark = null,
-    Object? canRate = null,
-    Object? url = null,
-    Object? messages = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -202,33 +160,17 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
           ? _value.described
           : described // ignore: cast_nullable_to_non_nullable
               as String,
-      modified: freezed == modified
-          ? _value.modified
-          : modified // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      fake: null == fake
-          ? _value.fake
-          : fake // ignore: cast_nullable_to_non_nullable
-              as int,
-      trust: null == trust
-          ? _value.trust
-          : trust // ignore: cast_nullable_to_non_nullable
-              as int,
-      kudos: null == kudos
-          ? _value.kudos
-          : kudos // ignore: cast_nullable_to_non_nullable
-              as int,
-      disappointed: null == disappointed
-          ? _value.disappointed
-          : disappointed // ignore: cast_nullable_to_non_nullable
-              as int,
-      isRated: null == isRated
-          ? _value.isRated
-          : isRated // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isMarked: null == isMarked
-          ? _value.isMarked
-          : isMarked // ignore: cast_nullable_to_non_nullable
+      feel: freezed == feel
+          ? _value.feel
+          : feel // ignore: cast_nullable_to_non_nullable
+              as int?,
+      commentMark: freezed == commentMark
+          ? _value.commentMark
+          : commentMark // ignore: cast_nullable_to_non_nullable
+              as int?,
+      isFelt: null == isFelt
+          ? _value.isFelt
+          : isFelt // ignore: cast_nullable_to_non_nullable
               as bool,
       image: freezed == image
           ? _value.image
@@ -242,10 +184,6 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as Author,
-      category: null == category
-          ? _value.category
-          : category // ignore: cast_nullable_to_non_nullable
-              as Category,
       state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
@@ -261,23 +199,7 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
       banned: null == banned
           ? _value.banned
           : banned // ignore: cast_nullable_to_non_nullable
-              as bool,
-      canMark: null == canMark
-          ? _value.canMark
-          : canMark // ignore: cast_nullable_to_non_nullable
               as int,
-      canRate: null == canRate
-          ? _value.canRate
-          : canRate // ignore: cast_nullable_to_non_nullable
-              as int,
-      url: null == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String,
-      messages: null == messages
-          ? _value.messages
-          : messages // ignore: cast_nullable_to_non_nullable
-              as String,
     ) as $Val);
   }
 
@@ -300,14 +222,6 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
       return _then(_value.copyWith(author: value) as $Val);
     });
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $CategoryCopyWith<$Res> get category {
-    return $CategoryCopyWith<$Res>(_value.category, (value) {
-      return _then(_value.copyWith(category: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -322,32 +236,21 @@ abstract class _$$PostImplCopyWith<$Res> implements $PostCopyWith<$Res> {
       String name,
       @DateTimeConverter() DateTime created,
       String described,
-      @DateTimeOrNullConverter() DateTime? modified,
-      @IntegerConverter() int fake,
-      @IntegerConverter() int trust,
-      @IntegerConverter() int kudos,
-      @IntegerConverter() int disappointed,
-      @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
-      @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
+      @IntegerOrNullConverter() int? feel,
+      @IntegerOrNullConverter() @JsonKey(name: "comment_mark") int? commentMark,
+      @BooleanConverter() @JsonKey(name: "is_felt") bool isFelt,
       List<Image>? image,
       Video? video,
       Author author,
-      Category category,
       String state,
       @BooleanConverter() @JsonKey(name: "is_blocked") bool isBlocked,
       @BooleanConverter() @JsonKey(name: "can_edit") bool canEdit,
-      @BooleanConverter() bool banned,
-      @IntegerConverter() @JsonKey(name: "can_mark") int canMark,
-      @IntegerConverter() @JsonKey(name: "can_rate") int canRate,
-      String url,
-      String messages});
+      @IntegerConverter() int banned});
 
   @override
   $VideoCopyWith<$Res>? get video;
   @override
   $AuthorCopyWith<$Res> get author;
-  @override
-  $CategoryCopyWith<$Res> get category;
 }
 
 /// @nodoc
@@ -364,25 +267,16 @@ class __$$PostImplCopyWithImpl<$Res>
     Object? name = null,
     Object? created = null,
     Object? described = null,
-    Object? modified = freezed,
-    Object? fake = null,
-    Object? trust = null,
-    Object? kudos = null,
-    Object? disappointed = null,
-    Object? isRated = null,
-    Object? isMarked = null,
+    Object? feel = freezed,
+    Object? commentMark = freezed,
+    Object? isFelt = null,
     Object? image = freezed,
     Object? video = freezed,
     Object? author = null,
-    Object? category = null,
     Object? state = null,
     Object? isBlocked = null,
     Object? canEdit = null,
     Object? banned = null,
-    Object? canMark = null,
-    Object? canRate = null,
-    Object? url = null,
-    Object? messages = null,
   }) {
     return _then(_$PostImpl(
       null == id
@@ -401,33 +295,17 @@ class __$$PostImplCopyWithImpl<$Res>
           ? _value.described
           : described // ignore: cast_nullable_to_non_nullable
               as String,
-      freezed == modified
-          ? _value.modified
-          : modified // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      null == fake
-          ? _value.fake
-          : fake // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == trust
-          ? _value.trust
-          : trust // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == kudos
-          ? _value.kudos
-          : kudos // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == disappointed
-          ? _value.disappointed
-          : disappointed // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == isRated
-          ? _value.isRated
-          : isRated // ignore: cast_nullable_to_non_nullable
-              as bool,
-      null == isMarked
-          ? _value.isMarked
-          : isMarked // ignore: cast_nullable_to_non_nullable
+      freezed == feel
+          ? _value.feel
+          : feel // ignore: cast_nullable_to_non_nullable
+              as int?,
+      freezed == commentMark
+          ? _value.commentMark
+          : commentMark // ignore: cast_nullable_to_non_nullable
+              as int?,
+      null == isFelt
+          ? _value.isFelt
+          : isFelt // ignore: cast_nullable_to_non_nullable
               as bool,
       freezed == image
           ? _value._image
@@ -441,10 +319,6 @@ class __$$PostImplCopyWithImpl<$Res>
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as Author,
-      null == category
-          ? _value.category
-          : category // ignore: cast_nullable_to_non_nullable
-              as Category,
       null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
@@ -460,23 +334,7 @@ class __$$PostImplCopyWithImpl<$Res>
       null == banned
           ? _value.banned
           : banned // ignore: cast_nullable_to_non_nullable
-              as bool,
-      null == canMark
-          ? _value.canMark
-          : canMark // ignore: cast_nullable_to_non_nullable
               as int,
-      null == canRate
-          ? _value.canRate
-          : canRate // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == messages
-          ? _value.messages
-          : messages // ignore: cast_nullable_to_non_nullable
-              as String,
     ));
   }
 }
@@ -490,25 +348,16 @@ class _$PostImpl implements _Post {
       this.name,
       @DateTimeConverter() this.created,
       this.described,
-      @DateTimeOrNullConverter() this.modified,
-      @IntegerConverter() this.fake,
-      @IntegerConverter() this.trust,
-      @IntegerConverter() this.kudos,
-      @IntegerConverter() this.disappointed,
-      @BooleanConverter() @JsonKey(name: "is_rated") this.isRated,
-      @BooleanConverter() @JsonKey(name: "is_marked") this.isMarked,
+      @IntegerOrNullConverter() this.feel,
+      @IntegerOrNullConverter() @JsonKey(name: "comment_mark") this.commentMark,
+      @BooleanConverter() @JsonKey(name: "is_felt") this.isFelt,
       final List<Image>? image,
       this.video,
       this.author,
-      this.category,
       this.state,
       @BooleanConverter() @JsonKey(name: "is_blocked") this.isBlocked,
       @BooleanConverter() @JsonKey(name: "can_edit") this.canEdit,
-      @BooleanConverter() this.banned,
-      @IntegerConverter() @JsonKey(name: "can_mark") this.canMark,
-      @IntegerConverter() @JsonKey(name: "can_rate") this.canRate,
-      this.url,
-      this.messages)
+      @IntegerConverter() this.banned)
       : assert(image == null || video == null),
         _image = image;
 
@@ -531,47 +380,39 @@ class _$PostImpl implements _Post {
   ///Nội dung bài viết.
   @override
   final String described;
-
-  ///Thời điểm chỉnh sửa bài viết.
-  @override
-  @DateTimeOrNullConverter()
-  final DateTime? modified;
-
-  ///Số người dùng đánh giá bài viết là fake.
-  @override
-  @IntegerConverter()
-  final int fake;
-
-  ///Số người dùng đánh giá bài viết là trust.
-  @override
-  @IntegerConverter()
-  final int trust;
-
+// ///Thời điểm chỉnh sửa bài viết.
+// @DateTimeOrNullConverter() DateTime? modified,
+// ///Số người dùng đánh giá bài viết là fake.
+// @IntegerOrNullConverter() int? fake,
+// ///Số người dùng đánh giá bài viết là trust.
+// @IntegerOrNullConverter() int? trust,
+// ///Số người dùng bày tỏ cảm xúc là kudos.
+// @IntegerOrNullConverter() int? kudos,
   ///Số người dùng bày tỏ cảm xúc là kudos.
   @override
-  @IntegerConverter()
-  final int kudos;
+  @IntegerOrNullConverter()
+  final int? feel;
 
-  ///Số người dùng bày tỏ cảm xúc là disappointed.
+  ///Số bình luận và mark
   @override
-  @IntegerConverter()
-  final int disappointed;
-
+  @IntegerOrNullConverter()
+  @JsonKey(name: "comment_mark")
+  final int? commentMark;
+// ///Số người dùng bày tỏ cảm xúc là disappointed.
+// @IntegerOrNullConverter() int? disappointed,
+// ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
+// @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
   ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
   @override
   @BooleanConverter()
-  @JsonKey(name: "is_rated")
-  final bool isRated;
-
-  ///Người dùng đã đánh giá cho bài viết này chưa.
-  @override
-  @BooleanConverter()
-  @JsonKey(name: "is_marked")
-  final bool isMarked;
-
+  @JsonKey(name: "is_felt")
+  final bool isFelt;
+// ///Người dùng đã đánh giá cho bài viết này chưa.
+// @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
   ///Danh sách các hình ảnh cùng id và url, id này sẽ giúp ứng dụng phân biệt được người dùng muốn xóa/thay thế ảnh nào.
   final List<Image>? _image;
-
+// ///Người dùng đã đánh giá cho bài viết này chưa.
+// @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
   ///Danh sách các hình ảnh cùng id và url, id này sẽ giúp ứng dụng phân biệt được người dùng muốn xóa/thay thế ảnh nào.
   @override
   List<Image>? get image {
@@ -589,11 +430,8 @@ class _$PostImpl implements _Post {
   ///Thông tin của người chủ bài viết, bao gồm cả ảnh avatar, số coins, listing: danh sách các id phiên bản cũ của bài viết.
   @override
   final Author author;
-
-  ///Danh mục của bài viết, id và tên danh mục này.
-  @override
-  final Category category;
-
+// ///Danh mục của bài viết, id và tên danh mục này.
+// Category? category,
   ///Trạng thái của người viết bài.
   @override
   final String state;
@@ -612,32 +450,12 @@ class _$PostImpl implements _Post {
 
   ///1 bài viết đã bị khóa vì vi phạm tiêu chuẩn cộng đồng, 2 bài viết bị chặn ở một số quốc gia, 3: nội dung của tất cả hình ảnh hoặc video bị che đi. Trường hợp muốn che đi một số ảnh thì trả về một danh sách dạng xâu (chẳng hạn “3,0,2” sẽ che các ảnh số 0 và số 2).
   @override
-  @BooleanConverter()
-  final bool banned;
-
-  ///Người đọc có thể viết mark cho bài hay không?
-  @override
   @IntegerConverter()
-  @JsonKey(name: "can_mark")
-  final int canMark;
-
-  ///Người đọc có thể rate: kudos/disappointed cho bài hay không?
-  @override
-  @IntegerConverter()
-  @JsonKey(name: "can_rate")
-  final int canRate;
-
-  ///Đường link share bài viết.
-  @override
-  final String url;
-
-  ///Thông báo từ server.
-  @override
-  final String messages;
+  final int banned;
 
   @override
   String toString() {
-    return 'Post(id: $id, name: $name, created: $created, described: $described, modified: $modified, fake: $fake, trust: $trust, kudos: $kudos, disappointed: $disappointed, isRated: $isRated, isMarked: $isMarked, image: $image, video: $video, author: $author, category: $category, state: $state, isBlocked: $isBlocked, canEdit: $canEdit, banned: $banned, canMark: $canMark, canRate: $canRate, url: $url, messages: $messages)';
+    return 'Post(id: $id, name: $name, created: $created, described: $described, feel: $feel, commentMark: $commentMark, isFelt: $isFelt, image: $image, video: $video, author: $author, state: $state, isBlocked: $isBlocked, canEdit: $canEdit, banned: $banned)';
   }
 
   @override
@@ -650,61 +468,38 @@ class _$PostImpl implements _Post {
             (identical(other.created, created) || other.created == created) &&
             (identical(other.described, described) ||
                 other.described == described) &&
-            (identical(other.modified, modified) ||
-                other.modified == modified) &&
-            (identical(other.fake, fake) || other.fake == fake) &&
-            (identical(other.trust, trust) || other.trust == trust) &&
-            (identical(other.kudos, kudos) || other.kudos == kudos) &&
-            (identical(other.disappointed, disappointed) ||
-                other.disappointed == disappointed) &&
-            (identical(other.isRated, isRated) || other.isRated == isRated) &&
-            (identical(other.isMarked, isMarked) ||
-                other.isMarked == isMarked) &&
+            (identical(other.feel, feel) || other.feel == feel) &&
+            (identical(other.commentMark, commentMark) ||
+                other.commentMark == commentMark) &&
+            (identical(other.isFelt, isFelt) || other.isFelt == isFelt) &&
             const DeepCollectionEquality().equals(other._image, _image) &&
             (identical(other.video, video) || other.video == video) &&
             (identical(other.author, author) || other.author == author) &&
-            (identical(other.category, category) ||
-                other.category == category) &&
             (identical(other.state, state) || other.state == state) &&
             (identical(other.isBlocked, isBlocked) ||
                 other.isBlocked == isBlocked) &&
             (identical(other.canEdit, canEdit) || other.canEdit == canEdit) &&
-            (identical(other.banned, banned) || other.banned == banned) &&
-            (identical(other.canMark, canMark) || other.canMark == canMark) &&
-            (identical(other.canRate, canRate) || other.canRate == canRate) &&
-            (identical(other.url, url) || other.url == url) &&
-            (identical(other.messages, messages) ||
-                other.messages == messages));
+            (identical(other.banned, banned) || other.banned == banned));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hashAll([
-        runtimeType,
-        id,
-        name,
-        created,
-        described,
-        modified,
-        fake,
-        trust,
-        kudos,
-        disappointed,
-        isRated,
-        isMarked,
-        const DeepCollectionEquality().hash(_image),
-        video,
-        author,
-        category,
-        state,
-        isBlocked,
-        canEdit,
-        banned,
-        canMark,
-        canRate,
-        url,
-        messages
-      ]);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      name,
+      created,
+      described,
+      feel,
+      commentMark,
+      isFelt,
+      const DeepCollectionEquality().hash(_image),
+      video,
+      author,
+      state,
+      isBlocked,
+      canEdit,
+      banned);
 
   @JsonKey(ignore: true)
   @override
@@ -726,25 +521,18 @@ abstract class _Post implements Post {
       final String name,
       @DateTimeConverter() final DateTime created,
       final String described,
-      @DateTimeOrNullConverter() final DateTime? modified,
-      @IntegerConverter() final int fake,
-      @IntegerConverter() final int trust,
-      @IntegerConverter() final int kudos,
-      @IntegerConverter() final int disappointed,
-      @BooleanConverter() @JsonKey(name: "is_rated") final bool isRated,
-      @BooleanConverter() @JsonKey(name: "is_marked") final bool isMarked,
+      @IntegerOrNullConverter() final int? feel,
+      @IntegerOrNullConverter()
+      @JsonKey(name: "comment_mark")
+      final int? commentMark,
+      @BooleanConverter() @JsonKey(name: "is_felt") final bool isFelt,
       final List<Image>? image,
       final Video? video,
       final Author author,
-      final Category category,
       final String state,
       @BooleanConverter() @JsonKey(name: "is_blocked") final bool isBlocked,
       @BooleanConverter() @JsonKey(name: "can_edit") final bool canEdit,
-      @BooleanConverter() final bool banned,
-      @IntegerConverter() @JsonKey(name: "can_mark") final int canMark,
-      @IntegerConverter() @JsonKey(name: "can_rate") final int canRate,
-      final String url,
-      final String messages) = _$PostImpl;
+      @IntegerConverter() final int banned) = _$PostImpl;
 
   factory _Post.fromJson(Map<String, dynamic> json) = _$PostImpl.fromJson;
 
@@ -765,45 +553,33 @@ abstract class _Post implements Post {
 
   ///Nội dung bài viết.
   String get described;
-  @override
-
-  ///Thời điểm chỉnh sửa bài viết.
-  @DateTimeOrNullConverter()
-  DateTime? get modified;
-  @override
-
-  ///Số người dùng đánh giá bài viết là fake.
-  @IntegerConverter()
-  int get fake;
-  @override
-
-  ///Số người dùng đánh giá bài viết là trust.
-  @IntegerConverter()
-  int get trust;
-  @override
-
+  @override // ///Thời điểm chỉnh sửa bài viết.
+// @DateTimeOrNullConverter() DateTime? modified,
+// ///Số người dùng đánh giá bài viết là fake.
+// @IntegerOrNullConverter() int? fake,
+// ///Số người dùng đánh giá bài viết là trust.
+// @IntegerOrNullConverter() int? trust,
+// ///Số người dùng bày tỏ cảm xúc là kudos.
+// @IntegerOrNullConverter() int? kudos,
   ///Số người dùng bày tỏ cảm xúc là kudos.
-  @IntegerConverter()
-  int get kudos;
+  @IntegerOrNullConverter()
+  int? get feel;
   @override
 
-  ///Số người dùng bày tỏ cảm xúc là disappointed.
-  @IntegerConverter()
-  int get disappointed;
-  @override
-
+  ///Số bình luận và mark
+  @IntegerOrNullConverter()
+  @JsonKey(name: "comment_mark")
+  int? get commentMark;
+  @override // ///Số người dùng bày tỏ cảm xúc là disappointed.
+// @IntegerOrNullConverter() int? disappointed,
+// ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
+// @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
   ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
   @BooleanConverter()
-  @JsonKey(name: "is_rated")
-  bool get isRated;
-  @override
-
-  ///Người dùng đã đánh giá cho bài viết này chưa.
-  @BooleanConverter()
-  @JsonKey(name: "is_marked")
-  bool get isMarked;
-  @override
-
+  @JsonKey(name: "is_felt")
+  bool get isFelt;
+  @override // ///Người dùng đã đánh giá cho bài viết này chưa.
+// @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
   ///Danh sách các hình ảnh cùng id và url, id này sẽ giúp ứng dụng phân biệt được người dùng muốn xóa/thay thế ảnh nào.
   List<Image>? get image;
   @override
@@ -814,12 +590,8 @@ abstract class _Post implements Post {
 
   ///Thông tin của người chủ bài viết, bao gồm cả ảnh avatar, số coins, listing: danh sách các id phiên bản cũ của bài viết.
   Author get author;
-  @override
-
-  ///Danh mục của bài viết, id và tên danh mục này.
-  Category get category;
-  @override
-
+  @override // ///Danh mục của bài viết, id và tên danh mục này.
+// Category? category,
   ///Trạng thái của người viết bài.
   String get state;
   @override
@@ -837,28 +609,8 @@ abstract class _Post implements Post {
   @override
 
   ///1 bài viết đã bị khóa vì vi phạm tiêu chuẩn cộng đồng, 2 bài viết bị chặn ở một số quốc gia, 3: nội dung của tất cả hình ảnh hoặc video bị che đi. Trường hợp muốn che đi một số ảnh thì trả về một danh sách dạng xâu (chẳng hạn “3,0,2” sẽ che các ảnh số 0 và số 2).
-  @BooleanConverter()
-  bool get banned;
-  @override
-
-  ///Người đọc có thể viết mark cho bài hay không?
   @IntegerConverter()
-  @JsonKey(name: "can_mark")
-  int get canMark;
-  @override
-
-  ///Người đọc có thể rate: kudos/disappointed cho bài hay không?
-  @IntegerConverter()
-  @JsonKey(name: "can_rate")
-  int get canRate;
-  @override
-
-  ///Đường link share bài viết.
-  String get url;
-  @override
-
-  ///Thông báo từ server.
-  String get messages;
+  int get banned;
   @override
   @JsonKey(ignore: true)
   _$$PostImplCopyWith<_$PostImpl> get copyWith =>

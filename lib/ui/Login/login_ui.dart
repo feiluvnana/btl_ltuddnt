@@ -1,4 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/change_profile_after_signup.ui.dart';
@@ -24,13 +25,20 @@ class _LoginUIState extends State<LoginUI> {
   void router(int? active) {
     switch (active) {
       case 1:
+        _username.text = "";
+        _password.text = "";
+        context.read<NewsfeedBloc>().add(const NewsfeedInit());
         Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
         break;
       case 0:
+        _username.text = "";
+        _password.text = "";
         context.read<SignupBloc>().add(SignupEmailChange(email: _username.text));
         Navigator.push(context, MaterialPageRoute(builder: (_) => VerifySignupUI()));
         break;
       case -1:
+        _username.text = "";
+        _password.text = "";
         Navigator.push(
             context, MaterialPageRoute(builder: (_) => const ChangeProfileAfterSignupUI()));
         break;
@@ -117,7 +125,7 @@ class _LoginUIState extends State<LoginUI> {
                   builder: (context, state) {
                     return ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
+                          foregroundColor: themeData.canvasColor,
                           backgroundColor: _password.text.isNotEmpty && _username.text.isNotEmpty
                               ? themeData.primaryColor
                               : null,

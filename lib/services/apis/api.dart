@@ -8,14 +8,15 @@ class Api {
   Future<Map<String, dynamic>?> signup(String email, String password) async {
     var androidDeviceInfo = await DeviceInfoPlugin().androidInfo;
     var uuid = '${androidDeviceInfo.model}:${androidDeviceInfo.id}';
-    return ApiRoot.post(
-        "/signup", jsonEncode({"email": email, "password": password, "uuid": uuid}));
+    return ApiRoot.post("/signup", jsonEncode({"email": email, "password": password, "uuid": uuid}),
+        headers: {});
   }
 
   Future<Map<String, dynamic>?> login(String email, String password) async {
     var androidDeviceInfo = await DeviceInfoPlugin().androidInfo;
     var uuid = '${androidDeviceInfo.model}:${androidDeviceInfo.id}';
-    return ApiRoot.post("/login", jsonEncode({"email": email, "password": password, "uuid": uuid}));
+    return ApiRoot.post("/login", jsonEncode({"email": email, "password": password, "uuid": uuid}),
+        headers: {});
   }
 
   Future<Map<String, dynamic>?> checkVerifyCode(String email, String code) async {
@@ -23,7 +24,7 @@ class Api {
   }
 
   Future<Map<String, dynamic>?> getVerifyCode(String email) async {
-    return ApiRoot.post("/get_verify_code", null, {"email": email});
+    return ApiRoot.post("/get_verify_code", null, params: {"email": email});
   }
 
   Future<Map<String, dynamic>?> changeProfileAfterSignup(String username, [File? avatar]) async {
@@ -36,6 +37,42 @@ class Api {
               : await MultipartFile.fromFile(avatar.path,
                   filename:
                       "${username}_${DateTime.now().millisecondsSinceEpoch}.${avatar.path.split(".").last}")
+        }));
+  }
+
+  Future<Map<String, dynamic>?> getListPosts(
+      {required int userId,
+      required int inCampaign,
+      required int campaignId,
+      required double latitute,
+      required double longitute,
+      required int lastId,
+      int? index,
+      int? count}) async {
+    return ApiRoot.post(
+        "/get_list_posts",
+        jsonEncode({
+          "user_id": userId.toString(),
+          "in_campaign": inCampaign.toString(),
+          "campaign_id": campaignId.toString(),
+          "latitude": latitute.toString(),
+          "longitude": longitute.toString(),
+          "last_id": lastId.toString(),
+          "index": index?.toString(),
+          "count": count?.toString()
+        }));
+  }
+
+  Future<Map<String, dynamic>?> addPost(
+      {List<File>? image, File? video, String? described, String? status}) async {
+    return ApiRoot.post(
+        "/add_post",
+        FormData.fromMap({
+          "image": image?.map((e) => MultipartFile.fromFileSync(e.path)).toList(),
+          "video": video == null ? null : await MultipartFile.fromFile(video.path),
+          "described": described,
+          "status": status,
+          "auto_accept": "1"
         }));
   }
 

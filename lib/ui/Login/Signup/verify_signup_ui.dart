@@ -80,7 +80,8 @@ class VerifySignupUI extends StatelessWidget {
               ),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
+                      foregroundColor: themeData.canvasColor,
+                      backgroundColor: themeData.primaryColor),
                   onPressed: () {},
                   child: const Text("Tiếp")),
               ElevatedButton(

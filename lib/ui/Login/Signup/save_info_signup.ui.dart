@@ -34,7 +34,8 @@ class SaveInfoSignupUI extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
+                    foregroundColor: themeData.canvasColor,
+                    backgroundColor: themeData.primaryColor),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
                     return BlocProvider.value(

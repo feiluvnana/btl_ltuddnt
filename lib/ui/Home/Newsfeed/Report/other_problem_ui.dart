@@ -1,4 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/problem_detail_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -45,12 +46,10 @@ class OtherProblemUI extends StatelessWidget {
                           border: index != label.length - 1
                               ? const Border(bottom: BorderSide(color: Colors.black26))
                               : null),
-                      child: ListTile(
+                      child: AFBListTile(
+                        label: label[index],
                         onTap: () => Navigator.push(context,
                             MaterialPageRoute(builder: (context) => ProblemDetailUI(index: index))),
-                        leading: Text(label[index], style: themeData.textTheme.titleMedium),
-                        trailing: const Icon(Icons.chevron_right),
-                        contentPadding: EdgeInsets.zero,
                       ),
                     )),
           ),

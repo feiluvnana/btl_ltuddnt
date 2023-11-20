@@ -97,7 +97,8 @@ class _PostReportUIState extends State<PostReportUI> {
             const Spacer(),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
+                    foregroundColor: themeData.canvasColor,
+                    backgroundColor: themeData.primaryColor),
                 onPressed: selected.isEmpty ? null : () {},
                 child: const Center(
                   child: Text("Tiếp"),

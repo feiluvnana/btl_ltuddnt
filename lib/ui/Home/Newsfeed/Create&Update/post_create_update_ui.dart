@@ -1,9 +1,11 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/emoji.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostCreateUpdateUI extends StatefulWidget {
   final Post? post;
@@ -151,8 +153,19 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
             style: themeData.textTheme.titleMedium,
           ),
           leading: IconButton(
-              onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
-          actions: [TextButton(onPressed: () {}, child: const Text("ĐĂNG"))],
+              onPressed: () {
+                Navigator.maybePop(context);
+              },
+              icon: const Icon(Icons.arrow_back)),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  context
+                      .read<NewsfeedBloc>()
+                      .add(NewsfeedAddPost(described: ctrl.text, status: "Not Hyped"));
+                },
+                child: const Text("ĐĂNG"))
+          ],
         ),
         body: SingleChildScrollView(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

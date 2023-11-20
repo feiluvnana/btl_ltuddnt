@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/user.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
@@ -31,7 +33,7 @@ class AuthenBloc extends Bloc<AuthenEvent, AuthenState> {
       if (res?["code"] != "1000") {
         emit(state.copyWith(status: AuthenStatus.unauthenticated));
       } else {
-        await secureStorage.write(key: "token", value: res!["data"]["token"]);
+        await secureStorage.write(key: "user", value: jsonEncode(res!["data"]));
         emit(state.copyWith(status: AuthenStatus.authenticated, user: User.fromJson(res["data"])));
         event.callback(state.user?.active);
       }

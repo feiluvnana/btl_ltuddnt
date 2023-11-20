@@ -7,7 +7,6 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/emoji.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/expandable_text.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/reaction_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -232,15 +231,15 @@ class _PostUIState extends State<PostUI> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
                 children: [
-                  ReactionDisplay(
-                    kudos: widget.post.kudos,
-                    dissapointed: widget.post.disappointed,
-                  ),
-                  Text(" ${widget.post.kudos + widget.post.disappointed}",
+                  // ReactionDisplay(
+                  //   kudos: widget.post.kudos,
+                  //   dissapointed: widget.post.disappointed,
+                  // ),
+                  Text(" ${widget.post.feel} lượt feel",
                       style: themeData.textTheme.bodySmall
                           ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                   const Spacer(),
-                  Text(" ${(widget.post.fake + widget.post.trust).toString()} bình luận",
+                  Text(" ${(widget.post.commentMark)} bình luận",
                       style: themeData.textTheme.bodySmall
                           ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                 ],
@@ -343,7 +342,7 @@ class _PostUIState extends State<PostUI> {
                 borderRadius: BorderRadius.circular(30),
                 clipBehavior: Clip.hardEdge,
                 child: Container(
-                  decoration: const BoxDecoration(color: Colors.white),
+                  decoration: BoxDecoration(color: themeData.canvasColor),
                   child: Builder(builder: (context) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),

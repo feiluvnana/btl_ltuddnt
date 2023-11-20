@@ -1,4 +1,3 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Game/game_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Market/market_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/menu_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/newsfeed_ui.dart';
@@ -43,7 +42,9 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   ),
                   Icon(
-                    tabController.index != 1 ? Icons.store_outlined : Icons.store,
+                    tabController.index != 1
+                        ? Icons.supervisor_account_outlined
+                        : Icons.supervisor_account,
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   ),
                   Icon(
@@ -51,27 +52,16 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   ),
                   Icon(
-                    tabController.index != 3
-                        ? Icons.videogame_asset_outlined
-                        : Icons.videogame_asset,
+                    tabController.index != 3 ? Icons.notifications_outlined : Icons.notifications,
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   ),
                   Icon(
-                    tabController.index != 4 ? Icons.notifications_outlined : Icons.notifications,
-                    size: themeData.textTheme.headlineMedium?.fontSize,
-                  ),
-                  Icon(
-                    tabController.index != 5 ? Icons.menu_outlined : Icons.menu,
+                    tabController.index != 4 ? Icons.menu_outlined : Icons.menu,
                     size: themeData.textTheme.headlineMedium?.fontSize,
                   )
                 ])),
-            body: TabBarView(controller: tabController, children: const [
-              NewsfeedUI(),
-              MarketUI(),
-              WatchUI(),
-              GameUI(),
-              Text("Noti"),
-              MenuUI()
-            ])));
+            body: TabBarView(
+                controller: tabController,
+                children: const [NewsfeedUI(), MarketUI(), WatchUI(), Text("Noti"), MenuUI()])));
   }
 }

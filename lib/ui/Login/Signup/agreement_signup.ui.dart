@@ -1,4 +1,3 @@
-
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/verify_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
@@ -74,7 +73,8 @@ class AgreementSignupUI extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
+                    foregroundColor: themeData.canvasColor,
+                    backgroundColor: themeData.primaryColor),
                 onPressed: () {
                   context.read<SignupBloc>().add(SignupRequest(() => Navigator.push(
                       context, MaterialPageRoute(builder: (_) => VerifySignupUI()))));

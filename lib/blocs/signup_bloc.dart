@@ -142,6 +142,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
         } else if (value["code"] != "1000") {
           Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+          event.callback();
         } else {
           Fluttertoast.showToast(msg: "Đã cập nhật thông tin thành công");
           event.callback();

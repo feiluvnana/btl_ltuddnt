@@ -31,7 +31,8 @@ class SignupUI extends StatelessWidget {
                 "Tạo tài khoản để kết nối với bạn bè, người thân và cộng đồng có chung sở thích."),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
+                    foregroundColor: themeData.canvasColor,
+                    backgroundColor: themeData.primaryColor),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (_) => EmailSignupUI()));
                 },

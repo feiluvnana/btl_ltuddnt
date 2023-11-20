@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -84,10 +85,14 @@ class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI>
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
-                onPressed: () => context
-                    .read<SignupBloc>()
-                    .add(SignupChangeProfileAfter(username.text, avatar, () {})),
+                    foregroundColor: themeData.canvasColor,
+                    backgroundColor: themeData.primaryColor),
+                onPressed: () => context.read<SignupBloc>().add(SignupChangeProfileAfter(
+                    username.text,
+                    avatar,
+                    () => Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false)
+                        .whenComplete(
+                            () => context.read<NewsfeedBloc>().add(const NewsfeedInit())))),
                 child: const Text("Tiếp")),
           ],
         ),

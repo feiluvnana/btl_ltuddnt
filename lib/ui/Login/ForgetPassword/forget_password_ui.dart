@@ -11,8 +11,7 @@ class ForgetPasswordUI extends StatelessWidget {
         child: Scaffold(
       appBar: TransparentAppBar(
         leading: IconButton(
-            onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                context, "/login", (route) => false),
+            onPressed: () => Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
             icon: const Icon(Icons.arrow_back)),
       ),
       body: Padding(
@@ -21,20 +20,18 @@ class ForgetPasswordUI extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text("Tìm tài khoản",
-                style: themeData.textTheme.headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+                style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
             const Text("Nhập số di động của bạn."),
             const SizedBox(height: 10),
             TextFormField(
               decoration: InputDecoration(
                   label: const Text("Số điện thoại"),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10))),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
+                    foregroundColor: themeData.canvasColor,
                     backgroundColor: themeData.primaryColor),
                 onPressed: () {},
                 child: const Text("Tìm tài khoản")),
@@ -43,8 +40,7 @@ class ForgetPasswordUI extends StatelessWidget {
                   onTap: () {},
                   child: Text(
                     "Tìm kiếm bằng email",
-                    style: themeData.textTheme.bodyLarge
-                        ?.copyWith(fontWeight: FontWeight.w500),
+                    style: themeData.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
                   )),
             ),
           ],

@@ -1,14 +1,20 @@
+import 'dart:convert';
+
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class ApiRoot {
-  static Future<Dio> _getDio() async {
+  static Future<Dio> _getDio([Map<String, dynamic>? headers]) async {
     BaseOptions options = BaseOptions(
       baseUrl: "https://it4788.catan.io.vn/",
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
-      headers: {'authorization': 'Bearer ${await secureStorage.read(key: "token")}'},
+      headers: headers ??
+          {
+            'authorization':
+                'Bearer ${await secureStorage.read(key: "user").then((value) => jsonDecode(value ?? "{}")["token"])}'
+          },
     );
     return Dio(options);
   }
@@ -24,9 +30,9 @@ class ApiRoot {
   }
 
   static Future<Map<String, dynamic>?> post(String path, Object? data,
-      [Map<String, dynamic>? params]) async {
+      {Map<String, dynamic>? params, Map<String, dynamic>? headers}) async {
     try {
-      Dio dio = await _getDio();
+      Dio dio = await _getDio(headers);
       var response = await dio.post(path, data: data, queryParameters: params);
       if (kDebugMode) {
         print(

@@ -192,7 +192,8 @@ VD: hình ảnh hoặc nội dung khác gây khó chịu""",
             Expanded(child: detail),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: themeData.primaryColor),
+                    foregroundColor: themeData.canvasColor,
+                    backgroundColor: themeData.primaryColor),
                 onPressed: () {},
                 child: SizedBox(
                     width: MediaQuery.sizeOf(context).width,
