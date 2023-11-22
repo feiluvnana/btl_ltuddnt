@@ -1,3 +1,4 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -190,10 +191,7 @@ VD: hình ảnh hoặc nội dung khác gây khó chịu""",
         child: Column(
           children: [
             Expanded(child: detail),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: themeData.canvasColor,
-                    backgroundColor: themeData.primaryColor),
+            AFBPrimaryEButton(
                 onPressed: () {},
                 child: SizedBox(
                     width: MediaQuery.sizeOf(context).width,

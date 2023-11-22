@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api_root.dart';
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 
 class Api {
   Future<Map<String, dynamic>?> signup(String email, String password) async {
@@ -24,7 +25,7 @@ class Api {
   }
 
   Future<Map<String, dynamic>?> getVerifyCode(String email) async {
-    return ApiRoot.post("/get_verify_code", null, params: {"email": email});
+    return ApiRoot.post("/get_verify_code", jsonEncode({"email": email}));
   }
 
   Future<Map<String, dynamic>?> changeProfileAfterSignup(String username, [File? avatar]) async {
@@ -36,7 +37,8 @@ class Api {
               ? null
               : await MultipartFile.fromFile(avatar.path,
                   filename:
-                      "${username}_${DateTime.now().millisecondsSinceEpoch}.${avatar.path.split(".").last}")
+                      "${username}_${DateTime.now().millisecondsSinceEpoch}.${avatar.path.split(".").last}",
+                  contentType: MediaType("image", avatar.path.split(".").last))
         }));
   }
 
@@ -74,6 +76,29 @@ class Api {
           "status": status,
           "auto_accept": "1"
         }));
+  }
+
+  Future<Map<String, dynamic>?> changePassword(String password, String newPassword) async {
+    return ApiRoot.post(
+        "/change_password", jsonEncode({"password": password, "new_password": newPassword}));
+  }
+
+  Future<Map<String, dynamic>?> resetPassword(String email, String code, String password) async {
+    return ApiRoot.post(
+        "/reset_password", jsonEncode({"email": email, "password": password, "code": code}));
+  }
+
+  Future<Map<String, dynamic>?> logout() async {
+    return ApiRoot.post("/logout", null);
+  }
+
+  Future<Map<String, dynamic>?> reportPost(int id, String subject, String detail) async {
+    return ApiRoot.post(
+        "/report_post", jsonEncode({"id": id.toString(), "subject": subject, "details": detail}));
+  }
+
+  Future<Map<String, dynamic>?> deletePost(int id) async {
+    return ApiRoot.post("/delete_post", jsonEncode({"id": id.toString()}));
   }
 
   // static Future<Map<String, String>?> logout() async {

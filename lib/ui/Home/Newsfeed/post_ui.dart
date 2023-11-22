@@ -1,14 +1,19 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Create&Update/post_create_update_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/post_report_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/post_media_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/emoji.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_webview.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/expandable_text.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class PostUI extends StatefulWidget {
@@ -20,7 +25,7 @@ class PostUI extends StatefulWidget {
   State<PostUI> createState() => _PostUIState();
 }
 
-class _PostUIState extends State<PostUI> {
+class _PostUIState extends State<PostUI> with AutomaticKeepAliveClientMixin {
   late bool isShowEmoji;
   late Offset globalOffset;
   late List<bool> emojiEnlarged = List.generate(2, (index) => false);
@@ -34,6 +39,7 @@ class _PostUIState extends State<PostUI> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     ThemeData themeData = Theme.of(context);
     return Stack(
       children: [
@@ -45,7 +51,7 @@ class _PostUIState extends State<PostUI> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: CircleUserAvatar(imageUrl: widget.post.author.avatar),
+                  child: CircularUserAvatar(imageUrl: widget.post.author.avatar),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,131 +79,77 @@ class _PostUIState extends State<PostUI> {
                   padding: const EdgeInsets.only(right: 10),
                   child: GestureDetector(
                       onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            shape: const RoundedRectangleBorder(),
-                            builder: (context) => Column(
-                                  children: [
-                                    InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.save),
-                                            const SizedBox(width: 10),
-                                            Text("Lưu bài viết",
-                                                style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    InkWell(
+                        showAFBModalBottomSheet(context: context, blocks: [
+                          [
+                            AFBBottomSheetListTile(
+                                onTap: () {}, leading: Icons.save, title: "Lưu bài viết"),
+                            AFBBottomSheetListTile(
+                                onTap: () {
+                                  showAFBDialog<bool>(
+                                    context: context,
+                                    title:
+                                        Text("Xóa bài viết?", style: themeData.textTheme.bodyLarge),
+                                    content: const Text(
+                                        "Bạn có thể chỉnh sửa bài viết nếu cần thay đổi."),
+                                    actions: [
+                                      GestureDetector(
                                         onTap: () {
-                                          showDialog<bool>(
-                                              context: context,
-                                              builder: (context) => AlertDialog(
-                                                    title: Text(
-                                                      "Xóa bài viết?",
-                                                      style: themeData.textTheme.bodyLarge,
-                                                    ),
-                                                    content: const Text(
-                                                        "Bạn có thể chỉnh sửa bài viết nếu cần thay đổi."),
-                                                    actions: [
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          Navigator.maybePop(context);
-                                                        },
-                                                        child: Text("XÓA",
-                                                            style: themeData.textTheme.bodyMedium
-                                                                ?.copyWith(
-                                                                    color: themeData.primaryColor)),
-                                                      ),
-                                                      GestureDetector(
-                                                          onTap: () {
-                                                            Navigator.maybePop(context)
-                                                                .whenComplete(() => Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder: (context) =>
-                                                                            PostCreateUpdateUI(
-                                                                                post:
-                                                                                    widget.post))));
-                                                          },
-                                                          child: const Text("CHỈNH SỬA")),
-                                                      GestureDetector(
-                                                          onTap: () {
-                                                            Navigator.maybePop(context);
-                                                          },
-                                                          child: const Text("HỦY")),
-                                                    ],
-                                                  ));
+                                          context
+                                              .read<NewsfeedBloc>()
+                                              .add(NewsfeedDeletePost(id: widget.post.id));
+                                          Navigator.maybePop(context);
+                                          Navigator.maybePop(context);
                                         },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.delete),
-                                            const SizedBox(width: 10),
-                                            Text("Xóa", style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => PostCreateUpdateUI(
-                                                        post: widget.post,
-                                                      )));
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.edit),
-                                            const SizedBox(width: 10),
-                                            Text("Chỉnh sửa bài viết",
-                                                style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    const Divider(),
-                                    InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.notifications),
-                                            const SizedBox(width: 10),
-                                            Text("Tắt thông báo về bài viết này",
-                                                style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PostReportUI(post: widget.post)));
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.report),
-                                            const SizedBox(width: 10),
-                                            Text("Báo cáo bài viết",
-                                                style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.link),
-                                            const SizedBox(width: 10),
-                                            Text("Sao chép liên kết",
-                                                style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        ))
-                                  ],
-                                ));
+                                        child: Text("XÓA",
+                                            style: themeData.textTheme.bodyMedium
+                                                ?.copyWith(color: themeData.primaryColor)),
+                                      ),
+                                      GestureDetector(
+                                          onTap: () => Navigator.maybePop(context).whenComplete(
+                                              () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          PostCreateUpdateUI(post: widget.post)))),
+                                          child: const Text("CHỈNH SỬA")),
+                                      GestureDetector(
+                                          onTap: () => Navigator.maybePop(context),
+                                          child: const Text("HỦY")),
+                                    ],
+                                  );
+                                },
+                                leading: Icons.delete,
+                                title: "Xóa bài viết"),
+                            AFBBottomSheetListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PostCreateUpdateUI(
+                                                post: widget.post,
+                                              )));
+                                },
+                                leading: Icons.edit,
+                                title: "Chỉnh sửa bài viết")
+                          ],
+                          [
+                            AFBBottomSheetListTile(
+                                onTap: () {},
+                                leading: Icons.notifications,
+                                title: "Tắt thông báo về bài viết này"),
+                            AFBBottomSheetListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PostReportUI(post: widget.post)));
+                                },
+                                leading: Icons.report,
+                                title: "Báo cáo bài viết"),
+                            AFBBottomSheetListTile(
+                                onTap: () {}, leading: Icons.link, title: "Sao chép liên kết")
+                          ]
+                        ]);
                       },
                       child: const Icon(Icons.more_horiz, color: Colors.grey)),
                 ),
@@ -207,6 +159,11 @@ class _PostUIState extends State<PostUI> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: ExpandableText(post: widget.post),
             ),
+            if (getFirstLink(widget.post.described) != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: AFBWebPreview(url: getFirstLink(widget.post.described)!),
+              ),
             if ((widget.post.image?.length ?? 0) > 0)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -310,7 +267,7 @@ class _PostUIState extends State<PostUI> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),
-                    child: CircleUserAvatar(imageUrl: widget.post.author.avatar, radius: 16),
+                    child: CircularUserAvatar(imageUrl: widget.post.author.avatar),
                   ),
                   Expanded(
                       child: TextField(
@@ -335,7 +292,7 @@ class _PostUIState extends State<PostUI> {
         if (isShowEmoji)
           Positioned(
             width: MediaQuery.sizeOf(context).width,
-            bottom: 50,
+            bottom: 100,
             child: Center(
               child: Material(
                 elevation: 1,
@@ -381,6 +338,9 @@ class _PostUIState extends State<PostUI> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _ReactionSliderItem extends StatelessWidget {

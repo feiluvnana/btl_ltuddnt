@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +16,7 @@ class ChangeProfileAfterSignupUI extends StatefulWidget {
 
 class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI> {
   File? avatar;
+  bool isLocked = false;
   final username = TextEditingController();
 
   @override
@@ -62,37 +64,62 @@ class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI>
                     child: Column(
                       children: [
                         Expanded(
-                            child: Image.file(
-                          avatar ?? File(""),
-                          errorBuilder: (_, __, ___) => Container(),
+                            child: Container(
+                          clipBehavior: Clip.hardEdge,
+                          decoration: const BoxDecoration(shape: BoxShape.circle),
+                          child: Image.file(
+                            avatar ?? File(""),
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(),
+                          ),
                         )),
-                        ElevatedButton(
-                            onPressed: () {
-                              ImagePicker()
-                                  .pickImage(source: ImageSource.gallery)
-                                  .then((value) async {
-                                if (value == null) return;
-                                var file = File(value.path);
-                                setState(() {
-                                  avatar = file;
-                                });
-                              });
-                            },
-                            child: const Text("Thêm hình ảnh"))
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            AFBPrimaryEButton(
+                                onPressed: () {
+                                  ImagePicker()
+                                      .pickImage(source: ImageSource.gallery)
+                                      .then((value) async {
+                                    if (value == null) return;
+                                    var file = File(value.path);
+                                    setState(() {
+                                      avatar = file;
+                                    });
+                                  });
+                                },
+                                child: const Text("Thêm hình ảnh")),
+                            AFBDangerEButton(
+                                onPressed: () {
+                                  setState(() {
+                                    avatar = null;
+                                  });
+                                },
+                                child: const Text("Xóa hình ảnh")),
+                          ],
+                        )
                       ],
                     )),
               ),
             ),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: themeData.canvasColor,
-                    backgroundColor: themeData.primaryColor),
-                onPressed: () => context.read<SignupBloc>().add(SignupChangeProfileAfter(
-                    username.text,
-                    avatar,
-                    () => Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false)
-                        .whenComplete(
-                            () => context.read<NewsfeedBloc>().add(const NewsfeedInit())))),
+            AFBPrimaryEButton(
+                onPressed: isLocked
+                    ? null
+                    : () {
+                        setState(() {
+                          isLocked = true;
+                        });
+                        context.read<AuthenBloc>().add(AuthenChangeProfileAfter(
+                            username.text,
+                            avatar,
+                            () => Navigator.pushNamedAndRemoveUntil(
+                                    context, "/home", (route) => false)
+                                .whenComplete(
+                                    () => context.read<NewsfeedBloc>().add(const NewsfeedInit())),
+                            () => setState(() {
+                                  isLocked = false;
+                                })));
+                      },
                 child: const Text("Tiếp")),
           ],
         ),

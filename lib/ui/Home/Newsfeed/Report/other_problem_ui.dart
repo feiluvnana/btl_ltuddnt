@@ -46,8 +46,8 @@ class OtherProblemUI extends StatelessWidget {
                           border: index != label.length - 1
                               ? const Border(bottom: BorderSide(color: Colors.black26))
                               : null),
-                      child: AFBListTile(
-                        label: label[index],
+                      child: AFBChevronRightListTile(
+                        leading: Text(label[index], style: themeData.textTheme.titleMedium),
                         onTap: () => Navigator.push(context,
                             MaterialPageRoute(builder: (context) => ProblemDetailUI(index: index))),
                       ),

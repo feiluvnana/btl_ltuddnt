@@ -1,11 +1,17 @@
+import 'dart:io';
+
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/emoji.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PostCreateUpdateUI extends StatefulWidget {
   final Post? post;
@@ -18,12 +24,26 @@ class PostCreateUpdateUI extends StatefulWidget {
 
 class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
   final ctrl = TextEditingController();
-  final List<dynamic> options = [
-    {"label": "\u{1f5bc} Ảnh/Video", "action": () {}},
+  late final List<dynamic> options = [
+    {
+      "label": "\u{1f5bc} Ảnh/Video",
+      "action": () {
+        ImagePicker().pickMultiImage().then((value) {
+          setState(() {
+            images = value.map((e) => File(e.path)).toList();
+            medias = value.map((e) => Image.file(File(e.path), fit: BoxFit.cover)).toList();
+          });
+        });
+      }
+    },
     {"label": "\u{1f600} Cảm xúc/Hoạt động", "action": () {}},
     {"label": "\u{1f4f7} Camera", "action": () {}}
   ];
   final focusNode = FocusNode();
+
+  List<File>? images;
+  File? video;
+
   List<Widget> medias = [];
   bool isExpanded = true;
 
@@ -52,96 +72,64 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
       onWillPop: () async {
         bool isPop = false;
         isPop = (widget.post == null)
-            ? (await showModalBottomSheet<bool>(
-                    shape: const RoundedRectangleBorder(),
+            ? (await showAFBModalBottomSheet<bool>(
                     context: context,
-                    builder: (context) => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0, top: 8.0),
-                              child: Text(
-                                "Bạn muốn hoàn thành bài viết của mình sau?",
-                                style: themeData.textTheme.bodyLarge,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
-                              child: Text(
-                                "Lưu làm bản nháp hoặc bạn có thể tiếp tục chỉnh sửa",
-                                style: themeData.textTheme.bodySmall,
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  //save draft
-                                  Navigator.maybePop(context, true);
-                                },
-                                child: const Row(
-                                    children: [Icon(Icons.save), Text(" Lưu làm bản nháp")]),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  Navigator.maybePop(context, true);
-                                },
-                                child:
-                                    const Row(children: [Icon(Icons.delete), Text(" Bỏ bài viết")]),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  Navigator.maybePop(context, false);
-                                },
-                                child: Row(children: [
-                                  Icon(
-                                    Icons.check,
-                                    color: themeData.primaryColor,
-                                  ),
-                                  Text(" Tiếp tục chỉnh sửa",
-                                      style: themeData.textTheme.bodyMedium
-                                          ?.copyWith(color: themeData.primaryColor))
-                                ]),
-                              ),
-                            ),
-                          ],
-                        )) ??
+                    header: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Bạn muốn hoàn thành bài viết của mình sau?",
+                            style: themeData.textTheme.bodyLarge),
+                        Text("Lưu làm bản nháp hoặc bạn có thể tiếp tục chỉnh sửa",
+                            style: themeData.textTheme.bodySmall),
+                      ],
+                    ),
+                    blocks: [
+                      [
+                        AFBBottomSheetListTile(
+                            onTap: () {
+                              //TODO: Save draft
+                              Navigator.maybePop(context, true);
+                            },
+                            leading: Icons.save,
+                            title: "Lưu làm bản nháp"),
+                        AFBBottomSheetListTile(
+                            onTap: () {
+                              Navigator.maybePop(context, true);
+                            },
+                            leading: Icons.delete,
+                            title: "Bỏ bài viết"),
+                        AFBBottomSheetListTile(
+                            onTap: () {
+                              Navigator.maybePop(context, false);
+                            },
+                            color: themeData.primaryColor,
+                            leading: Icons.check,
+                            title: "Tiếp tục chỉnh sửa")
+                      ]
+                    ]) ??
                 false)
-            : (await showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                          title: Text(
-                            "Bỏ thay đổi?",
-                            style: themeData.textTheme.bodyLarge,
-                          ),
-                          content: const Text(
-                              "Nếu bỏ bây giờ thì bạn sẽ mất mọi thay đổi trên bài viết này."),
-                          actions: [
-                            GestureDetector(
-                                onTap: () {
-                                  Navigator.maybePop(context, false);
-                                },
-                                child: const Text("TIẾP TỤC CHỈNH SỬA")),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.maybePop(context, true);
-                              },
-                              child: Text("BỎ",
-                                  style: themeData.textTheme.bodyMedium
-                                      ?.copyWith(color: themeData.primaryColor)),
-                            )
-                          ],
-                        )) ??
+            : (await showAFBDialog<bool>(
+                  context: context,
+                  title: Text("Bỏ thay đổi?", style: themeData.textTheme.bodyLarge),
+                  content:
+                      const Text("Nếu bỏ bây giờ thì bạn sẽ mất mọi thay đổi trên bài viết này."),
+                  actions: [
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.maybePop(context, false);
+                        },
+                        child: const Text("TIẾP TỤC CHỈNH SỬA")),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.maybePop(context, true);
+                      },
+                      child: Text("BỎ",
+                          style: themeData.textTheme.bodyMedium
+                              ?.copyWith(color: themeData.primaryColor)),
+                    )
+                  ],
+                ) ??
                 false);
         return isPop;
       },
@@ -160,9 +148,9 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
           actions: [
             TextButton(
                 onPressed: () {
-                  context
-                      .read<NewsfeedBloc>()
-                      .add(NewsfeedAddPost(described: ctrl.text, status: "Not Hyped"));
+                  context.read<NewsfeedBloc>().add(NewsfeedAddPost(
+                      described: ctrl.text, status: "Not Hyped", image: images, video: video));
+                  Navigator.pop(context);
                 },
                 child: const Text("ĐĂNG"))
           ],
@@ -171,15 +159,21 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                children: [
-                  const CircleUserAvatar(),
-                  const SizedBox(width: 10),
-                  Text(
-                    "Author Placeholder",
-                    style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                  )
-                ],
+              child: BlocBuilder<AuthenBloc, AuthenState>(
+                buildWhen: (previous, current) => previous.user != current.user,
+                builder: (context, state) {
+                  return Row(
+                    children: [
+                      CircularUserAvatar(imageUrl: state.user?.avatar ?? ""),
+                      const SizedBox(width: 10),
+                      Text(
+                        state.user?.username ?? "",
+                        style:
+                            themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  );
+                },
               ),
             ),
             Padding(
@@ -255,12 +249,15 @@ class _CreatePostOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 50,
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.all(10),
-        width: double.infinity,
-        decoration: const BoxDecoration(border: Border(top: BorderSide(color: Colors.grey))),
-        child: Text(label));
+    return InkWell(
+      onTap: action,
+      child: Container(
+          height: 50,
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          decoration: const BoxDecoration(border: Border(top: BorderSide(color: Colors.grey))),
+          child: Text(label)),
+    );
   }
 }

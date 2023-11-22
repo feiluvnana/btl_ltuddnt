@@ -1,12 +1,20 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/verify_signup.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/verify_code.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AgreementSignupUI extends StatelessWidget {
+class AgreementSignupUI extends StatefulWidget {
   const AgreementSignupUI({super.key});
+
+  @override
+  State<AgreementSignupUI> createState() => _AgreementSignupUIState();
+}
+
+class _AgreementSignupUIState extends State<AgreementSignupUI> {
+  bool isLocked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,14 +79,26 @@ class AgreementSignupUI extends StatelessWidget {
                       " mô tả các cách chúng tôi có thể dùng thông tin thu thập được khi bạn tạo tài khoản. Chẳng hạn, chúng tôi sử dụng thông tin này để cung cấp, cá nhân hóa và cải thiện các sản phẩm của mình, bao gồm quảng cáo."),
             ])),
             const SizedBox(height: 10),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: themeData.canvasColor,
-                    backgroundColor: themeData.primaryColor),
-                onPressed: () {
-                  context.read<SignupBloc>().add(SignupRequest(() => Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => VerifySignupUI()))));
-                },
+            AFBPrimaryEButton(
+                onPressed: isLocked
+                    ? null
+                    : () {
+                        setState(() {
+                          isLocked = true;
+                        });
+                        context.read<AuthenBloc>().add(AuthenSignupRequest(
+                            () => Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => VerifyCodeUI(
+                                        email:
+                                            context.read<AuthenBloc>().state.signupInfo["email"]!,
+                                        mode: VerifyMode.signup)),
+                                (route) => false),
+                            () => setState(() {
+                                  isLocked = false;
+                                })));
+                      },
                 child: const Text("Tôi đồng ý")),
             const Spacer(),
             Center(

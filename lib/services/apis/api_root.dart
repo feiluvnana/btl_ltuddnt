@@ -36,13 +36,13 @@ class ApiRoot {
       var response = await dio.post(path, data: data, queryParameters: params);
       if (kDebugMode) {
         print(
-            "Method:POST\nURL:${response.realUri}\nBody:$data\nStatus:${response.statusCode}\nResponse:${response.data}");
+            "Method:POST\nURL:${response.realUri}\nBody:${(data is FormData) ? data.files.first.value.contentType : data}\nStatus:${response.statusCode}\nResponse:${response.data}");
       }
       return response.data;
     } on DioException catch (e) {
       if (kDebugMode) {
         print(
-            "Method:POST\nURL:${e.response?.realUri}\nBody:$data\nStatus:${e.response?.statusCode}\nResponse:${e.response?.data}");
+            "Method:POST\nURL:${e.response?.realUri}\nBody:${(data is FormData) ? data.files.first.value.contentType : data}\nStatus:${e.response?.statusCode}\nResponse:${e.response?.data}");
       }
       return e.response?.data;
     }

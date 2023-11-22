@@ -1,5 +1,7 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/detail_image_view.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/skeleton_wrapper.dart';
@@ -53,7 +55,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
                   padding: const EdgeInsets.all(10),
                   child: SkeletonWrapper(
                       enabled: isLoading,
-                      child: CircleUserAvatar(imageUrl: widget.post.author.avatar)),
+                      child: CircularUserAvatar(imageUrl: widget.post.author.avatar)),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,67 +87,22 @@ class _PostMediaUIState extends State<PostMediaUI> {
                   padding: const EdgeInsets.only(right: 10),
                   child: GestureDetector(
                       onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            shape: const RoundedRectangleBorder(),
-                            builder: (context) => Column(
-                                  children: [
-                                    InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.notifications),
-                                            const SizedBox(width: 10),
-                                            Text("Tắt thông báo về bài viết này",
-                                                style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.save),
-                                            const SizedBox(width: 10),
-                                            Text("Lưu bài viết",
-                                                style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.delete),
-                                            const SizedBox(width: 10),
-                                            Text("Xóa", style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.edit),
-                                            const SizedBox(width: 10),
-                                            Text("Chỉnh sửa bài viết",
-                                                style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        )),
-                                    InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(children: [
-                                            const Icon(Icons.link),
-                                            const SizedBox(width: 10),
-                                            Text("Tắt thông báo về bài viết này",
-                                                style: themeData.textTheme.bodyLarge)
-                                          ]),
-                                        ))
-                                  ],
-                                ));
+                        showAFBModalBottomSheet(context: context, blocks: [
+                          [
+                            AFBBottomSheetListTile(
+                                onTap: () {},
+                                leading: Icons.notifications,
+                                title: "Tắt thông báo về bài viết này"),
+                            AFBBottomSheetListTile(
+                                onTap: () {}, leading: Icons.save, title: "Lưu bài viết"),
+                            AFBBottomSheetListTile(
+                                onTap: () {}, leading: Icons.delete, title: "Xóa"),
+                            AFBBottomSheetListTile(
+                                onTap: () {}, leading: Icons.edit, title: "Chỉnh sửa bài viết"),
+                            AFBBottomSheetListTile(
+                                onTap: () {}, leading: Icons.link, title: "Sao chép liên kết"),
+                          ]
+                        ]);
                       },
                       child: const Icon(Icons.more_horiz, color: Colors.grey)),
                 ),

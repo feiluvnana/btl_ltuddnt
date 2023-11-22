@@ -1,7 +1,6 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/inappwebview.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:intl/intl.dart';
 
 String formatPostCreatedTime(DateTime date) {
@@ -13,21 +12,25 @@ String formatPostCreatedTime(DateTime date) {
   return (diff.inDays ~/ 365).toString();
 }
 
+String? getFirstLink(String text) {
+  RegExpMatch? match =
+      RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+', caseSensitive: false)
+          .firstMatch(text);
+  return match == null ? null : text.substring(match.start, match.end);
+}
+
 TextSpan formatPostDescribed(String described, ThemeData themeData) {
   List<int> indexes = [];
   List<int> links = [];
   List<int> hashtags = [];
-  RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+',
-          caseSensitive: false)
+  RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+', caseSensitive: false)
       .allMatches(described)
       .forEach((e) {
     indexes.add(e.start);
     indexes.add(e.end);
     links.add(e.start);
   });
-  RegExp(r'#[a-z0-9_]+', caseSensitive: false)
-      .allMatches(described)
-      .forEach((e) {
+  RegExp(r'#[a-z0-9_]+', caseSensitive: false).allMatches(described).forEach((e) {
     indexes.add(e.start);
     indexes.add(e.end);
     hashtags.add(e.start);
@@ -43,12 +46,11 @@ TextSpan formatPostDescribed(String described, ThemeData themeData) {
 
   for (int i = 0; i < indexes.length - 1; i++) {
     fragments.add({
-      described.substring(indexes[i], indexes[i + 1]):
-          links.contains(indexes[i])
-              ? "link"
-              : hashtags.contains(indexes[i])
-                  ? "hash"
-                  : "plain"
+      described.substring(indexes[i], indexes[i + 1]): links.contains(indexes[i])
+          ? "link"
+          : hashtags.contains(indexes[i])
+              ? "hash"
+              : "plain"
     });
   }
 
@@ -66,18 +68,15 @@ TextSpan formatPostDescribed(String described, ThemeData themeData) {
           text: f.keys.first,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              navigatorKey.currentState?.push(MaterialPageRoute(
-                  builder: (context) =>
-                      AFBInAppWebView(uri: Uri.parse(f.keys.first))));
+              InAppBrowser()
+                  .openUrlRequest(urlRequest: URLRequest(url: Uri.tryParse(f.keys.first)));
             },
-          style: themeData.textTheme.bodyMedium
-              ?.copyWith(color: Colors.lightBlue)));
+          style: themeData.textTheme.bodyMedium?.copyWith(color: Colors.lightBlue)));
     } else if (f.values.first == "hash") {
       spans.add(TextSpan(
           text: f.keys.first,
           recognizer: TapGestureRecognizer()..onTap = () {},
-          style: themeData.textTheme.bodyMedium
-              ?.copyWith(color: themeData.primaryColor)));
+          style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor)));
     } else {
       spans.add(TextSpan(text: f.keys.first));
     }

@@ -39,21 +39,21 @@ class _ExpandableTextState extends State<ExpandableText> {
                   ),
                 ),
               )),
-      child: InkWell(
-        onTap: () => setState(() {
-          isExpanded = !isExpanded;
-        }),
-        child: LayoutBuilder(builder: (context, size) {
-          var tp = TextPainter(
-            maxLines: isExpanded ? null : 5,
-            textAlign: TextAlign.left,
-            textDirection: TextDirection.ltr,
-            text: formatPostDescribed(widget.post.described, themeData),
-          );
-          tp.layout(maxWidth: size.maxWidth);
-          var exceeded = tp.didExceedMaxLines;
-          if (exceeded) {
-            return Text.rich(
+      child: LayoutBuilder(builder: (context, size) {
+        var tp = TextPainter(
+          maxLines: isExpanded ? null : 5,
+          textAlign: TextAlign.left,
+          textDirection: TextDirection.ltr,
+          text: formatPostDescribed(widget.post.described, themeData),
+        );
+        tp.layout(maxWidth: size.maxWidth);
+        var exceeded = tp.didExceedMaxLines;
+        if (exceeded) {
+          return InkWell(
+            onTap: () => setState(() {
+              isExpanded = !isExpanded;
+            }),
+            child: Text.rich(
               TextSpan(children: [
                 formatPostDescribed(widget.post.described.substring(0, 150), themeData),
                 TextSpan(
@@ -63,9 +63,14 @@ class _ExpandableTextState extends State<ExpandableText> {
               ]),
               overflow: TextOverflow.ellipsis,
               maxLines: 5,
-            );
-          } else if (isExpanded) {
-            return Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+            ),
+          );
+        } else if (isExpanded) {
+          return InkWell(
+            onTap: () => setState(() {
+              isExpanded = !isExpanded;
+            }),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
               Text.rich(
                 formatPostDescribed(widget.post.described, themeData),
                 maxLines: 10000000,
@@ -76,15 +81,15 @@ class _ExpandableTextState extends State<ExpandableText> {
                 style: themeData.textTheme.bodyMedium?.copyWith(
                     color: themeData.colorScheme.inverseSurface, fontWeight: FontWeight.w500),
               )
-            ]);
-          } else {
-            return Text.rich(
-              formatPostDescribed(widget.post.described, themeData),
-              overflow: TextOverflow.ellipsis,
-            );
-          }
-        }),
-      ),
+            ]),
+          );
+        } else {
+          return Text.rich(
+            formatPostDescribed(widget.post.described, themeData),
+            overflow: TextOverflow.ellipsis,
+          );
+        }
+      }),
     );
   }
 }

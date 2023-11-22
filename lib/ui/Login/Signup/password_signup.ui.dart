@@ -1,6 +1,7 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/save_info_signup.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,17 +40,20 @@ class _PasswordSignupUIState extends State<PasswordSignupUI> {
             const Text(
                 "Tạo mật khẩu gồm <wait_for_description>. Bạn nên chọn mật khẩu thật khó đoán."),
             const SizedBox(height: 10),
-            BlocBuilder<SignupBloc, SignupState>(
-              buildWhen: (previous, current) => previous.password != current.password,
+            BlocBuilder<AuthenBloc, AuthenState>(
+              buildWhen: (previous, current) =>
+                  previous.signupInfo["password"] != current.signupInfo["password"],
               builder: (context, state) {
                 return Form(
                   key: formKey,
                   child: TextFormField(
-                    initialValue: state.password,
+                    initialValue: state.signupInfo["password"],
                     validator: Validators.signupPasswordValidator,
                     obscureText: isHidden,
                     onChanged: (value) {
-                      context.read<SignupBloc>().add(SignupPasswordChange(password: value));
+                      context
+                          .read<AuthenBloc>()
+                          .add(AuthenSignupInfoChange({...state.signupInfo, "password": value}));
                     },
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(15),
@@ -70,10 +74,7 @@ class _PasswordSignupUIState extends State<PasswordSignupUI> {
                 );
               },
             ),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: themeData.canvasColor,
-                    backgroundColor: themeData.primaryColor),
+            AFBPrimaryEButton(
                 onPressed: () {
                   if (formKey.currentState?.validate() != true) return;
                   Navigator.push(

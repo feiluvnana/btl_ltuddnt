@@ -1,8 +1,9 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/change_profile_after_signup.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/verify_signup.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/enum.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/verify_code.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,39 +17,42 @@ class LoginUI extends StatefulWidget {
 
 class _LoginUIState extends State<LoginUI> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final TextEditingController _username = TextEditingController();
-  final TextEditingController _password = TextEditingController();
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
   bool isHidden = true;
+  bool isLocked = false;
 
   void router(int? active) {
     switch (active) {
       case 1:
-        _username.text = "";
-        _password.text = "";
         Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+        email.text = "";
+        password.text = "";
         break;
       case 0:
-        _username.text = "";
-        _password.text = "";
-        Navigator.push(context, MaterialPageRoute(builder: (_) => VerifySignupUI()));
+        context.read<AuthenBloc>().add(AuthenGetVerifyCode(email.text, () {}));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => VerifyCodeUI(email: email.text, mode: VerifyMode.signup)));
+        email.text = "";
+        password.text = "";
         break;
       case -1:
-        _username.text = "";
-        _password.text = "";
         Navigator.push(
             context, MaterialPageRoute(builder: (_) => const ChangeProfileAfterSignupUI()));
+        email.text = "";
+        password.text = "";
         break;
       case null:
-        showDialog(
+        showAFBDialog(
             context: context,
-            builder: (context) => AlertDialog(
-                    title: const Text("Thông báo"),
-                    content: const Text("Sai tài khoản hoặc mật khẩu!"),
-                    actions: [
-                      TextButton(
-                          onPressed: () => Navigator.maybePop(context),
-                          child: const Text("Xác nhận"))
-                    ]));
+            title: const Text("Thông báo"),
+            content: const Text("Sai tài khoản hoặc mật khẩu!"),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.maybePop(context), child: const Text("Xác nhận"))
+            ]);
         break;
     }
   }
@@ -83,11 +87,9 @@ class _LoginUIState extends State<LoginUI> {
                 ),
                 const Spacer(),
                 TextFormField(
-                  controller: _username,
+                  controller: email,
                   validator: Validators.loginUsernameValidator,
-                  onChanged: (value) {
-                    setState(() {});
-                  },
+                  onChanged: (value) => setState(() {}),
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(15),
                       label: const Text("Số di động hoặc email"),
@@ -95,12 +97,10 @@ class _LoginUIState extends State<LoginUI> {
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
-                  controller: _password,
+                  controller: password,
                   obscureText: isHidden,
                   validator: Validators.loginPasswordValidator,
-                  onChanged: (value) {
-                    setState(() {});
-                  },
+                  onChanged: (value) => setState(() {}),
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(15),
                       label: const Text("Mật khẩu"),
@@ -117,42 +117,45 @@ class _LoginUIState extends State<LoginUI> {
                 ),
                 const SizedBox(height: 15),
                 BlocBuilder<AuthenBloc, AuthenState>(
-                  buildWhen: (previous, current) => previous.status != current.status,
                   builder: (context, state) {
                     return ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: themeData.canvasColor,
-                          backgroundColor: _password.text.isNotEmpty && _username.text.isNotEmpty
+                          backgroundColor: password.text.isNotEmpty && email.text.isNotEmpty
                               ? themeData.primaryColor
                               : null,
                         ),
-                        onPressed: (_password.text.isNotEmpty &&
-                                _username.text.isNotEmpty &&
-                                state.status != AuthenStatus.authenticating)
+                        onPressed: (password.text.isNotEmpty && email.text.isNotEmpty && !isLocked)
                             ? () async {
                                 if (formKey.currentState?.validate() == true) {
+                                  setState(() {
+                                    isLocked = true;
+                                  });
                                   BlocProvider.of<AuthenBloc>(context).add(AuthenLogin(
-                                      _username.text, _password.text, (active) => router(active)));
+                                      email.text,
+                                      password.text,
+                                      (active) => router(active),
+                                      () => setState(() {
+                                            isLocked = false;
+                                          })));
                                 }
                               }
                             : null,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            state.status == AuthenStatus.authenticating
-                                ? const CupertinoActivityIndicator()
-                                : const Icon(Icons.login),
+                            isLocked ? const CupertinoActivityIndicator() : const Icon(Icons.login),
                             const Text(" Đăng nhập"),
                           ],
                         ));
                   },
                 ),
-                GestureDetector(
-                    onTap: () =>
+                TextButton(
+                    onPressed: () =>
                         Navigator.pushNamedAndRemoveUntil(context, "/forget", (route) => false),
                     child: const Center(child: Text("Bạn quên mật khẩu ư?"))),
                 const Spacer(),
-                ElevatedButton(
+                AFBSecondaryEButton(
                     onPressed: () =>
                         Navigator.pushNamedAndRemoveUntil(context, "/signup", (route) => false),
                     child: const Text("Tạo tài khoản mới")),

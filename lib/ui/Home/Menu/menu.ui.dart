@@ -1,5 +1,9 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MenuUI extends StatelessWidget {
   const MenuUI({super.key});
@@ -18,7 +22,7 @@ class MenuUI extends StatelessWidget {
           MenuHelpCenter(),
           Divider(indent: 10, endIndent: 10),
           MenuSettings(),
-          _MenuLogoutButton()
+          MenuLogoutButton()
         ],
       ),
     );
@@ -36,7 +40,7 @@ class MenuHeader extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           "Menu",
-          style: themeData.textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.bold),
+          style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const Spacer(),
         GestureDetector(
@@ -111,7 +115,7 @@ class _MenuHelpCenterState extends State<MenuHelpCenter> {
           ),
         ),
         ...List.generate(isCollapsed ? 0 : menu.length, (index) {
-          return MenuItem(data: menu[index]);
+          return AFBMenuOptionListTile(data: menu[index]);
         }),
       ],
     );
@@ -129,7 +133,11 @@ class MenuProfile extends StatelessWidget {
       child: Row(
         children: [
           const SizedBox(width: 10),
-          const CircleUserAvatar(),
+          BlocBuilder<AuthenBloc, AuthenState>(
+            builder: (context, state) {
+              return CircularUserAvatar(imageUrl: state.user?.avatar ?? "");
+            },
+          ),
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
@@ -147,19 +155,16 @@ class MenuProfile extends StatelessWidget {
   }
 }
 
-class _MenuLogoutButton extends StatelessWidget {
-  const _MenuLogoutButton();
+class MenuLogoutButton extends StatelessWidget {
+  const MenuLogoutButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            elevation: 2,
-            surfaceTintColor: Colors.black26),
+      child: AFBDangerEButton(
         onPressed: () {
+          context.read<AuthenBloc>().add(const AuthenLogout());
           Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
         },
         child:
@@ -213,15 +218,11 @@ class _MenuShortcutsState extends State<MenuShortcuts> {
           ),
         ),
         ...List.generate(isCollapsed ? menu.length ~/ 2 : menu.length, (index) {
-          return MenuItem(data: menu[index]);
+          return AFBMenuOptionListTile(data: menu[index]);
         }),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                elevation: 2,
-                surfaceTintColor: Colors.black26),
+          child: AFBSecondaryEButton(
             onPressed: () {
               setState(() {
                 isCollapsed = !isCollapsed;
@@ -286,35 +287,9 @@ class _MenuSettingsState extends State<MenuSettings> {
           ),
         ),
         ...List.generate(isCollapsed ? 0 : menu.length, (index) {
-          return MenuItem(data: menu[index]);
+          return AFBMenuOptionListTile(data: menu[index]);
         }),
       ],
-    );
-  }
-}
-
-class MenuItem extends StatelessWidget {
-  const MenuItem({super.key, required this.data});
-
-  final Map<String, dynamic> data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            padding: const EdgeInsets.all(10)),
-        onPressed: data["action"],
-        child: Row(
-          children: [
-            Icon(data["icon"]),
-            const SizedBox(width: 10),
-            Text(data["label"]),
-          ],
-        ),
-      ),
     );
   }
 }

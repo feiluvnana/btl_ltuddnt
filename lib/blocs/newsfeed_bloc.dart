@@ -28,6 +28,19 @@ class NewsfeedAddPost extends NewsfeedEvent {
   const NewsfeedAddPost({this.described, this.status, this.image, this.video});
 }
 
+class NewsfeedReportPost extends NewsfeedEvent {
+  final int id;
+  final String subject, detail;
+
+  NewsfeedReportPost({required this.id, required this.subject, required this.detail});
+}
+
+class NewsfeedDeletePost extends NewsfeedEvent {
+  final int id;
+
+  NewsfeedDeletePost({required this.id});
+}
+
 class NewsfeedInit extends NewsfeedEvent {
   const NewsfeedInit();
 }
@@ -39,8 +52,12 @@ class NewsfeedState with _$NewsfeedState {
 
 class NewsfeedBloc extends Bloc<NewsfeedEvent, NewsfeedState> {
   NewsfeedBloc() : super(const NewsfeedState()) {
-    on<NewsfeedPostRefresh>((event, emit) async {});
+    on<NewsfeedPostRefresh>((event, emit) async {
+      emit(state.copyWith(posts: null));
+      add(const NewsfeedInit());
+    });
     on<NewsfeedAddPost>((event, emit) async {
+      Fluttertoast.showToast(msg: "Bài viết đang được tải lên. Hãy đợi trong giây lát.");
       await Api()
           .addPost(
               image: event.image,
@@ -80,6 +97,30 @@ class NewsfeedBloc extends Bloc<NewsfeedEvent, NewsfeedState> {
           Fluttertoast.showToast(msg: "Lấy bài viết thành công.");
           emit(state.copyWith(
               posts: (value["data"]["post"] as List).map((e) => Post.fromJson(e)).toList()));
+        }
+      });
+    });
+    on<NewsfeedReportPost>((event, emit) async {
+      await Api().reportPost(event.id, event.subject, event.detail).then((value) {
+        if (value == null) {
+          Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+        } else if (value["code"] != "1000") {
+          Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        } else {
+          Fluttertoast.showToast(msg: "Báo cáo bài viết thành công.");
+        }
+      });
+    });
+    on<NewsfeedDeletePost>((event, emit) async {
+      await Api().deletePost(event.id).then((value) {
+        if (value == null) {
+          Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+        } else if (value["code"] != "1000") {
+          Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        } else {
+          Fluttertoast.showToast(msg: "Xóa bài viết thành công.");
+          emit(state.copyWith(
+              posts: state.posts?.where((element) => element.id != event.id).toList()));
         }
       });
     });

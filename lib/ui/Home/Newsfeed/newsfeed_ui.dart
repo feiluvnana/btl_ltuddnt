@@ -1,3 +1,4 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/post_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
@@ -6,68 +7,91 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'Create&Update/post_create_update_ui.dart';
 
-class NewsfeedUI extends StatelessWidget {
+class NewsfeedUI extends StatefulWidget {
   const NewsfeedUI({super.key});
 
   @override
+  State<NewsfeedUI> createState() => _NewsfeedUIState();
+}
+
+class _NewsfeedUIState extends State<NewsfeedUI> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return RefreshIndicator(
       onRefresh: () async {
         context.read<NewsfeedBloc>().add(const NewsfeedPostRefresh());
       },
-      child: SingleChildScrollView(
-        child: BlocBuilder<NewsfeedBloc, NewsfeedState>(
-          buildWhen: (previous, current) => previous.posts != current.posts,
-          builder: (context, state) {
-            return Column(
-              children: [
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircleUserAvatar(),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 15, top: 8, bottom: 8),
-                        decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all()),
-                        child: const Text("Bạn đang nghĩ gì?"),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const PostCreateUpdateUI()));
-                          },
-                          child: const Icon(Icons.image)),
-                    )
-                  ],
-                ),
-                switch (state.posts?.isEmpty) {
-                  true => const Center(
-                        child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(),
-                    )),
-                  false => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: List.generate(
-                          state.posts?.length ?? 0, (index) => PostUI(post: state.posts![index])),
-                    ),
-                  null => const Center(child: Text("Không có bài viết..."))
-                }
-              ],
-            );
-          },
-        ),
+      child: BlocBuilder<NewsfeedBloc, NewsfeedState>(
+        buildWhen: (previous, current) => previous.posts != current.posts,
+        builder: (context, state) {
+          return switch (state.posts?.isEmpty) {
+            null => const Column(
+                children: [
+                  CreatePostBar(),
+                  Center(
+                      child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator(),
+                  )),
+                ],
+              ),
+            false => ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (context, index) =>
+                    index == 0 ? const CreatePostBar() : PostUI(post: state.posts![index - 1]),
+                itemCount: (state.posts?.length ?? 0) + 1),
+            true => const Column(
+                children: [
+                  CreatePostBar(),
+                  Center(child: Text("Không có bài viết...")),
+                ],
+              )
+          };
+        },
       ),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class CreatePostBar extends StatelessWidget {
+  const CreatePostBar({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: BlocBuilder<AuthenBloc, AuthenState>(
+            builder: (context, state) {
+              return CircularUserAvatar(imageUrl: state.user?.avatar ?? "");
+            },
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => const PostCreateUpdateUI()));
+            },
+            child: Container(
+              padding: const EdgeInsets.only(left: 15, top: 8, bottom: 8),
+              decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all()),
+              child: const Text("Bạn đang nghĩ gì?"),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10)
+      ],
     );
   }
 }

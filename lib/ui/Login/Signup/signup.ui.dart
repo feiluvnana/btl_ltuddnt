@@ -1,4 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/email_signup.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -29,15 +30,12 @@ class SignupUI extends StatelessWidget {
             const FlutterLogo(size: 100),
             const Text(
                 "Tạo tài khoản để kết nối với bạn bè, người thân và cộng đồng có chung sở thích."),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: themeData.canvasColor,
-                    backgroundColor: themeData.primaryColor),
+            AFBPrimaryEButton(
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (_) => EmailSignupUI()));
                 },
                 child: const Text("Bắt đầu")),
-            ElevatedButton(
+            AFBSecondaryEButton(
                 onPressed: () {
                   Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
                 },

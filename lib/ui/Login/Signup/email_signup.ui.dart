@@ -1,6 +1,7 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/password_signup.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -34,17 +35,20 @@ class EmailSignupUI extends StatelessWidget {
             const Text(
                 "Nhập email có thể dùng để liên hệ với bạn. Thông tin này sẽ không hiển thị với ai khác trên trang cá nhân của bạn."),
             const SizedBox(height: 10),
-            BlocBuilder<SignupBloc, SignupState>(
-              buildWhen: (previous, current) => previous.email != current.email,
+            BlocBuilder<AuthenBloc, AuthenState>(
+              buildWhen: (previous, current) =>
+                  previous.signupInfo["email"] != current.signupInfo["email"],
               builder: (context, state) {
                 return Form(
                   key: formKey,
                   child: TextFormField(
-                    initialValue: state.email,
+                    initialValue: state.signupInfo["email"],
                     keyboardType: TextInputType.emailAddress,
                     validator: Validators.signupEmailValidator,
                     onChanged: (value) {
-                      context.read<SignupBloc>().add(SignupEmailChange(email: value));
+                      context
+                          .read<AuthenBloc>()
+                          .add(AuthenSignupInfoChange({...state.signupInfo, "email": value}));
                     },
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(15),
@@ -63,10 +67,7 @@ class EmailSignupUI extends StatelessWidget {
                   style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
                   recognizer: TapGestureRecognizer()..onTap = () {})
             ])),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: themeData.canvasColor,
-                    backgroundColor: themeData.primaryColor),
+            AFBPrimaryEButton(
                 onPressed: () {
                   if (formKey.currentState?.validate() != true) return;
                   Navigator.push(

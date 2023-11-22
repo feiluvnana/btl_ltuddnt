@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$AuthenState {
-  AuthenStatus get status => throw _privateConstructorUsedError;
+  Map<String, String> get signupInfo => throw _privateConstructorUsedError;
   User? get user => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -30,7 +30,7 @@ abstract class $AuthenStateCopyWith<$Res> {
           AuthenState value, $Res Function(AuthenState) then) =
       _$AuthenStateCopyWithImpl<$Res, AuthenState>;
   @useResult
-  $Res call({AuthenStatus status, User? user});
+  $Res call({Map<String, String> signupInfo, User? user});
 
   $UserCopyWith<$Res>? get user;
 }
@@ -48,14 +48,14 @@ class _$AuthenStateCopyWithImpl<$Res, $Val extends AuthenState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = null,
+    Object? signupInfo = null,
     Object? user = freezed,
   }) {
     return _then(_value.copyWith(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as AuthenStatus,
+      signupInfo: null == signupInfo
+          ? _value.signupInfo
+          : signupInfo // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
       user: freezed == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -84,7 +84,7 @@ abstract class _$$AuthenStateImplCopyWith<$Res>
       __$$AuthenStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({AuthenStatus status, User? user});
+  $Res call({Map<String, String> signupInfo, User? user});
 
   @override
   $UserCopyWith<$Res>? get user;
@@ -101,14 +101,14 @@ class __$$AuthenStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = null,
+    Object? signupInfo = null,
     Object? user = freezed,
   }) {
     return _then(_$AuthenStateImpl(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as AuthenStatus,
+      signupInfo: null == signupInfo
+          ? _value._signupInfo
+          : signupInfo // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
       user: freezed == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -121,17 +121,24 @@ class __$$AuthenStateImplCopyWithImpl<$Res>
 
 class _$AuthenStateImpl implements _AuthenState {
   const _$AuthenStateImpl(
-      {this.status = AuthenStatus.unauthenticated, this.user});
+      {final Map<String, String> signupInfo = const {}, this.user})
+      : _signupInfo = signupInfo;
 
+  final Map<String, String> _signupInfo;
   @override
   @JsonKey()
-  final AuthenStatus status;
+  Map<String, String> get signupInfo {
+    if (_signupInfo is EqualUnmodifiableMapView) return _signupInfo;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_signupInfo);
+  }
+
   @override
   final User? user;
 
   @override
   String toString() {
-    return 'AuthenState(status: $status, user: $user)';
+    return 'AuthenState(signupInfo: $signupInfo, user: $user)';
   }
 
   @override
@@ -139,12 +146,14 @@ class _$AuthenStateImpl implements _AuthenState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AuthenStateImpl &&
-            (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality()
+                .equals(other._signupInfo, _signupInfo) &&
             (identical(other.user, user) || other.user == user));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, user);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_signupInfo), user);
 
   @JsonKey(ignore: true)
   @override
@@ -154,11 +163,12 @@ class _$AuthenStateImpl implements _AuthenState {
 }
 
 abstract class _AuthenState implements AuthenState {
-  const factory _AuthenState({final AuthenStatus status, final User? user}) =
-      _$AuthenStateImpl;
+  const factory _AuthenState(
+      {final Map<String, String> signupInfo,
+      final User? user}) = _$AuthenStateImpl;
 
   @override
-  AuthenStatus get status;
+  Map<String, String> get signupInfo;
   @override
   User? get user;
   @override
