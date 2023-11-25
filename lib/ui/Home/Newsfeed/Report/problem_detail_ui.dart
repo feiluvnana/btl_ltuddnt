@@ -190,7 +190,7 @@ VD: hình ảnh hoặc nội dung khác gây khó chịu""",
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            Expanded(child: detail),
+            Expanded(child: SingleChildScrollView(child: detail)),
             AFBPrimaryEButton(
                 onPressed: () {},
                 child: SizedBox(

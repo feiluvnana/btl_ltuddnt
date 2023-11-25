@@ -9,8 +9,7 @@ class SaveInfoSignupUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: TransparentAppBar(
         title: Text(
           "Lưu thông tin đăng nhập",
@@ -64,6 +63,6 @@ class SaveInfoSignupUI extends StatelessWidget {
           ],
         ),
       ),
-    ));
+    );
   }
 }

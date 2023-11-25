@@ -1,4 +1,4 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
@@ -28,8 +28,7 @@ class _SecurityUIState extends State<SecurityUI> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: TransparentAppBar(
         title: Text("Bảo mật", style: themeData.textTheme.titleMedium),
         leading: IconButton(
@@ -53,7 +52,7 @@ class _SecurityUIState extends State<SecurityUI> {
           ],
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -70,12 +69,12 @@ class _SecurityChangePassUIState extends State<SecurityChangePassUI> {
   final newPassword = TextEditingController();
   final newPassword2 = TextEditingController();
   var obscureText = true;
+  var isLocked = false;
 
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: TransparentAppBar(
         title: Text("Đổi mật khẩu", style: themeData.textTheme.titleMedium),
         leading: IconButton(
@@ -132,14 +131,17 @@ class _SecurityChangePassUIState extends State<SecurityChangePassUI> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: AFBPrimaryEButton(
-                  onPressed: () {
-                    if (formKey.currentState?.validate() != true) return;
-                    context
-                        .read<AuthenBloc>()
-                        .add(AuthenChangePassword(password.text, newPassword.text, () {
-                          Navigator.maybePop(context);
-                        }));
-                  },
+                  onPressed: isLocked
+                      ? null
+                      : () {
+                          if (formKey.currentState?.validate() != true) return;
+                          setState(() => isLocked = true);
+                          context
+                              .read<AuthenBloc>()
+                              .add(AuthenChangePassword(password.text, newPassword.text, () {
+                                Navigator.maybePop(context);
+                              }, () => setState(() => isLocked = false)));
+                        },
                   child: const Center(child: Text("Xác nhận")),
                 ),
               ),
@@ -155,6 +157,6 @@ class _SecurityChangePassUIState extends State<SecurityChangePassUI> {
           ),
         ),
       ),
-    ));
+    );
   }
 }

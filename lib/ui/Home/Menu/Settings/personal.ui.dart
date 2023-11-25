@@ -24,8 +24,7 @@ class _PersonalUIState extends State<PersonalUI> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: TransparentAppBar(
         title: Text("Thông tin cá nhân", style: themeData.textTheme.titleMedium),
         leading: IconButton(
@@ -48,7 +47,7 @@ class _PersonalUIState extends State<PersonalUI> {
           ],
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -58,8 +57,7 @@ class PersonalNameUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: TransparentAppBar(
         title: Text("Tên", style: themeData.textTheme.titleMedium),
         leading: IconButton(
@@ -129,6 +127,6 @@ class PersonalNameUI extends StatelessWidget {
           ],
         ),
       ),
-    ));
+    );
   }
 }

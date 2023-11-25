@@ -9,40 +9,45 @@ class SignupUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
-      appBar: TransparentAppBar(
-        title: Text(
-          "Tạo tài khoản",
-          style: themeData.textTheme.titleMedium,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) =>
+          Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
+      child: Scaffold(
+        appBar: TransparentAppBar(
+          title: Text(
+            "Tạo tài khoản",
+            style: themeData.textTheme.titleMedium,
+          ),
+          leading: IconButton(
+              onPressed: () =>
+                  Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
+              icon: const Icon(Icons.arrow_back)),
         ),
-        leading: IconButton(
-            onPressed: () => Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
-            icon: const Icon(Icons.arrow_back)),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text("Tham gia Anti Fakebook",
-                style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-            const FlutterLogo(size: 100),
-            const Text(
-                "Tạo tài khoản để kết nối với bạn bè, người thân và cộng đồng có chung sở thích."),
-            AFBPrimaryEButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => EmailSignupUI()));
-                },
-                child: const Text("Bắt đầu")),
-            AFBSecondaryEButton(
-                onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
-                },
-                child: const Text("Tôi có tài khoản rồi")),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text("Tham gia Anti Fakebook",
+                  style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+              const FlutterLogo(size: 100),
+              const Text(
+                  "Tạo tài khoản để kết nối với bạn bè, người thân và cộng đồng có chung sở thích."),
+              AFBPrimaryEButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => EmailSignupUI()));
+                  },
+                  child: const Text("Bắt đầu")),
+              AFBSecondaryEButton(
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+                  },
+                  child: const Text("Tôi có tài khoản rồi")),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }

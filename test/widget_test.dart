@@ -1,6 +1,6 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/ForgetPassword/forget_password.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/login_ui.dart';

@@ -7,14 +7,14 @@ part of 'video.dart';
 // **************************************************************************
 
 _$VideoImpl _$$VideoImplFromJson(Map<String, dynamic> json) => _$VideoImpl(
-      const IntegerConverter().fromJson(json['id'] as String),
-      json['thumb'] as String,
-      json['url'] as String,
+      const IntegerOrNullConverter().fromJson(json['id'] as String?),
+      json['thumb'] as String?,
+      json['url'] as String?,
     );
 
 Map<String, dynamic> _$$VideoImplToJson(_$VideoImpl instance) =>
     <String, dynamic>{
-      'id': const IntegerConverter().toJson(instance.id),
+      'id': const IntegerOrNullConverter().toJson(instance.id),
       'thumb': instance.thumb,
       'url': instance.url,
     };

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -31,6 +32,8 @@ class ApiRoot {
 
   static Future<Map<String, dynamic>?> post(String path, Object? data,
       {Map<String, dynamic>? params, Map<String, dynamic>? headers}) async {
+    var result = await Connectivity().checkConnectivity();
+    if (result != ConnectivityResult.wifi && result != ConnectivityResult.mobile) return null;
     try {
       Dio dio = await _getDio(headers);
       var response = await dio.post(path, data: data, queryParameters: params);

@@ -11,12 +11,13 @@ class AFBChevronRightListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return ListTile(
       onTap: onTap,
       leading: leading,
       trailing: const Icon(Icons.chevron_right, size: 36),
-      title: Text(title ?? ""),
-      subtitle: Text(subtitle ?? ""),
+      title: title == null ? null : Text(title!, style: themeData.textTheme.titleMedium),
+      subtitle: subtitle == null ? null : Text(subtitle!),
       contentPadding: EdgeInsets.zero,
     );
   }
@@ -34,10 +35,11 @@ class AFBBottomSheetListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return ListTile(
       onTap: onTap,
       leading: Icon(leading, size: 30),
-      title: title == null ? null : Text(title!),
+      title: title == null ? null : Text(title!, style: themeData.textTheme.titleMedium),
       textColor: color,
       iconColor: color,
       subtitle: subtitle == null ? null : Text(subtitle!),

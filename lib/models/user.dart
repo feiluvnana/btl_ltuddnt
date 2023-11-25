@@ -7,13 +7,8 @@ part 'user.g.dart';
 @freezed
 class User with _$User {
   @JsonSerializable(explicitToJson: true)
-  const factory User(
-      @IntegerConverter() int id,
-      String username,
-      String token,
-      String avatar,
-      @IntegerConverter() int active,
-      @IntegerConverter() int coins) = _User;
+  const factory User(@IntegerConverter() int id, String? email, String username, String? token,
+      String avatar, @IntegerConverter() int active, @IntegerConverter() int coins) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }

@@ -48,7 +48,7 @@ class _NotiUIState extends State<NotiUI> {
       "description": "Thông báo về video đã được duyệt."
     },
     {
-      "icon": const Icon(Icons.report, size: 36),
+      "icon": const Icon(Icons.feedback, size: 36),
       "action": () {},
       "label": "Phản hồi về báo cáo bài viết",
       "description": "Thông báo về các phản hồi về báo cáo."
@@ -67,8 +67,7 @@ class _NotiUIState extends State<NotiUI> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: TransparentAppBar(
         title: Text("Cài đặt thông báo", style: themeData.textTheme.titleMedium),
         leading: IconButton(
@@ -104,6 +103,6 @@ class _NotiUIState extends State<NotiUI> {
           ),
         ),
       ),
-    ));
+    );
   }
 }

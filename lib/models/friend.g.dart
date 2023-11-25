@@ -7,7 +7,7 @@ part of 'friend.dart';
 // **************************************************************************
 
 _$FriendImpl _$$FriendImplFromJson(Map<String, dynamic> json) => _$FriendImpl(
-      const IntegerConverter().fromJson(json['it'] as String),
+      const IntegerConverter().fromJson(json['id'] as String),
       json['username'] as String,
       json['avatar'] as String,
       const IntegerConverter().fromJson(json['same_friends'] as String),
@@ -16,7 +16,7 @@ _$FriendImpl _$$FriendImplFromJson(Map<String, dynamic> json) => _$FriendImpl(
 
 Map<String, dynamic> _$$FriendImplToJson(_$FriendImpl instance) =>
     <String, dynamic>{
-      'it': const IntegerConverter().toJson(instance.it),
+      'id': const IntegerConverter().toJson(instance.id),
       'username': instance.username,
       'avatar': instance.avatar,
       'same_friends': const IntegerConverter().toJson(instance.sameFriends),

@@ -21,7 +21,7 @@ Friend _$FriendFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Friend {
   @IntegerConverter()
-  int get it => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
   String get username => throw _privateConstructorUsedError;
   String get avatar => throw _privateConstructorUsedError;
   @IntegerConverter()
@@ -41,7 +41,7 @@ abstract class $FriendCopyWith<$Res> {
       _$FriendCopyWithImpl<$Res, Friend>;
   @useResult
   $Res call(
-      {@IntegerConverter() int it,
+      {@IntegerConverter() int id,
       String username,
       String avatar,
       @IntegerConverter() @JsonKey(name: "same_friends") int sameFriends,
@@ -61,16 +61,16 @@ class _$FriendCopyWithImpl<$Res, $Val extends Friend>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? it = null,
+    Object? id = null,
     Object? username = null,
     Object? avatar = null,
     Object? sameFriends = null,
     Object? created = null,
   }) {
     return _then(_value.copyWith(
-      it: null == it
-          ? _value.it
-          : it // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as int,
       username: null == username
           ? _value.username
@@ -100,7 +100,7 @@ abstract class _$$FriendImplCopyWith<$Res> implements $FriendCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@IntegerConverter() int it,
+      {@IntegerConverter() int id,
       String username,
       String avatar,
       @IntegerConverter() @JsonKey(name: "same_friends") int sameFriends,
@@ -118,16 +118,16 @@ class __$$FriendImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? it = null,
+    Object? id = null,
     Object? username = null,
     Object? avatar = null,
     Object? sameFriends = null,
     Object? created = null,
   }) {
     return _then(_$FriendImpl(
-      null == it
-          ? _value.it
-          : it // ignore: cast_nullable_to_non_nullable
+      null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as int,
       null == username
           ? _value.username
@@ -154,7 +154,7 @@ class __$$FriendImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$FriendImpl implements _Friend {
   const _$FriendImpl(
-      @IntegerConverter() this.it,
+      @IntegerConverter() this.id,
       this.username,
       this.avatar,
       @IntegerConverter() @JsonKey(name: "same_friends") this.sameFriends,
@@ -165,7 +165,7 @@ class _$FriendImpl implements _Friend {
 
   @override
   @IntegerConverter()
-  final int it;
+  final int id;
   @override
   final String username;
   @override
@@ -180,7 +180,7 @@ class _$FriendImpl implements _Friend {
 
   @override
   String toString() {
-    return 'Friend(it: $it, username: $username, avatar: $avatar, sameFriends: $sameFriends, created: $created)';
+    return 'Friend(id: $id, username: $username, avatar: $avatar, sameFriends: $sameFriends, created: $created)';
   }
 
   @override
@@ -188,7 +188,7 @@ class _$FriendImpl implements _Friend {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FriendImpl &&
-            (identical(other.it, it) || other.it == it) &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.username, username) ||
                 other.username == username) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
@@ -200,7 +200,7 @@ class _$FriendImpl implements _Friend {
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, it, username, avatar, sameFriends, created);
+      Object.hash(runtimeType, id, username, avatar, sameFriends, created);
 
   @JsonKey(ignore: true)
   @override
@@ -218,7 +218,7 @@ class _$FriendImpl implements _Friend {
 
 abstract class _Friend implements Friend {
   const factory _Friend(
-      @IntegerConverter() final int it,
+      @IntegerConverter() final int id,
       final String username,
       final String avatar,
       @IntegerConverter() @JsonKey(name: "same_friends") final int sameFriends,
@@ -228,7 +228,7 @@ abstract class _Friend implements Friend {
 
   @override
   @IntegerConverter()
-  int get it;
+  int get id;
   @override
   String get username;
   @override

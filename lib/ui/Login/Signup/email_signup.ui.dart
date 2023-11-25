@@ -1,4 +1,4 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/password_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
@@ -15,8 +15,7 @@ class EmailSignupUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: TransparentAppBar(
         title: Text(
           "Email",
@@ -96,6 +95,6 @@ class EmailSignupUI extends StatelessWidget {
           ],
         ),
       ),
-    ));
+    );
   }
 }

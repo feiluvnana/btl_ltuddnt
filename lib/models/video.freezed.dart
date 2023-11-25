@@ -20,10 +20,10 @@ Video _$VideoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Video {
-  @IntegerConverter()
-  int get id => throw _privateConstructorUsedError;
-  String get thumb => throw _privateConstructorUsedError;
-  String get url => throw _privateConstructorUsedError;
+  @IntegerOrNullConverter()
+  int? get id => throw _privateConstructorUsedError;
+  String? get thumb => throw _privateConstructorUsedError;
+  String? get url => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +35,7 @@ abstract class $VideoCopyWith<$Res> {
   factory $VideoCopyWith(Video value, $Res Function(Video) then) =
       _$VideoCopyWithImpl<$Res, Video>;
   @useResult
-  $Res call({@IntegerConverter() int id, String thumb, String url});
+  $Res call({@IntegerOrNullConverter() int? id, String? thumb, String? url});
 }
 
 /// @nodoc
@@ -51,23 +51,23 @@ class _$VideoCopyWithImpl<$Res, $Val extends Video>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? thumb = null,
-    Object? url = null,
+    Object? id = freezed,
+    Object? thumb = freezed,
+    Object? url = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      thumb: null == thumb
+              as int?,
+      thumb: freezed == thumb
           ? _value.thumb
           : thumb // ignore: cast_nullable_to_non_nullable
-              as String,
-      url: null == url
+              as String?,
+      url: freezed == url
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -79,7 +79,7 @@ abstract class _$$VideoImplCopyWith<$Res> implements $VideoCopyWith<$Res> {
       __$$VideoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({@IntegerConverter() int id, String thumb, String url});
+  $Res call({@IntegerOrNullConverter() int? id, String? thumb, String? url});
 }
 
 /// @nodoc
@@ -93,23 +93,23 @@ class __$$VideoImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? thumb = null,
-    Object? url = null,
+    Object? id = freezed,
+    Object? thumb = freezed,
+    Object? url = freezed,
   }) {
     return _then(_$VideoImpl(
-      null == id
+      freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == thumb
+              as int?,
+      freezed == thumb
           ? _value.thumb
           : thumb // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == url
+              as String?,
+      freezed == url
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -118,18 +118,18 @@ class __$$VideoImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true)
 class _$VideoImpl implements _Video {
-  const _$VideoImpl(@IntegerConverter() this.id, this.thumb, this.url);
+  const _$VideoImpl(@IntegerOrNullConverter() this.id, this.thumb, this.url);
 
   factory _$VideoImpl.fromJson(Map<String, dynamic> json) =>
       _$$VideoImplFromJson(json);
 
   @override
-  @IntegerConverter()
-  final int id;
+  @IntegerOrNullConverter()
+  final int? id;
   @override
-  final String thumb;
+  final String? thumb;
   @override
-  final String url;
+  final String? url;
 
   @override
   String toString() {
@@ -165,18 +165,18 @@ class _$VideoImpl implements _Video {
 }
 
 abstract class _Video implements Video {
-  const factory _Video(@IntegerConverter() final int id, final String thumb,
-      final String url) = _$VideoImpl;
+  const factory _Video(@IntegerOrNullConverter() final int? id,
+      final String? thumb, final String? url) = _$VideoImpl;
 
   factory _Video.fromJson(Map<String, dynamic> json) = _$VideoImpl.fromJson;
 
   @override
-  @IntegerConverter()
-  int get id;
+  @IntegerOrNullConverter()
+  int? get id;
   @override
-  String get thumb;
+  String? get thumb;
   @override
-  String get url;
+  String? get url;
   @override
   @JsonKey(ignore: true)
   _$$VideoImplCopyWith<_$VideoImpl> get copyWith =>

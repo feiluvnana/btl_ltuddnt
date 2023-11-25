@@ -1,9 +1,11 @@
 import 'dart:io';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/emoji.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image_picker.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
@@ -11,7 +13,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:hl_image_picker_android/hl_image_picker_android.dart';
 
 class PostCreateUpdateUI extends StatefulWidget {
   final Post? post;
@@ -26,12 +28,17 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
   final ctrl = TextEditingController();
   late final List<dynamic> options = [
     {
-      "label": "\u{1f5bc} Ảnh/Video",
-      "action": () {
-        ImagePicker().pickMultiImage().then((value) {
+      "label": "\u{1f5bc} Ảnh",
+      "action": () async {
+        await HLImagePickerAndroid()
+            .image(
+                cropping: false,
+                selectedIds:
+                    image.whereType<HLPickerItem>().map((e) => e.id).toList(),
+                pickerOptions: const HLPickerOptions(maxSelectedAssets: 4))
+            .then((value) {
           setState(() {
-            images = value.map((e) => File(e.path)).toList();
-            medias = value.map((e) => Image.file(File(e.path), fit: BoxFit.cover)).toList();
+            image = [...image.whereType<Widget>().toList(), ...value];
           });
         });
       }
@@ -41,16 +48,21 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
   ];
   final focusNode = FocusNode();
 
-  List<File>? images;
+  List<dynamic> image = [];
   File? video;
 
-  List<Widget> medias = [];
+  //For edit image
+  List<int>? imageDel, imageSort;
+
   bool isExpanded = true;
 
   @override
   void initState() {
     super.initState();
-    medias = widget.post?.image?.map((e) => Image.network(e.url)).toList() ?? [];
+    image = widget.post?.image
+            ?.map((e) => AFBNetworkImage(url: e.url, fit: BoxFit.cover))
+            .toList() ??
+        [];
     ctrl.text = Emoji.revert(widget.post?.described ?? "");
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
@@ -65,76 +77,77 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return WillPopScope(
-      onWillPop: () async {
-        bool isPop = false;
-        isPop = (widget.post == null)
-            ? (await showAFBModalBottomSheet<bool>(
-                    context: context,
-                    header: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Bạn muốn hoàn thành bài viết của mình sau?",
-                            style: themeData.textTheme.bodyLarge),
-                        Text("Lưu làm bản nháp hoặc bạn có thể tiếp tục chỉnh sửa",
-                            style: themeData.textTheme.bodySmall),
-                      ],
-                    ),
-                    blocks: [
-                      [
-                        AFBBottomSheetListTile(
-                            onTap: () {
-                              //TODO: Save draft
-                              Navigator.maybePop(context, true);
-                            },
-                            leading: Icons.save,
-                            title: "Lưu làm bản nháp"),
-                        AFBBottomSheetListTile(
-                            onTap: () {
-                              Navigator.maybePop(context, true);
-                            },
-                            leading: Icons.delete,
-                            title: "Bỏ bài viết"),
-                        AFBBottomSheetListTile(
-                            onTap: () {
-                              Navigator.maybePop(context, false);
-                            },
-                            color: themeData.primaryColor,
-                            leading: Icons.check,
-                            title: "Tiếp tục chỉnh sửa")
-                      ]
-                    ]) ??
-                false)
-            : (await showAFBDialog<bool>(
-                  context: context,
-                  title: Text("Bỏ thay đổi?", style: themeData.textTheme.bodyLarge),
-                  content:
-                      const Text("Nếu bỏ bây giờ thì bạn sẽ mất mọi thay đổi trên bài viết này."),
-                  actions: [
-                    GestureDetector(
+  Future<bool> decideCanPop() async {
+    final themeData = Theme.of(context);
+    return (widget.post == null)
+        ? (await context.showAFBModalBottomSheet<bool>(
+                header: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Bạn muốn hoàn thành bài viết của mình sau?",
+                        style: themeData.textTheme.bodyLarge),
+                    Text("Lưu làm bản nháp hoặc bạn có thể tiếp tục chỉnh sửa",
+                        style: themeData.textTheme.bodySmall),
+                  ],
+                ),
+                blocks: [
+                  [
+                    AFBBottomSheetListTile(
+                        onTap: () {
+                          //TODO: Save draft
+                          Navigator.maybePop(context, true);
+                        },
+                        leading: Icons.save,
+                        title: "Lưu làm bản nháp"),
+                    AFBBottomSheetListTile(
+                        onTap: () {
+                          Navigator.maybePop(context, true);
+                        },
+                        leading: Icons.delete,
+                        title: "Bỏ bài viết"),
+                    AFBBottomSheetListTile(
                         onTap: () {
                           Navigator.maybePop(context, false);
                         },
-                        child: const Text("TIẾP TỤC CHỈNH SỬA")),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.maybePop(context, true);
-                      },
-                      child: Text("BỎ",
-                          style: themeData.textTheme.bodyMedium
-                              ?.copyWith(color: themeData.primaryColor)),
-                    )
-                  ],
-                ) ??
-                false);
-        return isPop;
-      },
-      child: SafeArea(
-          child: Scaffold(
+                        color: themeData.primaryColor,
+                        leading: Icons.check,
+                        title: "Tiếp tục chỉnh sửa")
+                  ]
+                ]) ??
+            false)
+        : (await context.showAFBDialog<bool>(
+              title: Text("Bỏ thay đổi?", style: themeData.textTheme.bodyLarge),
+              content: const Text(
+                  "Nếu bỏ bây giờ thì bạn sẽ mất mọi thay đổi trên bài viết này."),
+              actions: [
+                GestureDetector(
+                    onTap: () {
+                      Navigator.maybePop(context, false);
+                    },
+                    child: const Text("TIẾP TỤC CHỈNH SỬA")),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.maybePop(context, true);
+                  },
+                  child: Text("BỎ",
+                      style: themeData.textTheme.bodyMedium
+                          ?.copyWith(color: themeData.primaryColor)),
+                )
+              ],
+            ) ??
+            false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) => decideCanPop().then((value) {
+        if (value) Navigator.pop(context);
+      }),
+      child: Scaffold(
         appBar: TransparentAppBar(
           title: Text(
             widget.post == null ? "Tạo bài viết" : "Chỉnh sửa bài viết",
@@ -142,21 +155,27 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
           ),
           leading: IconButton(
               onPressed: () {
-                Navigator.maybePop(context);
+                decideCanPop().then((value) {
+                  if (value) Navigator.pop(context);
+                });
               },
               icon: const Icon(Icons.arrow_back)),
           actions: [
             TextButton(
                 onPressed: () {
                   context.read<NewsfeedBloc>().add(NewsfeedAddPost(
-                      described: ctrl.text, status: "Not Hyped", image: images, video: video));
+                      described: ctrl.text,
+                      status: "Not Hyped",
+                      image: image.map((e) => File(e.path)).toList(),
+                      video: video));
                   Navigator.pop(context);
                 },
                 child: const Text("ĐĂNG"))
           ],
         ),
         body: SingleChildScrollView(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: BlocBuilder<AuthenBloc, AuthenState>(
@@ -164,12 +183,12 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
                 builder: (context, state) {
                   return Row(
                     children: [
-                      CircularUserAvatar(imageUrl: state.user?.avatar ?? ""),
+                      AFBCircleAvatar(imageUrl: state.user?.avatar ?? ""),
                       const SizedBox(width: 10),
                       Text(
                         state.user?.username ?? "",
-                        style:
-                            themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                        style: themeData.textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       )
                     ],
                   );
@@ -185,22 +204,25 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
                   focusNode: focusNode,
                   maxLines: null,
                   decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Bạn đang nghĩ gì?",
-                  ),
+                      border: InputBorder.none, hintText: "Bạn đang nghĩ gì?"),
                 )),
             AspectRatio(
                 aspectRatio: 1,
-                child: GridMediaView(
-                  medias: medias,
-                  onClickMedia: (index) {},
+                child: GridImageEdit(
+                  image: image,
+                  onUpdated: (image, {begin, end, deleted}) {
+                    setState(() {
+                      this.image = image;
+                    });
+                  },
                 )),
             SizedBox(height: !isExpanded ? 50 : 150)
           ]),
         ),
         bottomSheet: Theme(
           data: ThemeData(
-              bottomSheetTheme: const BottomSheetThemeData(shape: RoundedRectangleBorder())),
+              bottomSheetTheme:
+                  const BottomSheetThemeData(shape: RoundedRectangleBorder())),
           child: BottomSheet(
               onClosing: () {},
               builder: (context) {
@@ -210,13 +232,15 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
                         children: List.generate(
                             3,
                             (index) => _CreatePostOption(
-                                action: options[index]["action"], label: options[index]["label"])))
+                                action: options[index]["action"],
+                                label: options[index]["label"])))
                     : Container(
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
                         height: 50,
                         decoration: const BoxDecoration(
-                            border: Border(top: BorderSide(color: Colors.grey))),
+                            border:
+                                Border(top: BorderSide(color: Colors.grey))),
                         child: Row(
                           children: [
                             ...List.generate(
@@ -224,19 +248,23 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
                                 (index) => Expanded(
                                     child: Center(
                                         child: Text(options[index]["label"]
-                                            .substring(0, options[index]["label"].indexOf(" ")))))),
+                                            .substring(
+                                                0,
+                                                options[index]["label"]
+                                                    .indexOf(" ")))))),
                             Expanded(
                               child: GestureDetector(
                                   onTap: () {
                                     focusNode.unfocus();
                                   },
-                                  child: const Center(child: Icon(Icons.more_horiz))),
+                                  child: const Center(
+                                      child: Icon(Icons.more_horiz))),
                             )
                           ],
                         ));
               }),
         ),
-      )),
+      ),
     );
   }
 }
@@ -256,7 +284,8 @@ class _CreatePostOption extends StatelessWidget {
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.all(10),
           width: double.infinity,
-          decoration: const BoxDecoration(border: Border(top: BorderSide(color: Colors.grey))),
+          decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: Colors.grey))),
           child: Text(label)),
     );
   }

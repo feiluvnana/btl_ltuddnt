@@ -7,8 +7,8 @@ part 'video.g.dart';
 @freezed
 class Video with _$Video {
   @JsonSerializable(explicitToJson: true)
-  const factory Video(@IntegerConverter() int id, String thumb, String url) =
-      _Video;
+  const factory Video(
+      @IntegerOrNullConverter() int? id, String? thumb, String? url) = _Video;
 
   factory Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);
 }

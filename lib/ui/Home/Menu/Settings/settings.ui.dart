@@ -54,8 +54,7 @@ class _SettingsUIState extends State<SettingsUI> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: TransparentAppBar(
         title: Text("Cài đặt", style: themeData.textTheme.titleMedium),
         leading: IconButton(
@@ -88,7 +87,7 @@ class _SettingsUIState extends State<SettingsUI> {
           ),
         ),
       ),
-    ));
+    );
   }
 }
 

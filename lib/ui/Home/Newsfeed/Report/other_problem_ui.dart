@@ -36,23 +36,20 @@ class OtherProblemUI extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(
-                label.length,
-                (index) => Container(
-                      decoration: BoxDecoration(
-                          border: index != label.length - 1
-                              ? const Border(bottom: BorderSide(color: Colors.black26))
-                              : null),
-                      child: AFBChevronRightListTile(
-                        leading: Text(label[index], style: themeData.textTheme.titleMedium),
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => ProblemDetailUI(index: index))),
-                      ),
-                    )),
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemBuilder: (context, index) => Container(
+            decoration: BoxDecoration(
+                border: index != label.length - 1
+                    ? const Border(bottom: BorderSide(color: Colors.black26))
+                    : null),
+            child: AFBChevronRightListTile(
+              title: label[index],
+              onTap: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => ProblemDetailUI(index: index))),
+            ),
           ),
+          itemCount: label.length,
         ),
       ),
     );

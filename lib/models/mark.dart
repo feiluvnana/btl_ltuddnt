@@ -1,5 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/json_converter.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/author.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/author.model.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/comment.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/enum.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

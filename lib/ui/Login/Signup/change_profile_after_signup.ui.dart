@@ -1,11 +1,12 @@
 import 'dart:io';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image_picker.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:hl_image_picker_android/hl_image_picker_android.dart';
 
 class ChangeProfileAfterSignupUI extends StatefulWidget {
   const ChangeProfileAfterSignupUI({super.key});
@@ -15,15 +16,14 @@ class ChangeProfileAfterSignupUI extends StatefulWidget {
 }
 
 class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI> {
-  File? avatar;
+  HLPickerItem? avatar;
   bool isLocked = false;
   final username = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: TransparentAppBar(
         title: Text(
@@ -68,7 +68,7 @@ class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI>
                           clipBehavior: Clip.hardEdge,
                           decoration: const BoxDecoration(shape: BoxShape.circle),
                           child: Image.file(
-                            avatar ?? File(""),
+                            File(avatar?.path ?? ""),
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Container(),
                           ),
@@ -78,13 +78,12 @@ class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI>
                           children: [
                             AFBPrimaryEButton(
                                 onPressed: () {
-                                  ImagePicker()
-                                      .pickImage(source: ImageSource.gallery)
-                                      .then((value) async {
-                                    if (value == null) return;
-                                    var file = File(value.path);
+                                  HLImagePickerAndroid().image(
+                                      selectedIds: [avatar?.id ?? ""],
+                                      pickerOptions: const HLPickerOptions(
+                                          maxSelectedAssets: 1)).then((value) {
                                     setState(() {
-                                      avatar = file;
+                                      avatar = value.firstOrNull;
                                     });
                                   });
                                 },
@@ -111,7 +110,7 @@ class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI>
                         });
                         context.read<AuthenBloc>().add(AuthenChangeProfileAfter(
                             username.text,
-                            avatar,
+                            avatar != null ? File(avatar!.path) : null,
                             () => Navigator.pushNamedAndRemoveUntil(
                                     context, "/home", (route) => false)
                                 .whenComplete(
@@ -124,6 +123,6 @@ class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI>
           ],
         ),
       ),
-    ));
+    );
   }
 }

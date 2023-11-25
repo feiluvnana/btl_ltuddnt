@@ -1,4 +1,4 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/change_profile_after_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
@@ -26,38 +26,40 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: WillPopScope(
-      onWillPop: () async {
-        bool isPop = false;
-        isPop = await showAFBDialog<bool>(
-              context: context,
-              title: Text(
-                "Bạn có chắc chắn muốn thoát không?",
-                style: themeData.textTheme.bodyLarge,
-              ),
-              content: Text(widget.mode == VerifyMode.signup
-                  ? "Bạn sẽ đăng xuất và sẽ cần xác nhận tài khoản của mình trong lần đăng nhập tiếp theo."
-                  : "Bạn sẽ phải thực hiện lại bước này nếu muốn đặt lại mật khẩu."),
-              actions: [
-                GestureDetector(
-                    onTap: () {
-                      Navigator.maybePop(context, false);
-                    },
-                    child: const Text("HỦY")),
-                GestureDetector(
+
+    Future<bool> decideCanPop() async {
+      return await context.showAFBDialog<bool>(
+            title: Text(
+              "Bạn có chắc chắn muốn thoát không?",
+              style: themeData.textTheme.bodyLarge,
+            ),
+            content: Text(widget.mode == VerifyMode.signup
+                ? "Bạn sẽ đăng xuất và sẽ cần xác nhận tài khoản của mình trong lần đăng nhập tiếp theo."
+                : "Bạn sẽ phải thực hiện lại bước này nếu muốn đặt lại mật khẩu."),
+            actions: [
+              GestureDetector(
                   onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+                    Navigator.maybePop(context, false);
                   },
-                  child: Text("THOÁT",
-                      style:
-                          themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor)),
-                )
-              ],
-            ) ??
-            false;
-        return isPop;
-      },
+                  child: const Text("HỦY")),
+              GestureDetector(
+                onTap: () {
+                  context.read<AuthenBloc>().add(const AuthenLogout());
+                  Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+                },
+                child: Text("THOÁT",
+                    style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor)),
+              )
+            ],
+          ) ??
+          false;
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) => decideCanPop().then((value) {
+        if (value) Navigator.pop(context);
+      }),
       child: Scaffold(
         appBar: TransparentAppBar(
           title: Text(
@@ -65,7 +67,10 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
             style: themeData.textTheme.titleMedium,
           ),
           leading: IconButton(
-              onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
+              onPressed: () => decideCanPop().then((value) {
+                    if (value) Navigator.pop(context);
+                  }),
+              icon: const Icon(Icons.arrow_back)),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -97,9 +102,7 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
                   onPressed: isLocked
                       ? null
                       : () {
-                          setState(() {
-                            isLocked = true;
-                          });
+                          setState(() => isLocked = true);
                           if (widget.mode == VerifyMode.resetpassword) {
                             context.read<AuthenBloc>().add(AuthenResetPassword(
                                 email: widget.email,
@@ -109,9 +112,7 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
                                   Navigator.pushNamedAndRemoveUntil(
                                       context, "/login", (route) => false);
                                 },
-                                finallyCallback: () => setState(() {
-                                      isLocked = false;
-                                    })));
+                                finallyCallback: () => setState(() => isLocked = false)));
                           } else {
                             context
                                 .read<AuthenBloc>()
@@ -121,17 +122,13 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
                                       MaterialPageRoute(
                                           builder: (_) => const ChangeProfileAfterSignupUI()),
                                       (route) => false);
-                                },
-                                    () => setState(() {
-                                          isLocked = false;
-                                        })));
+                                }, () => setState(() => isLocked = false)));
                           }
                         },
                   child: const Text("Tiếp")),
               ElevatedButton(
                   onPressed: () {
-                    showAFBModalBottomSheet<bool>(
-                      context: context,
+                    context.showAFBModalBottomSheet<bool>(
                       blocks: [
                         [
                           AFBBottomSheetListTile(
@@ -146,7 +143,9 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
                           AFBBottomSheetListTile(
                               onTap: () {
                                 Navigator.maybePop(context)
-                                    .whenComplete(() => Navigator.maybePop(context));
+                                    .whenComplete(() => decideCanPop().then((value) {
+                                          if (value) Navigator.pop(context);
+                                        }));
                               },
                               leading: Icons.arrow_back,
                               title: "Thoát"),
@@ -159,6 +158,6 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
           ),
         ),
       ),
-    ));
+    );
   }
 }

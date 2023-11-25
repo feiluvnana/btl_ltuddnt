@@ -1,4 +1,6 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/friend.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
@@ -38,10 +40,8 @@ class MenuHeader extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(width: 10),
-        Text(
-          "Menu",
-          style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-        ),
+        Text("Menu",
+            style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
         const Spacer(),
         GestureDetector(
           onTap: () {},
@@ -77,7 +77,7 @@ class _MenuHelpCenterState extends State<MenuHelpCenter> {
   final List<Map<String, dynamic>> menu = [
     {"label": "Trung tâm trợ giúp", "icon": Icons.help_center, "action": () {}},
     {"label": "Hộp thư hỗ trợ", "icon": Icons.markunread_mailbox_outlined, "action": () {}},
-    {"label": "Báo cáo sự cố", "icon": Icons.report, "action": () {}},
+    {"label": "Báo cáo sự cố", "icon": Icons.feedback, "action": () {}},
     {"label": "An toàn", "icon": Icons.safety_check, "action": () {}},
     {"label": "Điều khoản & chính sách", "icon": Icons.policy, "action": () {}},
   ];
@@ -96,22 +96,26 @@ class _MenuHelpCenterState extends State<MenuHelpCenter> {
               isCollapsed = !isCollapsed;
             });
           },
-          child: Row(
-            children: [
-              const SizedBox(width: 10),
-              const Icon(Icons.help),
-              const SizedBox(width: 10),
-              Text(
-                "Trợ giúp & hỗ trợ",
-                style: themeData.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const Spacer(),
-              AnimatedRotation(
-                  turns: isCollapsed ? 0.5 : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: const Icon(Icons.keyboard_arrow_up)),
-              const SizedBox(width: 10),
-            ],
+          child: Container(
+            decoration: const BoxDecoration(),
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                const SizedBox(width: 10),
+                const Icon(Icons.help),
+                const SizedBox(width: 10),
+                Text(
+                  "Trợ giúp & hỗ trợ",
+                  style: themeData.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const Spacer(),
+                AnimatedRotation(
+                    turns: isCollapsed ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: const Icon(Icons.keyboard_arrow_up)),
+                const SizedBox(width: 10),
+              ],
+            ),
           ),
         ),
         ...List.generate(isCollapsed ? 0 : menu.length, (index) {
@@ -135,7 +139,7 @@ class MenuProfile extends StatelessWidget {
           const SizedBox(width: 10),
           BlocBuilder<AuthenBloc, AuthenState>(
             builder: (context, state) {
-              return CircularUserAvatar(imageUrl: state.user?.avatar ?? "");
+              return AFBCircleAvatar(imageUrl: state.user?.avatar ?? "");
             },
           ),
           const SizedBox(width: 10),
@@ -164,7 +168,10 @@ class MenuLogoutButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: AFBDangerEButton(
         onPressed: () {
-          context.read<AuthenBloc>().add(const AuthenLogout());
+          context
+            ..read<AuthenBloc>().add(const AuthenLogout())
+            ..read<NewsfeedBloc>().add(const NewsfeedReset())
+            ..read<FriendBloc>().add(const FriendReset());
           Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
         },
         child:
@@ -270,20 +277,24 @@ class _MenuSettingsState extends State<MenuSettings> {
               isCollapsed = !isCollapsed;
             });
           },
-          child: Row(
-            children: [
-              const SizedBox(width: 10),
-              const Icon(Icons.settings),
-              const SizedBox(width: 10),
-              Text("Cài đặt & Quyền riêng tư",
-                  style: themeData.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
-              const Spacer(),
-              AnimatedRotation(
-                  turns: isCollapsed ? 0.5 : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: const Icon(Icons.keyboard_arrow_up)),
-              const SizedBox(width: 10),
-            ],
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: const BoxDecoration(),
+            child: Row(
+              children: [
+                const SizedBox(width: 10),
+                const Icon(Icons.settings),
+                const SizedBox(width: 10),
+                Text("Cài đặt & Quyền riêng tư",
+                    style: themeData.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+                const Spacer(),
+                AnimatedRotation(
+                    turns: isCollapsed ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: const Icon(Icons.keyboard_arrow_up)),
+                const SizedBox(width: 10),
+              ],
+            ),
           ),
         ),
         ...List.generate(isCollapsed ? 0 : menu.length, (index) {

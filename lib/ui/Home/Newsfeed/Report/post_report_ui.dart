@@ -1,4 +1,4 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/other_problem_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
@@ -103,16 +103,12 @@ class _PostReportUIState extends State<PostReportUI> {
                         detail = null;
                       });
                     },
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                     label: Text(choice[index].$1),
-                    labelStyle:
-                        themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
                 ActionChip(
                     onPressed: () => Navigator.push(
                         context, MaterialPageRoute(builder: (context) => const OtherProblemUI())),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                     label: const Row(mainAxisSize: MainAxisSize.min, children: [
                       Icon(Icons.search, size: 16),
                       Text(" Vấn đề khác"),
@@ -129,23 +125,20 @@ class _PostReportUIState extends State<PostReportUI> {
                   ...List.generate(
                     choice.firstWhere((element) => element.$1 == subject).$2.length,
                     (index) => ChoiceChip(
-                      selected:
-                          detail == choice.firstWhere((element) => element.$1 == subject).$2[index],
-                      onSelected: (value) {
-                        setState(() {
-                          if (value) {
-                            detail =
-                                choice.firstWhere((element) => element.$1 == subject).$2[index];
-                          } else {
-                            detail = null;
-                          }
-                        });
-                      },
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                      label: Text(choice.firstWhere((element) => element.$1 == subject).$2[index]),
-                      labelStyle:
-                          themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                    ),
+                        selected: detail ==
+                            choice.firstWhere((element) => element.$1 == subject).$2[index],
+                        onSelected: (value) {
+                          setState(() {
+                            if (value) {
+                              detail =
+                                  choice.firstWhere((element) => element.$1 == subject).$2[index];
+                            } else {
+                              detail = null;
+                            }
+                          });
+                        },
+                        label:
+                            Text(choice.firstWhere((element) => element.$1 == subject).$2[index])),
                   )
                 ])
               ],
@@ -222,7 +215,7 @@ class PostReportCompletionUI extends StatelessWidget {
                 height: 40,
                 decoration:
                     BoxDecoration(color: themeData.colorScheme.error, shape: BoxShape.circle),
-                child: Icon(Icons.report, color: themeData.colorScheme.onError)),
+                child: Icon(Icons.feedback, color: themeData.colorScheme.onError)),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("Bạn đã chọn", style: themeData.textTheme.titleLarge),
@@ -230,14 +223,12 @@ class PostReportCompletionUI extends StatelessWidget {
             ChoiceChip(
                 selected: true,
                 onSelected: (_) {},
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                 label: Text(subject),
                 labelStyle: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
             if (detail != null)
               ChoiceChip(
                   selected: true,
                   onSelected: (_) {},
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                   label: Text(detail!),
                   labelStyle:
                       themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
@@ -282,6 +273,7 @@ class PostReportCompletionUI extends StatelessWidget {
                   context
                       .read<NewsfeedBloc>()
                       .add(NewsfeedReportPost(id: post.id, subject: subject, detail: detail ?? ""));
+                  Navigator.popUntil(context, (route) => route.settings.name == "/home");
                 },
                 child: const Center(
                   child: Text("Xong"),

@@ -1,4 +1,4 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen_bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/verify_code.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
@@ -19,8 +19,7 @@ class _AgreementSignupUIState extends State<AgreementSignupUI> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: TransparentAppBar(
         title: Text(
           "Đồng ý với điều khoản và chính sách của Anti Fakebook",
@@ -118,6 +117,6 @@ class _AgreementSignupUIState extends State<AgreementSignupUI> {
           ],
         ),
       ),
-    ));
+    );
   }
 }

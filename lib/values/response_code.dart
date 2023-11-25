@@ -20,5 +20,6 @@ const Map<String, String> resCode = {
   "1010": "Hành động đã được người dùng thực hiện trước đây",
   "1011": "Bài đăng vi phạm tiêu chuẩn cộng đồng",
   "1012": "Bài đăng bị giới hạn ở một số quốc gia",
-  "9991": "Không đủ xu để thực hiện hành động"
+  "9991": "Tài khoản hoặc mật khẩu không chính xác",
+  "9990": "Mật khẩu không chính xác"
 };

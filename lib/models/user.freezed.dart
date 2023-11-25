@@ -22,8 +22,9 @@ User _$UserFromJson(Map<String, dynamic> json) {
 mixin _$User {
   @IntegerConverter()
   int get id => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
   String get username => throw _privateConstructorUsedError;
-  String get token => throw _privateConstructorUsedError;
+  String? get token => throw _privateConstructorUsedError;
   String get avatar => throw _privateConstructorUsedError;
   @IntegerConverter()
   int get active => throw _privateConstructorUsedError;
@@ -42,8 +43,9 @@ abstract class $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {@IntegerConverter() int id,
+      String? email,
       String username,
-      String token,
+      String? token,
       String avatar,
       @IntegerConverter() int active,
       @IntegerConverter() int coins});
@@ -63,8 +65,9 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   @override
   $Res call({
     Object? id = null,
+    Object? email = freezed,
     Object? username = null,
-    Object? token = null,
+    Object? token = freezed,
     Object? avatar = null,
     Object? active = null,
     Object? coins = null,
@@ -74,14 +77,18 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
       username: null == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String,
-      token: null == token
+      token: freezed == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       avatar: null == avatar
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
@@ -107,8 +114,9 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {@IntegerConverter() int id,
+      String? email,
       String username,
-      String token,
+      String? token,
       String avatar,
       @IntegerConverter() int active,
       @IntegerConverter() int coins});
@@ -125,8 +133,9 @@ class __$$UserImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? email = freezed,
     Object? username = null,
-    Object? token = null,
+    Object? token = freezed,
     Object? avatar = null,
     Object? active = null,
     Object? coins = null,
@@ -136,14 +145,18 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
       null == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String,
-      null == token
+      freezed == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       null == avatar
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
@@ -166,6 +179,7 @@ class __$$UserImplCopyWithImpl<$Res>
 class _$UserImpl implements _User {
   const _$UserImpl(
       @IntegerConverter() this.id,
+      this.email,
       this.username,
       this.token,
       this.avatar,
@@ -179,9 +193,11 @@ class _$UserImpl implements _User {
   @IntegerConverter()
   final int id;
   @override
+  final String? email;
+  @override
   final String username;
   @override
-  final String token;
+  final String? token;
   @override
   final String avatar;
   @override
@@ -193,7 +209,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, token: $token, avatar: $avatar, active: $active, coins: $coins)';
+    return 'User(id: $id, email: $email, username: $username, token: $token, avatar: $avatar, active: $active, coins: $coins)';
   }
 
   @override
@@ -202,6 +218,7 @@ class _$UserImpl implements _User {
         (other.runtimeType == runtimeType &&
             other is _$UserImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.username, username) ||
                 other.username == username) &&
             (identical(other.token, token) || other.token == token) &&
@@ -212,8 +229,8 @@ class _$UserImpl implements _User {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, username, token, avatar, active, coins);
+  int get hashCode => Object.hash(
+      runtimeType, id, email, username, token, avatar, active, coins);
 
   @JsonKey(ignore: true)
   @override
@@ -232,8 +249,9 @@ class _$UserImpl implements _User {
 abstract class _User implements User {
   const factory _User(
       @IntegerConverter() final int id,
+      final String? email,
       final String username,
-      final String token,
+      final String? token,
       final String avatar,
       @IntegerConverter() final int active,
       @IntegerConverter() final int coins) = _$UserImpl;
@@ -244,9 +262,11 @@ abstract class _User implements User {
   @IntegerConverter()
   int get id;
   @override
+  String? get email;
+  @override
   String get username;
   @override
-  String get token;
+  String? get token;
   @override
   String get avatar;
   @override

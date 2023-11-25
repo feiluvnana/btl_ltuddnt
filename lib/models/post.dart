@@ -1,15 +1,14 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/json_converter.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/author.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/author.model.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/video.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/image.dart';
 
 part 'post.freezed.dart';
 part 'post.g.dart';
 
 @freezed
 class Post with _$Post {
-  @Assert("image == null || video == null")
   @JsonSerializable(explicitToJson: true)
   const factory Post(
     ///Id của bài viết.

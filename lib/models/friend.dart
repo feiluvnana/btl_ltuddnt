@@ -8,7 +8,7 @@ part 'friend.g.dart';
 class Friend with _$Friend {
   @JsonSerializable(explicitToJson: true)
   const factory Friend(
-      @IntegerConverter() int it,
+      @IntegerConverter() int id,
       String username,
       String avatar,
       @IntegerConverter() @JsonKey(name: "same_friends") int sameFriends,

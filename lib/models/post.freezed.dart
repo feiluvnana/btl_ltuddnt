@@ -358,8 +358,7 @@ class _$PostImpl implements _Post {
       @BooleanConverter() @JsonKey(name: "is_blocked") this.isBlocked,
       @BooleanConverter() @JsonKey(name: "can_edit") this.canEdit,
       @IntegerConverter() this.banned)
-      : assert(image == null || video == null),
-        _image = image;
+      : _image = image;
 
   factory _$PostImpl.fromJson(Map<String, dynamic> json) =>
       _$$PostImplFromJson(json);

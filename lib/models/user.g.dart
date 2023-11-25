@@ -8,8 +8,9 @@ part of 'user.dart';
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       const IntegerConverter().fromJson(json['id'] as String),
+      json['email'] as String?,
       json['username'] as String,
-      json['token'] as String,
+      json['token'] as String?,
       json['avatar'] as String,
       const IntegerConverter().fromJson(json['active'] as String),
       const IntegerConverter().fromJson(json['coins'] as String),
@@ -18,6 +19,7 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
     <String, dynamic>{
       'id': const IntegerConverter().toJson(instance.id),
+      'email': instance.email,
       'username': instance.username,
       'token': instance.token,
       'avatar': instance.avatar,
