@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'newsfeed.bloc.dart';
+part of 'newsfeed.controller.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -81,7 +81,7 @@ class __$$NewsfeedStateImplCopyWithImpl<$Res>
     Object? posts = freezed,
   }) {
     return _then(_$NewsfeedStateImpl(
-      freezed == posts
+      posts: freezed == posts
           ? _value._posts
           : posts // ignore: cast_nullable_to_non_nullable
               as List<Post>?,
@@ -94,7 +94,7 @@ class __$$NewsfeedStateImplCopyWithImpl<$Res>
 class _$NewsfeedStateImpl
     with DiagnosticableTreeMixin
     implements _NewsfeedState {
-  const _$NewsfeedStateImpl(final List<Post>? posts) : _posts = posts;
+  const _$NewsfeedStateImpl({final List<Post>? posts}) : _posts = posts;
 
   final List<Post>? _posts;
   @override
@@ -139,7 +139,7 @@ class _$NewsfeedStateImpl
 }
 
 abstract class _NewsfeedState implements NewsfeedState {
-  const factory _NewsfeedState(final List<Post>? posts) = _$NewsfeedStateImpl;
+  const factory _NewsfeedState({final List<Post>? posts}) = _$NewsfeedStateImpl;
 
   @override
   List<Post>? get posts;

@@ -1,7 +1,7 @@
 // import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/signup_bloc.dart';
 // import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 // import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/dob_signup_ui.dart';
-// import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+// import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 

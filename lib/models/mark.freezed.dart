@@ -28,6 +28,8 @@ mixin _$Mark {
   @JsonKey(name: "type_of_mark")
   MarkType get typeOfMark => throw _privateConstructorUsedError;
   Author get poster => throw _privateConstructorUsedError;
+  @DateTimeConverter()
+  DateTime get created => throw _privateConstructorUsedError;
   List<Comment> get comments => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -45,6 +47,7 @@ abstract class $MarkCopyWith<$Res> {
       @JsonKey(name: "mark_content") String markContent,
       @MarkTypeConverter() @JsonKey(name: "type_of_mark") MarkType typeOfMark,
       Author poster,
+      @DateTimeConverter() DateTime created,
       List<Comment> comments});
 
   $AuthorCopyWith<$Res> get poster;
@@ -67,6 +70,7 @@ class _$MarkCopyWithImpl<$Res, $Val extends Mark>
     Object? markContent = null,
     Object? typeOfMark = null,
     Object? poster = null,
+    Object? created = null,
     Object? comments = null,
   }) {
     return _then(_value.copyWith(
@@ -86,6 +90,10 @@ class _$MarkCopyWithImpl<$Res, $Val extends Mark>
           ? _value.poster
           : poster // ignore: cast_nullable_to_non_nullable
               as Author,
+      created: null == created
+          ? _value.created
+          : created // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       comments: null == comments
           ? _value.comments
           : comments // ignore: cast_nullable_to_non_nullable
@@ -114,6 +122,7 @@ abstract class _$$MarkImplCopyWith<$Res> implements $MarkCopyWith<$Res> {
       @JsonKey(name: "mark_content") String markContent,
       @MarkTypeConverter() @JsonKey(name: "type_of_mark") MarkType typeOfMark,
       Author poster,
+      @DateTimeConverter() DateTime created,
       List<Comment> comments});
 
   @override
@@ -134,6 +143,7 @@ class __$$MarkImplCopyWithImpl<$Res>
     Object? markContent = null,
     Object? typeOfMark = null,
     Object? poster = null,
+    Object? created = null,
     Object? comments = null,
   }) {
     return _then(_$MarkImpl(
@@ -153,6 +163,10 @@ class __$$MarkImplCopyWithImpl<$Res>
           ? _value.poster
           : poster // ignore: cast_nullable_to_non_nullable
               as Author,
+      null == created
+          ? _value.created
+          : created // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       null == comments
           ? _value._comments
           : comments // ignore: cast_nullable_to_non_nullable
@@ -170,6 +184,7 @@ class _$MarkImpl with DiagnosticableTreeMixin implements _Mark {
       @JsonKey(name: "mark_content") this.markContent,
       @MarkTypeConverter() @JsonKey(name: "type_of_mark") this.typeOfMark,
       this.poster,
+      @DateTimeConverter() this.created,
       final List<Comment> comments)
       : _comments = comments;
 
@@ -188,6 +203,9 @@ class _$MarkImpl with DiagnosticableTreeMixin implements _Mark {
   final MarkType typeOfMark;
   @override
   final Author poster;
+  @override
+  @DateTimeConverter()
+  final DateTime created;
   final List<Comment> _comments;
   @override
   List<Comment> get comments {
@@ -198,7 +216,7 @@ class _$MarkImpl with DiagnosticableTreeMixin implements _Mark {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Mark(id: $id, markContent: $markContent, typeOfMark: $typeOfMark, poster: $poster, comments: $comments)';
+    return 'Mark(id: $id, markContent: $markContent, typeOfMark: $typeOfMark, poster: $poster, created: $created, comments: $comments)';
   }
 
   @override
@@ -210,6 +228,7 @@ class _$MarkImpl with DiagnosticableTreeMixin implements _Mark {
       ..add(DiagnosticsProperty('markContent', markContent))
       ..add(DiagnosticsProperty('typeOfMark', typeOfMark))
       ..add(DiagnosticsProperty('poster', poster))
+      ..add(DiagnosticsProperty('created', created))
       ..add(DiagnosticsProperty('comments', comments));
   }
 
@@ -224,13 +243,14 @@ class _$MarkImpl with DiagnosticableTreeMixin implements _Mark {
             (identical(other.typeOfMark, typeOfMark) ||
                 other.typeOfMark == typeOfMark) &&
             (identical(other.poster, poster) || other.poster == poster) &&
+            (identical(other.created, created) || other.created == created) &&
             const DeepCollectionEquality().equals(other._comments, _comments));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, markContent, typeOfMark,
-      poster, const DeepCollectionEquality().hash(_comments));
+      poster, created, const DeepCollectionEquality().hash(_comments));
 
   @JsonKey(ignore: true)
   @override
@@ -254,6 +274,7 @@ abstract class _Mark implements Mark {
       @JsonKey(name: "type_of_mark")
       final MarkType typeOfMark,
       final Author poster,
+      @DateTimeConverter() final DateTime created,
       final List<Comment> comments) = _$MarkImpl;
 
   factory _Mark.fromJson(Map<String, dynamic> json) = _$MarkImpl.fromJson;
@@ -270,6 +291,9 @@ abstract class _Mark implements Mark {
   MarkType get typeOfMark;
   @override
   Author get poster;
+  @override
+  @DateTimeConverter()
+  DateTime get created;
   @override
   List<Comment> get comments;
   @override

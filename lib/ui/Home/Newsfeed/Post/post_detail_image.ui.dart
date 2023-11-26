@@ -3,48 +3,44 @@ import 'dart:math';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
 
-class DetailImageView extends StatefulWidget {
+class PostDetailMediaUI extends StatefulWidget {
   final Post? post;
   final int initIndex;
 
-  const DetailImageView({super.key, this.post, this.initIndex = 0});
+  const PostDetailMediaUI({super.key, this.post, this.initIndex = 0});
 
   @override
-  State<DetailImageView> createState() => _DetailImageViewState();
+  State<PostDetailMediaUI> createState() => _PostDetailMediaUIState();
 }
 
-class _DetailImageViewState extends State<DetailImageView> {
+class _PostDetailMediaUIState extends State<PostDetailMediaUI> {
   bool isExpanded = false;
   double scale = 1;
   double baseScale = 1;
-  late final PageController ctrl =
-      PageController(initialPage: widget.initIndex);
+  late final PageController ctrl = PageController(initialPage: widget.initIndex);
 
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
           leading: IconButton(
-              onPressed: () => Navigator.maybePop(context),
-              icon: Icon(Icons.arrow_back))),
+              onPressed: () => Navigator.maybePop(context), icon: Icon(Icons.arrow_back))),
       backgroundColor: Colors.black,
       body: Stack(
         children: [
           PageView.builder(
             controller: ctrl,
-            physics:
-                baseScale == 1 ? null : const NeverScrollableScrollPhysics(),
+            physics: baseScale == 1 ? null : const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) => InteractiveViewer(
                 minScale: 1,
                 onInteractionUpdate: (details) {
                   scale = baseScale * details.scale;
                 },
                 onInteractionEnd: (details) {
-                  print(scale);
                   setState(() {
                     baseScale = max(scale, 1);
                   });
@@ -63,8 +59,7 @@ class _DetailImageViewState extends State<DetailImageView> {
                 color: Colors.black54,
                 padding: const EdgeInsets.all(8.0),
                 width: MediaQuery.sizeOf(context).width,
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.sizeOf(context).height / 3),
+                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height / 3),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,25 +67,22 @@ class _DetailImageViewState extends State<DetailImageView> {
                     children: [
                       Text(
                         widget.post!.author.name,
-                        style: themeData.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: themeData.canvasColor),
+                        style: themeData.textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.bold, color: themeData.canvasColor),
                       ),
                       LayoutBuilder(builder: (context, size) {
                         var tp = TextPainter(
                           maxLines: isExpanded ? null : 5,
                           textAlign: TextAlign.left,
                           textDirection: TextDirection.ltr,
-                          text: formatPostDescribed(
-                              widget.post!.described, themeData),
+                          text: formatPostDescribed(widget.post!.described, themeData),
                         );
                         tp.layout(maxWidth: size.maxWidth);
                         var exceeded = tp.didExceedMaxLines;
                         if (exceeded) {
                           return Stack(children: <Widget>[
                             Text.rich(
-                              formatPostDescribed(
-                                  widget.post!.described, themeData),
+                              formatPostDescribed(widget.post!.described, themeData),
                               maxLines: 5,
                               overflow: TextOverflow.ellipsis,
                               style: themeData.textTheme.bodyMedium
@@ -109,11 +101,9 @@ class _DetailImageViewState extends State<DetailImageView> {
                                       },
                                       child: Text(
                                         "...Xem thêm",
-                                        style: themeData.textTheme.bodyMedium
-                                            ?.copyWith(
-                                                color: themeData
-                                                    .colorScheme.inverseSurface,
-                                                fontWeight: FontWeight.w500),
+                                        style: themeData.textTheme.bodyMedium?.copyWith(
+                                            color: themeData.colorScheme.inverseSurface,
+                                            fontWeight: FontWeight.w500),
                                       ),
                                     )))
                           ]);
@@ -122,8 +112,7 @@ class _DetailImageViewState extends State<DetailImageView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text.rich(
-                                  formatPostDescribed(
-                                      widget.post!.described, themeData),
+                                  formatPostDescribed(widget.post!.described, themeData),
                                   maxLines: 10000000,
                                   overflow: TextOverflow.ellipsis,
                                   style: themeData.textTheme.bodyMedium
@@ -137,47 +126,30 @@ class _DetailImageViewState extends State<DetailImageView> {
                                   },
                                   child: Text(
                                     "Thu gọn",
-                                    style: themeData.textTheme.bodyMedium
-                                        ?.copyWith(
-                                            color: themeData
-                                                .colorScheme.inverseSurface,
-                                            fontWeight: FontWeight.w500),
+                                    style: themeData.textTheme.bodyMedium?.copyWith(
+                                        color: themeData.colorScheme.inverseSurface,
+                                        fontWeight: FontWeight.w500),
                                   ),
                                 )
                               ]);
                         } else {
                           return Text.rich(
-                            formatPostDescribed(
-                                widget.post!.described, themeData),
+                            formatPostDescribed(widget.post!.described, themeData),
                             overflow: TextOverflow.ellipsis,
                             style: themeData.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: themeData.canvasColor),
+                                fontWeight: FontWeight.bold, color: themeData.canvasColor),
                           );
                         }
                       }),
                       const SizedBox(height: 5),
                       Text(
-                        formatPostCreatedTime(widget.post!.created)
-                            .toUpperCase(),
-                        style: themeData.textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w300, color: Colors.grey),
+                        formatCreatedTime(widget.post!.created).toUpperCase(),
+                        style: themeData.textTheme.bodySmall
+                            ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
                       ),
                       const Divider(),
                       const Row(
-                        children: [
-                          // ReactionDisplay(
-                          //   kudos: widget.post!.kudos,
-                          //   dissapointed: widget.post!.disappointed,
-                          // ),
-                          // Text(" ${widget.post!.kudos + widget.post!.disappointed}",
-                          //     style: themeData.textTheme.bodySmall
-                          //         ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
-                          // const Spacer(),
-                          // Text(" ${(widget.post!.fake + widget.post!.trust).toString()} bình luận",
-                          //     style: themeData.textTheme.bodySmall
-                          //         ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
-                        ],
+                        children: [],
                       )
                     ],
                   ),

@@ -1,31 +1,32 @@
 import 'dart:io';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/emoji.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/video.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_grid_image_view.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image_picker.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hl_image_picker_android/hl_image_picker_android.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
-class PostCreateUpdateUI extends StatefulWidget {
+class PostCreateModifyUI extends ConsumerStatefulWidget {
   final Post? post;
 
-  const PostCreateUpdateUI({super.key, this.post});
+  const PostCreateModifyUI({super.key, this.post});
 
   @override
-  State<PostCreateUpdateUI> createState() => _PostCreateUpdateUIState();
+  ConsumerState<PostCreateModifyUI> createState() => _PostCreateUpdateUIState();
 }
 
-class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
-  final ctrl = TextEditingController();
+class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
   late final List<dynamic> options = [
     {
       "label": "\u{1f5bc} Ảnh",
@@ -33,12 +34,28 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
         await HLImagePickerAndroid()
             .image(
                 cropping: false,
-                selectedIds:
-                    image.whereType<HLPickerItem>().map((e) => e.id).toList(),
+                selectedIds: image?.whereType<HLPickerItem>().map((e) => e.id).toList(),
                 pickerOptions: const HLPickerOptions(maxSelectedAssets: 4))
             .then((value) {
           setState(() {
-            image = [...image.whereType<Widget>().toList(), ...value];
+            video = null;
+            image = [...image?.whereType<Widget>().toList() ?? [], ...value];
+          });
+        });
+      }
+    },
+    {
+      "label": "\u{1f4f9} Video",
+      "action": () async {
+        await HLImagePickerAndroid()
+            .video(
+                cropping: false,
+                selectedIds: video is HLPickerItem ? [(video as HLPickerItem).id] : null,
+                pickerOptions: const HLPickerOptions(maxSelectedAssets: 4))
+            .then((value) {
+          setState(() {
+            video = value.first;
+            image = null;
           });
         });
       }
@@ -46,10 +63,11 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
     {"label": "\u{1f600} Cảm xúc/Hoạt động", "action": () {}},
     {"label": "\u{1f4f7} Camera", "action": () {}}
   ];
+  final ctrl = TextEditingController();
   final focusNode = FocusNode();
 
-  List<dynamic> image = [];
-  File? video;
+  List<dynamic>? image = [];
+  dynamic video;
 
   //For edit image
   List<int>? imageDel, imageSort;
@@ -59,10 +77,9 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
   @override
   void initState() {
     super.initState();
-    image = widget.post?.image
-            ?.map((e) => AFBNetworkImage(url: e.url, fit: BoxFit.cover))
-            .toList() ??
-        [];
+    image =
+        widget.post?.image?.map((e) => AFBNetworkImage(url: e.url, fit: BoxFit.cover)).toList() ??
+            [];
     ctrl.text = Emoji.revert(widget.post?.described ?? "");
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
@@ -80,7 +97,7 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
   Future<bool> decideCanPop() async {
     final themeData = Theme.of(context);
     return (widget.post == null)
-        ? (await context.showAFBModalBottomSheet<bool>(
+        ? (await context.showAFBOptionModalBottomSheet<bool>(
                 header: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,8 +135,7 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
             false)
         : (await context.showAFBDialog<bool>(
               title: Text("Bỏ thay đổi?", style: themeData.textTheme.bodyLarge),
-              content: const Text(
-                  "Nếu bỏ bây giờ thì bạn sẽ mất mọi thay đổi trên bài viết này."),
+              content: const Text("Nếu bỏ bây giờ thì bạn sẽ mất mọi thay đổi trên bài viết này."),
               actions: [
                 GestureDetector(
                     onTap: () {
@@ -131,8 +147,8 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
                     Navigator.maybePop(context, true);
                   },
                   child: Text("BỎ",
-                      style: themeData.textTheme.bodyMedium
-                          ?.copyWith(color: themeData.primaryColor)),
+                      style:
+                          themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor)),
                 )
               ],
             ) ??
@@ -148,7 +164,7 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
         if (value) Navigator.pop(context);
       }),
       child: Scaffold(
-        appBar: TransparentAppBar(
+        appBar: AFBTransparentAppBar(
           title: Text(
             widget.post == null ? "Tạo bài viết" : "Chỉnh sửa bài viết",
             style: themeData.textTheme.titleMedium,
@@ -163,32 +179,32 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
           actions: [
             TextButton(
                 onPressed: () {
-                  context.read<NewsfeedBloc>().add(NewsfeedAddPost(
+                  ref.read(newsfeedControllerProvider.notifier).addPost(
                       described: ctrl.text,
                       status: "Not Hyped",
-                      image: image.map((e) => File(e.path)).toList(),
-                      video: video));
+                      image: image?.map((e) => File(e.path)).toList(),
+                      video: video is HLPickerItem ? File((video as HLPickerItem).path) : File(""));
                   Navigator.pop(context);
                 },
                 child: const Text("ĐĂNG"))
           ],
         ),
         body: SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: BlocBuilder<AuthenBloc, AuthenState>(
-                buildWhen: (previous, current) => previous.user != current.user,
-                builder: (context, state) {
+              child: Builder(
+                builder: (context) {
+                  final user =
+                      ref.watch(authenControllerProvider.select((value) => value.value?.user));
                   return Row(
                     children: [
-                      AFBCircleAvatar(imageUrl: state.user?.avatar ?? ""),
+                      AFBCircleAvatar(imageUrl: user?.avatar ?? ""),
                       const SizedBox(width: 10),
                       Text(
-                        state.user?.username ?? "",
-                        style: themeData.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                        user?.username ?? "",
+                        style:
+                            themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                       )
                     ],
                   );
@@ -206,23 +222,46 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
                   decoration: const InputDecoration(
                       border: InputBorder.none, hintText: "Bạn đang nghĩ gì?"),
                 )),
-            AspectRatio(
-                aspectRatio: 1,
-                child: GridImageEdit(
-                  image: image,
-                  onUpdated: (image, {begin, end, deleted}) {
-                    setState(() {
-                      this.image = image;
-                    });
-                  },
-                )),
-            SizedBox(height: !isExpanded ? 50 : 150)
+            if (image != null)
+              AspectRatio(
+                  aspectRatio: 1,
+                  child: AFBGridImageEdit(
+                    image: image!,
+                    onUpdated: (image, {begin, end, deleted}) {
+                      setState(() {
+                        this.image = image;
+                      });
+                    },
+                  )),
+            if (video != null)
+              Stack(
+                children: [
+                  FutureBuilder(
+                    future: VideoThumbnail.thumbnailFile(
+                        video: video is HLPickerItem
+                            ? (video as HLPickerItem).path
+                            : (video as Video).url ?? ""),
+                    builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                      return AspectRatio(
+                        aspectRatio: 1,
+                        child: Image.file(File(snapshot.data ?? ""),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stack) => Container()),
+                      );
+                    },
+                  ),
+                  Positioned.fill(
+                      child: Center(
+                    child: Icon(Icons.play_arrow, color: themeData.canvasColor, size: 50),
+                  ))
+                ],
+              ),
+            SizedBox(height: !isExpanded ? 50 : 200)
           ]),
         ),
         bottomSheet: Theme(
           data: ThemeData(
-              bottomSheetTheme:
-                  const BottomSheetThemeData(shape: RoundedRectangleBorder())),
+              bottomSheetTheme: const BottomSheetThemeData(shape: RoundedRectangleBorder())),
           child: BottomSheet(
               onClosing: () {},
               builder: (context) {
@@ -230,35 +269,29 @@ class _PostCreateUpdateUIState extends State<PostCreateUpdateUI> {
                     ? Column(
                         mainAxisSize: MainAxisSize.min,
                         children: List.generate(
-                            3,
+                            4,
                             (index) => _CreatePostOption(
-                                action: options[index]["action"],
-                                label: options[index]["label"])))
+                                action: options[index]["action"], label: options[index]["label"])))
                     : Container(
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
                         height: 50,
                         decoration: const BoxDecoration(
-                            border:
-                                Border(top: BorderSide(color: Colors.grey))),
+                            border: Border(top: BorderSide(color: Colors.grey))),
                         child: Row(
                           children: [
                             ...List.generate(
-                                3,
+                                4,
                                 (index) => Expanded(
                                     child: Center(
                                         child: Text(options[index]["label"]
-                                            .substring(
-                                                0,
-                                                options[index]["label"]
-                                                    .indexOf(" ")))))),
+                                            .substring(0, options[index]["label"].indexOf(" ")))))),
                             Expanded(
                               child: GestureDetector(
                                   onTap: () {
                                     focusNode.unfocus();
                                   },
-                                  child: const Center(
-                                      child: Icon(Icons.more_horiz))),
+                                  child: const Center(child: Icon(Icons.more_horiz))),
                             )
                           ],
                         ));
@@ -284,8 +317,7 @@ class _CreatePostOption extends StatelessWidget {
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.all(10),
           width: double.infinity,
-          decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.grey))),
+          decoration: const BoxDecoration(border: Border(top: BorderSide(color: Colors.grey))),
           child: Text(label)),
     );
   }

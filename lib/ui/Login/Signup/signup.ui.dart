@@ -1,6 +1,6 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/email_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
 
 class SignupUI extends StatelessWidget {
@@ -14,7 +14,7 @@ class SignupUI extends StatelessWidget {
       onPopInvoked: (didPop) =>
           Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
       child: Scaffold(
-        appBar: TransparentAppBar(
+        appBar: AFBTransparentAppBar(
           title: Text(
             "Tạo tài khoản",
             style: themeData.textTheme.titleMedium,

@@ -1,26 +1,26 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/verify_code.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AgreementSignupUI extends StatefulWidget {
+class AgreementSignupUI extends ConsumerStatefulWidget {
   const AgreementSignupUI({super.key});
 
   @override
-  State<AgreementSignupUI> createState() => _AgreementSignupUIState();
+  ConsumerState<AgreementSignupUI> createState() => _AgreementSignupUIState();
 }
 
-class _AgreementSignupUIState extends State<AgreementSignupUI> {
+class _AgreementSignupUIState extends ConsumerState<AgreementSignupUI> {
   bool isLocked = false;
 
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
         title: Text(
           "Đồng ý với điều khoản và chính sách của Anti Fakebook",
           style: themeData.textTheme.titleMedium,
@@ -81,22 +81,25 @@ class _AgreementSignupUIState extends State<AgreementSignupUI> {
             AFBPrimaryEButton(
                 onPressed: isLocked
                     ? null
-                    : () {
+                    : () async {
                         setState(() {
                           isLocked = true;
                         });
-                        context.read<AuthenBloc>().add(AuthenSignupRequest(
-                            () => Navigator.pushAndRemoveUntil(
+                        await ref.read(authenControllerProvider.notifier).signup(
+                            onSuccess: () => Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => VerifyCodeUI(
-                                        email:
-                                            context.read<AuthenBloc>().state.signupInfo["email"]!,
+                                        email: ref
+                                            .read(authenControllerProvider)
+                                            .requireValue
+                                            .signupInfo["email"]!,
                                         mode: VerifyMode.signup)),
-                                (route) => false),
-                            () => setState(() {
-                                  isLocked = false;
-                                })));
+                                (route) => false));
+
+                        () => setState(() {
+                              isLocked = false;
+                            });
                       },
                 child: const Text("Tôi đồng ý")),
             const Spacer(),

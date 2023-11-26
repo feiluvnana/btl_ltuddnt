@@ -1,25 +1,25 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/change_profile_after_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/verify_code.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginUI extends StatefulWidget {
+class LoginUI extends ConsumerStatefulWidget {
   const LoginUI({super.key});
 
   @override
-  State<LoginUI> createState() => _LoginUIState();
+  ConsumerState<LoginUI> createState() => _LoginUIState();
 }
 
-class _LoginUIState extends State<LoginUI> {
+class _LoginUIState extends ConsumerState<LoginUI> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
@@ -34,7 +34,7 @@ class _LoginUIState extends State<LoginUI> {
         password.text = "";
         break;
       case 0:
-        context.read<AuthenBloc>().add(AuthenGetVerifyCode(email.text, () {}));
+        ref.read(authenControllerProvider.notifier).getVerifyCode(email: email.text);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -72,9 +72,10 @@ class _LoginUIState extends State<LoginUI> {
         resizeToAvoidBottomInset: false,
         body: Padding(
           padding: const EdgeInsets.all(10),
-          child: BlocBuilder<AuthenBloc, AuthenState>(
-            builder: (context, state) {
-              return (state.user != null)
+          child: Builder(
+            builder: (context) {
+              final user = ref.watch(authenControllerProvider.select((value) => value.value?.user));
+              return (user != null)
                   ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                       const FlutterLogo(size: 110),
                       const SizedBox(height: 30),
@@ -83,9 +84,8 @@ class _LoginUIState extends State<LoginUI> {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => const LoginPasswordUI()));
                         },
-                        leading: AFBCircleAvatar(imageUrl: state.user?.avatar ?? "", radius: 60),
-                        title: Text(state.user?.username ?? "",
-                            style: themeData.textTheme.titleMedium),
+                        leading: AFBCircleAvatar(imageUrl: user.avatar, radius: 60),
+                        title: Text(user.username, style: themeData.textTheme.titleMedium),
                         trailing: IconButton(
                           onPressed: () {},
                           icon: const Icon(Icons.more_vert),
@@ -169,13 +169,11 @@ class _LoginUIState extends State<LoginUI> {
                                             setState(() {
                                               isLocked = true;
                                             });
-                                            BlocProvider.of<AuthenBloc>(context).add(AuthenLogin(
-                                                email.text,
-                                                password.text,
-                                                (active) => router(active),
-                                                () => setState(() {
-                                                      isLocked = false;
-                                                    })));
+                                            await ref
+                                                .read(authenControllerProvider.notifier)
+                                                .login(email: email.text, password: password.text)
+                                                .then((value) => router(value));
+                                            () => setState(() => isLocked = false);
                                           }
                                         }
                                       : null,
@@ -208,14 +206,14 @@ class _LoginUIState extends State<LoginUI> {
   }
 }
 
-class LoginPasswordUI extends StatefulWidget {
+class LoginPasswordUI extends ConsumerStatefulWidget {
   const LoginPasswordUI({super.key});
 
   @override
-  State<LoginPasswordUI> createState() => _LoginPasswordUIState();
+  ConsumerState<LoginPasswordUI> createState() => _LoginPasswordUIState();
 }
 
-class _LoginPasswordUIState extends State<LoginPasswordUI> {
+class _LoginPasswordUIState extends ConsumerState<LoginPasswordUI> {
   final formKey = GlobalKey<FormState>();
   final password = TextEditingController();
   var isLocked = false;
@@ -228,12 +226,12 @@ class _LoginPasswordUIState extends State<LoginPasswordUI> {
         password.text = "";
         break;
       case 0:
-        context.read<AuthenBloc>().add(AuthenGetVerifyCode(null, () {}));
+        ref.read(authenControllerProvider.notifier).getVerifyCode(email: null);
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (_) => VerifyCodeUI(
-                    email: context.read<AuthenBloc>().state.user!.email!,
+                    email: ref.read(authenControllerProvider).requireValue.user!.email!,
                     mode: VerifyMode.signup)));
         password.text = "";
         break;
@@ -259,21 +257,22 @@ class _LoginPasswordUIState extends State<LoginPasswordUI> {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
           leading: IconButton(
               onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back))),
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: BlocBuilder<AuthenBloc, AuthenState>(
-          builder: (context, state) {
+        child: Builder(
+          builder: (context) {
+            final user = ref.watch(authenControllerProvider.select((value) => value.value?.user));
             return Form(
               key: formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AFBCircleAvatar(imageUrl: state.user?.avatar ?? "", radius: 72),
+                  AFBCircleAvatar(imageUrl: user?.avatar ?? "", radius: 72),
                   const SizedBox(height: 15),
-                  Text(state.user!.username, style: themeData.textTheme.titleLarge),
+                  Text(user!.username, style: themeData.textTheme.titleLarge),
                   const SizedBox(height: 15),
                   TextFormField(
                     obscureText: isHidden,
@@ -307,13 +306,11 @@ class _LoginPasswordUIState extends State<LoginPasswordUI> {
                                 setState(() {
                                   isLocked = true;
                                 });
-                                BlocProvider.of<AuthenBloc>(context).add(AuthenLogin(
-                                    state.user!.email!,
-                                    password.text,
-                                    (active) => router(active),
-                                    () => setState(() {
-                                          isLocked = false;
-                                        })));
+                                await ref
+                                    .read(authenControllerProvider.notifier)
+                                    .login(email: user.email!, password: password.text)
+                                    .then((value) => router(value));
+                                () => setState(() => isLocked = false);
                               }
                             }
                           : null,

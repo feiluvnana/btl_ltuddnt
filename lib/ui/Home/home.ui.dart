@@ -1,21 +1,21 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/friend.bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Friend/friend.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/menu.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/newsfeed.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Watch/watch_ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Watch/watch.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeUI extends StatefulWidget {
+class HomeUI extends ConsumerStatefulWidget {
   const HomeUI({super.key});
 
   @override
-  State<HomeUI> createState() => _HomeUIState();
+  ConsumerState<HomeUI> createState() => _HomeUIState();
 }
 
-class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
+class _HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
   late TabController tabController;
 
   @override
@@ -24,9 +24,9 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
       ..addListener(() {
         setState(() {});
       });
-    context
-      ..read<NewsfeedBloc>().add(const NewsfeedInit())
-      ..read<FriendBloc>().add(const FriendGetSuggested());
+    ref
+      ..read(friendControllerProvider.notifier).getSuggestedFriends()
+      ..read(newsfeedControllerProvider.notifier).init();
     super.initState();
   }
 
@@ -37,7 +37,7 @@ class _HomeUIState extends State<HomeUI> with TickerProviderStateMixin {
       canPop: false,
       onPopInvoked: (didPop) async {},
       child: Scaffold(
-          appBar: TransparentAppBar(
+          appBar: AFBTransparentAppBar(
               title: Text(
                 "Anti Fakebook",
                 style: themeData.textTheme.headlineSmall

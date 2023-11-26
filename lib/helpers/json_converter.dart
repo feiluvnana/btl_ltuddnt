@@ -1,4 +1,4 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/enum.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/mark.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 class DateTimeConverter implements JsonConverter<DateTime, String> {
@@ -66,7 +66,7 @@ class MarkTypeConverter implements JsonConverter<MarkType, String> {
 
   @override
   MarkType fromJson(String value) {
-    return value.toLowerCase() == "trust" ? MarkType.trust : MarkType.fake;
+    return value.toLowerCase() == "1" ? MarkType.trust : MarkType.fake;
   }
 
   @override

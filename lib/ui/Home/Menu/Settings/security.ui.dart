@@ -1,9 +1,9 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SecurityUI extends StatefulWidget {
   const SecurityUI({super.key});
@@ -29,7 +29,7 @@ class _SecurityUIState extends State<SecurityUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
         title: Text("Bảo mật", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -56,14 +56,14 @@ class _SecurityUIState extends State<SecurityUI> {
   }
 }
 
-class SecurityChangePassUI extends StatefulWidget {
+class SecurityChangePassUI extends ConsumerStatefulWidget {
   const SecurityChangePassUI({super.key});
 
   @override
-  State<SecurityChangePassUI> createState() => _SecurityChangePassUIState();
+  ConsumerState<SecurityChangePassUI> createState() => _SecurityChangePassUIState();
 }
 
-class _SecurityChangePassUIState extends State<SecurityChangePassUI> {
+class _SecurityChangePassUIState extends ConsumerState<SecurityChangePassUI> {
   final formKey = GlobalKey<FormState>();
   final password = TextEditingController();
   final newPassword = TextEditingController();
@@ -75,7 +75,7 @@ class _SecurityChangePassUIState extends State<SecurityChangePassUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
         title: Text("Đổi mật khẩu", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -133,14 +133,16 @@ class _SecurityChangePassUIState extends State<SecurityChangePassUI> {
                 child: AFBPrimaryEButton(
                   onPressed: isLocked
                       ? null
-                      : () {
+                      : () async {
                           if (formKey.currentState?.validate() != true) return;
                           setState(() => isLocked = true);
-                          context
-                              .read<AuthenBloc>()
-                              .add(AuthenChangePassword(password.text, newPassword.text, () {
+                          await ref.read(authenControllerProvider.notifier).changePassword(
+                              password: password.text,
+                              newPassword: newPassword.text,
+                              onSuccess: () {
                                 Navigator.maybePop(context);
-                              }, () => setState(() => isLocked = false)));
+                              });
+                          () => setState(() => isLocked = false);
                         },
                   child: const Center(child: Text("Xác nhận")),
                 ),

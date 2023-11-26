@@ -1,10 +1,10 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/other_problem_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PostReportUI extends StatefulWidget {
   final Post post;
@@ -74,7 +74,7 @@ class _PostReportUIState extends State<PostReportUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
         title: Text("Báo cáo bài viết", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -189,7 +189,7 @@ class _PostReportUIState extends State<PostReportUI> {
   }
 }
 
-class PostReportCompletionUI extends StatelessWidget {
+class PostReportCompletionUI extends ConsumerWidget {
   final String subject;
   final String? detail;
   final Post post;
@@ -197,10 +197,10 @@ class PostReportCompletionUI extends StatelessWidget {
       {super.key, required this.subject, required this.detail, required this.post});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final themeData = Theme.of(context);
     return Scaffold(
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
         title: Text("Báo cáo bài viết", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -270,9 +270,9 @@ class PostReportCompletionUI extends StatelessWidget {
             ),
             AFBPrimaryEButton(
                 onPressed: () {
-                  context
-                      .read<NewsfeedBloc>()
-                      .add(NewsfeedReportPost(id: post.id, subject: subject, detail: detail ?? ""));
+                  ref
+                      .read(newsfeedControllerProvider.notifier)
+                      .reportPost(id: post.id, subject: subject, detail: detail ?? "");
                   Navigator.popUntil(context, (route) => route.settings.name == "/home");
                 },
                 child: const Center(

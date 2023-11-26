@@ -1,33 +1,27 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/post_item.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_create_modify.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_item.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'Create&Update/post_create_update_ui.dart';
-
-class NewsfeedUI extends StatefulWidget {
+class NewsfeedUI extends ConsumerStatefulWidget {
   const NewsfeedUI({super.key});
 
   @override
-  State<NewsfeedUI> createState() => _NewsfeedUIState();
+  ConsumerState<NewsfeedUI> createState() => _NewsfeedUIState();
 }
 
-class _NewsfeedUIState extends State<NewsfeedUI>
-    with AutomaticKeepAliveClientMixin {
+class _NewsfeedUIState extends ConsumerState<NewsfeedUI> with AutomaticKeepAliveClientMixin {
   final ctrl = ScrollController();
-  var isFetching = false;
 
   @override
   void initState() {
     super.initState();
     ctrl.addListener(() {
-      if (ctrl.offset >= 0.7 * ctrl.position.maxScrollExtent && !isFetching) {
-        isFetching = true;
-        context
-            .read<NewsfeedBloc>()
-            .add(NewsfeedGetPosts(finallyCallback: () => isFetching = false));
+      if (ctrl.offset >= 0.7 * ctrl.position.maxScrollExtent) {
+        ref.read(newsfeedControllerProvider.notifier).getPosts();
       }
     });
   }
@@ -37,12 +31,12 @@ class _NewsfeedUIState extends State<NewsfeedUI>
     super.build(context);
     return RefreshIndicator(
       onRefresh: () async {
-        context.read<NewsfeedBloc>().add(const NewsfeedPostRefresh());
+        ref.read(newsfeedControllerProvider.notifier).refresh();
       },
-      child: BlocBuilder<NewsfeedBloc, NewsfeedState>(
-        buildWhen: (previous, current) => previous.posts != current.posts,
-        builder: (context, state) {
-          return switch (state.posts?.isEmpty) {
+      child: Builder(
+        builder: (context) {
+          final posts = ref.watch(newsfeedControllerProvider.select((value) => value.value?.posts));
+          return switch (posts?.isEmpty) {
             null => const Column(
                 children: [
                   CreatePostBar(),
@@ -54,12 +48,14 @@ class _NewsfeedUIState extends State<NewsfeedUI>
                 ],
               ),
             false => ListView.builder(
+                findChildIndexCallback: (key) {
+                  return posts!.indexWhere((element) => (key as ObjectKey).value == element.id) + 1;
+                },
                 controller: ctrl,
-                shrinkWrap: true,
                 itemBuilder: (context, index) => index == 0
                     ? const CreatePostBar()
-                    : PostItem(post: state.posts![index - 1]),
-                itemCount: (state.posts?.length ?? 0) + 1),
+                    : PostItem(key: ObjectKey(posts![index - 1].id), post: posts[index - 1]),
+                itemCount: (posts?.length ?? 0) + 1),
             true => const Column(
                 children: [
                   CreatePostBar(),
@@ -76,30 +72,27 @@ class _NewsfeedUIState extends State<NewsfeedUI>
   bool get wantKeepAlive => true;
 }
 
-class CreatePostBar extends StatelessWidget {
+class CreatePostBar extends ConsumerWidget {
   const CreatePostBar({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: BlocBuilder<AuthenBloc, AuthenState>(
-            builder: (context, state) {
-              return AFBCircleAvatar(imageUrl: state.user?.avatar ?? "");
-            },
-          ),
-        ),
+            padding: const EdgeInsets.all(8.0),
+            child: AFBCircleAvatar(
+                imageUrl: ref
+                        .watch(authenControllerProvider.select((value) => value.value?.user))
+                        ?.avatar ??
+                    "")),
         Expanded(
           child: GestureDetector(
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PostCreateUpdateUI()));
+                  context, MaterialPageRoute(builder: (context) => const PostCreateModifyUI()));
             },
             child: Container(
               padding: const EdgeInsets.only(left: 15, top: 8, bottom: 8),

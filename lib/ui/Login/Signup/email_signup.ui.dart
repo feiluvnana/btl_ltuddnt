@@ -1,22 +1,22 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/password_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EmailSignupUI extends StatelessWidget {
+class EmailSignupUI extends ConsumerWidget {
   EmailSignupUI({super.key});
 
   final formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
         title: Text(
           "Email",
           style: themeData.textTheme.titleMedium,
@@ -34,20 +34,22 @@ class EmailSignupUI extends StatelessWidget {
             const Text(
                 "Nhập email có thể dùng để liên hệ với bạn. Thông tin này sẽ không hiển thị với ai khác trên trang cá nhân của bạn."),
             const SizedBox(height: 10),
-            BlocBuilder<AuthenBloc, AuthenState>(
-              buildWhen: (previous, current) =>
-                  previous.signupInfo["email"] != current.signupInfo["email"],
-              builder: (context, state) {
+            Builder(
+              builder: (context) {
+                final signupInfo =
+                    ref.watch(authenControllerProvider.select((value) => value.value?.signupInfo));
+                final email = ref.watch(
+                    authenControllerProvider.select((value) => value.value?.signupInfo["email"]));
                 return Form(
                   key: formKey,
                   child: TextFormField(
-                    initialValue: state.signupInfo["email"],
+                    initialValue: email,
                     keyboardType: TextInputType.emailAddress,
                     validator: Validators.signupEmailValidator,
                     onChanged: (value) {
-                      context
-                          .read<AuthenBloc>()
-                          .add(AuthenSignupInfoChange({...state.signupInfo, "email": value}));
+                      ref
+                          .read(authenControllerProvider.notifier)
+                          .updateSignupInfo(info: {...signupInfo ?? {}, "email": value});
                     },
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(15),

@@ -1,21 +1,22 @@
 import 'dart:io';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
+
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image_picker.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hl_image_picker_android/hl_image_picker_android.dart';
 
-class ChangeProfileAfterSignupUI extends StatefulWidget {
+class ChangeProfileAfterSignupUI extends ConsumerStatefulWidget {
   const ChangeProfileAfterSignupUI({super.key});
 
   @override
-  State<ChangeProfileAfterSignupUI> createState() => _ChangeProfileAfterSignupUIState();
+  ConsumerState<ChangeProfileAfterSignupUI> createState() => _ChangeProfileAfterSignupUIState();
 }
 
-class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI> {
+class _ChangeProfileAfterSignupUIState extends ConsumerState<ChangeProfileAfterSignupUI> {
   HLPickerItem? avatar;
   bool isLocked = false;
   final username = TextEditingController();
@@ -25,7 +26,7 @@ class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI>
     ThemeData themeData = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
         title: Text(
           "Thêm thông tin",
           style: themeData.textTheme.titleMedium,
@@ -104,20 +105,20 @@ class _ChangeProfileAfterSignupUIState extends State<ChangeProfileAfterSignupUI>
             AFBPrimaryEButton(
                 onPressed: isLocked
                     ? null
-                    : () {
+                    : () async {
                         setState(() {
                           isLocked = true;
                         });
-                        context.read<AuthenBloc>().add(AuthenChangeProfileAfter(
-                            username.text,
-                            avatar != null ? File(avatar!.path) : null,
-                            () => Navigator.pushNamedAndRemoveUntil(
+                        await ref.read(authenControllerProvider.notifier).changeProfileAfterSignup(
+                            username: username.text,
+                            avatar: avatar != null ? File(avatar!.path) : null,
+                            onSuccess: () => Navigator.pushNamedAndRemoveUntil(
                                     context, "/home", (route) => false)
                                 .whenComplete(
-                                    () => context.read<NewsfeedBloc>().add(const NewsfeedInit())),
-                            () => setState(() {
-                                  isLocked = false;
-                                })));
+                                    () => ref.read(newsfeedControllerProvider.notifier).init()));
+                        () => setState(() {
+                              isLocked = false;
+                            });
                       },
                 child: const Text("Tiếp")),
           ],

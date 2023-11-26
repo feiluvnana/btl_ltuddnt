@@ -1,19 +1,19 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/friend.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/friend.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FriendSuggestedUI extends StatelessWidget {
+class FriendSuggestedUI extends ConsumerWidget {
   const FriendSuggestedUI({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     var themeData = Theme.of(context);
     return Scaffold(
-        appBar: TransparentAppBar(
+        appBar: AFBTransparentAppBar(
           title: Text("Gợi ý", style: themeData.textTheme.titleMedium),
           leading: IconButton(
               onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -27,10 +27,12 @@ class FriendSuggestedUI extends StatelessWidget {
                   style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
             ),
             Expanded(
-              child: BlocBuilder<FriendBloc, FriendState>(builder: (context, state) {
+              child: Builder(builder: (context) {
                 //TODO: remove this in the future
-                var filteredSuggestedFriends =
-                    state.suggestedFriends?.where((element) => element.username != "").toList();
+                var filteredSuggestedFriends = ref
+                    .read(friendControllerProvider.select((value) => value.value?.suggestedFriends))
+                    ?.where((element) => element.username != "")
+                    .toList();
                 return ListView.builder(
                   itemBuilder: (context, index) =>
                       FriendItem(friend: filteredSuggestedFriends![index]),

@@ -1,23 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/friend.bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/user.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/ForgetPassword/forget_password.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/signup.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/login_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/login.ui.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as fss;
 
 const secureStorage =
@@ -50,31 +46,28 @@ void main() async {
   }
   var initialRoute = "/login";
   User? initialUser;
-  List<Post>? initialPosts;
   await secureStorage.read(key: "user").then((value) {
     if (value != null) {
       initialUser = User.fromJson(jsonDecode(value));
       initialRoute = initialUser?.token == null ? "/login" : "/home";
     }
   });
-  await secureStorage.read(key: "posts").then((value) {
-    if (value != null) {
-      initialPosts = (jsonDecode(value) as List).map<Post>((e) => Post.fromJson(e)).toList();
-    }
-  });
-  runApp(AFB(initialRoute: initialRoute, initialUser: initialUser, initialPosts: initialPosts));
+  // await secureStorage.read(key: "posts").then((value) {
+  //   if (value != null) {
+  //     initialPosts = (jsonDecode(value) as List).map<Post>((e) => Post.fromJson(e)).toList();
+  //   }
+  // });
+  runApp(AFB(initialRoute: initialRoute));
   FlutterNativeSplash.remove();
 }
 
 class AFB extends StatelessWidget {
   final String initialRoute;
-  final User? initialUser;
-  final List<Post>? initialPosts;
-  const AFB({super.key, required this.initialRoute, this.initialUser, this.initialPosts});
+  const AFB({super.key, required this.initialRoute});
   @override
   Widget build(BuildContext context) {
-    return DevicePreview(
-      builder: (context) {
+    return ProviderScope(
+      child: DevicePreview(builder: (context) {
         Connectivity().onConnectivityChanged.listen((result) {
           if (result != ConnectivityResult.wifi && result != ConnectivityResult.mobile) {
             scaffoldMessengerKey.currentState!.showMaterialBanner(MaterialBanner(
@@ -95,12 +88,9 @@ class AFB extends StatelessWidget {
                         backgroundColor: Theme.of(context).colorScheme.errorContainer));
                   }
                 }));
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (context) => AuthenBloc(initialUser)),
-            BlocProvider(create: (context) => NewsfeedBloc(initialPosts)),
-            BlocProvider(create: (context) => FriendBloc())
-          ],
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: MaterialApp(
             scaffoldMessengerKey: scaffoldMessengerKey,
             debugShowCheckedModeBanner: false,
@@ -146,7 +136,7 @@ class AFB extends StatelessWidget {
             },
           ),
         );
-      }
+      }),
     );
   }
 }

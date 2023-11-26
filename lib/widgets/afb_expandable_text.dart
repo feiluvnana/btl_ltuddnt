@@ -3,16 +3,16 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ExpandableText extends StatefulWidget {
+class AFBExpandableText extends StatefulWidget {
   final Post post;
 
-  const ExpandableText({super.key, required this.post});
+  const AFBExpandableText({super.key, required this.post});
 
   @override
-  State<ExpandableText> createState() => _ExpandableTextState();
+  State<AFBExpandableText> createState() => _AFBExpandableTextState();
 }
 
-class _ExpandableTextState extends State<ExpandableText> {
+class _AFBExpandableTextState extends State<AFBExpandableText> {
   bool isExpanded = false;
   Offset popupOffset = Offset.zero;
 

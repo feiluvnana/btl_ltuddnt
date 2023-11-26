@@ -24,7 +24,6 @@ mixin _$Comment {
   DateTime get created => throw _privateConstructorUsedError;
   String get content => throw _privateConstructorUsedError;
   Author get poster => throw _privateConstructorUsedError;
-  List<Comment> get comments => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,10 +36,7 @@ abstract class $CommentCopyWith<$Res> {
       _$CommentCopyWithImpl<$Res, Comment>;
   @useResult
   $Res call(
-      {@DateTimeConverter() DateTime created,
-      String content,
-      Author poster,
-      List<Comment> comments});
+      {@DateTimeConverter() DateTime created, String content, Author poster});
 
   $AuthorCopyWith<$Res> get poster;
 }
@@ -61,7 +57,6 @@ class _$CommentCopyWithImpl<$Res, $Val extends Comment>
     Object? created = null,
     Object? content = null,
     Object? poster = null,
-    Object? comments = null,
   }) {
     return _then(_value.copyWith(
       created: null == created
@@ -76,10 +71,6 @@ class _$CommentCopyWithImpl<$Res, $Val extends Comment>
           ? _value.poster
           : poster // ignore: cast_nullable_to_non_nullable
               as Author,
-      comments: null == comments
-          ? _value.comments
-          : comments // ignore: cast_nullable_to_non_nullable
-              as List<Comment>,
     ) as $Val);
   }
 
@@ -100,10 +91,7 @@ abstract class _$$CommentImplCopyWith<$Res> implements $CommentCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@DateTimeConverter() DateTime created,
-      String content,
-      Author poster,
-      List<Comment> comments});
+      {@DateTimeConverter() DateTime created, String content, Author poster});
 
   @override
   $AuthorCopyWith<$Res> get poster;
@@ -123,7 +111,6 @@ class __$$CommentImplCopyWithImpl<$Res>
     Object? created = null,
     Object? content = null,
     Object? poster = null,
-    Object? comments = null,
   }) {
     return _then(_$CommentImpl(
       null == created
@@ -138,10 +125,6 @@ class __$$CommentImplCopyWithImpl<$Res>
           ? _value.poster
           : poster // ignore: cast_nullable_to_non_nullable
               as Author,
-      null == comments
-          ? _value._comments
-          : comments // ignore: cast_nullable_to_non_nullable
-              as List<Comment>,
     ));
   }
 }
@@ -150,9 +133,8 @@ class __$$CommentImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true)
 class _$CommentImpl with DiagnosticableTreeMixin implements _Comment {
-  const _$CommentImpl(@DateTimeConverter() this.created, this.content,
-      this.poster, final List<Comment> comments)
-      : _comments = comments;
+  const _$CommentImpl(
+      @DateTimeConverter() this.created, this.content, this.poster);
 
   factory _$CommentImpl.fromJson(Map<String, dynamic> json) =>
       _$$CommentImplFromJson(json);
@@ -164,17 +146,10 @@ class _$CommentImpl with DiagnosticableTreeMixin implements _Comment {
   final String content;
   @override
   final Author poster;
-  final List<Comment> _comments;
-  @override
-  List<Comment> get comments {
-    if (_comments is EqualUnmodifiableListView) return _comments;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_comments);
-  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Comment(created: $created, content: $content, poster: $poster, comments: $comments)';
+    return 'Comment(created: $created, content: $content, poster: $poster)';
   }
 
   @override
@@ -184,8 +159,7 @@ class _$CommentImpl with DiagnosticableTreeMixin implements _Comment {
       ..add(DiagnosticsProperty('type', 'Comment'))
       ..add(DiagnosticsProperty('created', created))
       ..add(DiagnosticsProperty('content', content))
-      ..add(DiagnosticsProperty('poster', poster))
-      ..add(DiagnosticsProperty('comments', comments));
+      ..add(DiagnosticsProperty('poster', poster));
   }
 
   @override
@@ -195,14 +169,12 @@ class _$CommentImpl with DiagnosticableTreeMixin implements _Comment {
             other is _$CommentImpl &&
             (identical(other.created, created) || other.created == created) &&
             (identical(other.content, content) || other.content == content) &&
-            (identical(other.poster, poster) || other.poster == poster) &&
-            const DeepCollectionEquality().equals(other._comments, _comments));
+            (identical(other.poster, poster) || other.poster == poster));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, created, content, poster,
-      const DeepCollectionEquality().hash(_comments));
+  int get hashCode => Object.hash(runtimeType, created, content, poster);
 
   @JsonKey(ignore: true)
   @override
@@ -219,11 +191,8 @@ class _$CommentImpl with DiagnosticableTreeMixin implements _Comment {
 }
 
 abstract class _Comment implements Comment {
-  const factory _Comment(
-      @DateTimeConverter() final DateTime created,
-      final String content,
-      final Author poster,
-      final List<Comment> comments) = _$CommentImpl;
+  const factory _Comment(@DateTimeConverter() final DateTime created,
+      final String content, final Author poster) = _$CommentImpl;
 
   factory _Comment.fromJson(Map<String, dynamic> json) = _$CommentImpl.fromJson;
 
@@ -234,8 +203,6 @@ abstract class _Comment implements Comment {
   String get content;
   @override
   Author get poster;
-  @override
-  List<Comment> get comments;
   @override
   @JsonKey(ignore: true)
   _$$CommentImplCopyWith<_$CommentImpl> get copyWith =>

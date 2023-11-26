@@ -10,31 +10,26 @@ class Api {
   Future<Map<String, dynamic>?> signup(String email, String password) async {
     var androidDeviceInfo = await DeviceInfoPlugin().androidInfo;
     var uuid = '${androidDeviceInfo.model}:${androidDeviceInfo.id}';
-    return ApiRoot.post("/signup",
-        jsonEncode({"email": email, "password": password, "uuid": uuid}),
+    return ApiRoot.post("/signup", jsonEncode({"email": email, "password": password, "uuid": uuid}),
         headers: {});
   }
 
   Future<Map<String, dynamic>?> login(String email, String password) async {
     var androidDeviceInfo = await DeviceInfoPlugin().androidInfo;
     var uuid = '${androidDeviceInfo.model}:${androidDeviceInfo.id}';
-    return ApiRoot.post("/login",
-        jsonEncode({"email": email, "password": password, "uuid": uuid}),
+    return ApiRoot.post("/login", jsonEncode({"email": email, "password": password, "uuid": uuid}),
         headers: {});
   }
 
-  Future<Map<String, dynamic>?> checkVerifyCode(
-      String email, String code) async {
-    return ApiRoot.post("/check_verify_code",
-        jsonEncode({"email": email, "code_verify": code}));
+  Future<Map<String, dynamic>?> checkVerifyCode(String email, String code) async {
+    return ApiRoot.post("/check_verify_code", jsonEncode({"email": email, "code_verify": code}));
   }
 
   Future<Map<String, dynamic>?> getVerifyCode(String email) async {
     return ApiRoot.post("/get_verify_code", jsonEncode({"email": email}));
   }
 
-  Future<Map<String, dynamic>?> changeProfileAfterSignup(String username,
-      [File? avatar]) async {
+  Future<Map<String, dynamic>?> changeProfileAfterSignup(String username, [File? avatar]) async {
     return ApiRoot.post(
         "/change_profile_after_signup",
         FormData.fromMap({
@@ -72,45 +67,37 @@ class Api {
   }
 
   Future<Map<String, dynamic>?> addPost(
-      {List<File>? image,
-      File? video,
-      String? described,
-      String? status}) async {
+      {List<File>? image, File? video, String? described, String? status}) async {
     return ApiRoot.post(
         "/add_post",
         FormData.fromMap({
-          "image":
-              image?.map((e) => MultipartFile.fromFileSync(e.path)).toList(),
-          "video":
-              video == null ? null : await MultipartFile.fromFile(video.path),
+          "image": image?.map((e) => MultipartFile.fromFileSync(e.path)).toList(),
+          "video": video == null
+              ? null
+              : await MultipartFile.fromFile(video.path, contentType: MediaType("video", "mp4")),
           "described": described,
           "status": status,
           "auto_accept": "1"
         }));
   }
 
-  Future<Map<String, dynamic>?> changePassword(
-      String password, String newPassword) async {
-    return ApiRoot.post("/change_password",
-        jsonEncode({"password": password, "new_password": newPassword}));
+  Future<Map<String, dynamic>?> changePassword(String password, String newPassword) async {
+    return ApiRoot.post(
+        "/change_password", jsonEncode({"password": password, "new_password": newPassword}));
   }
 
-  Future<Map<String, dynamic>?> resetPassword(
-      String email, String code, String password) async {
-    return ApiRoot.post("/reset_password",
-        jsonEncode({"email": email, "password": password, "code": code}));
+  Future<Map<String, dynamic>?> resetPassword(String email, String code, String password) async {
+    return ApiRoot.post(
+        "/reset_password", jsonEncode({"email": email, "password": password, "code": code}));
   }
 
   Future<Map<String, dynamic>?> logout() async {
     return ApiRoot.post("/logout", null);
   }
 
-  Future<Map<String, dynamic>?> reportPost(
-      int id, String subject, String detail) async {
+  Future<Map<String, dynamic>?> reportPost(int id, String subject, String detail) async {
     return ApiRoot.post(
-        "/report_post",
-        jsonEncode(
-            {"id": id.toString(), "subject": subject, "details": detail}));
+        "/report_post", jsonEncode({"id": id.toString(), "subject": subject, "details": detail}));
   }
 
   Future<Map<String, dynamic>?> deletePost(int id) async {
@@ -118,13 +105,16 @@ class Api {
   }
 
   Future<Map<String, dynamic>?> getSuggestedFriends(int index) async {
-    return ApiRoot.post(
-        "/get_suggested_friends", jsonEncode({"index": index, "count": 100}));
+    return ApiRoot.post("/get_suggested_friends", jsonEncode({"index": index, "count": 100}));
   }
 
   Future<Map<String, dynamic>?> feel(int id, int type) async {
-    return ApiRoot.post(
-        "/feel", jsonEncode({"id": id.toString(), "type": type.toString()}));
+    return ApiRoot.post("/feel", jsonEncode({"id": id.toString(), "type": type.toString()}));
+  }
+
+  Future<Map<String, dynamic>?> getMarkComment(int id, int index, int count) {
+    return ApiRoot.post("/get_mark_comment",
+        jsonEncode({"id": id.toString(), "index": index.toString(), "count": count.toString()}));
   }
 
   // static Future<Map<String, String>?> logout() async {

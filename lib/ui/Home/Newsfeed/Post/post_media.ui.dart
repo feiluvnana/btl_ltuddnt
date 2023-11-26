@@ -1,12 +1,12 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_detail_image.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_shimmer.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/detail_image_view.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
 
 class PostMediaUI extends StatefulWidget {
@@ -23,7 +23,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
   late bool isShowEmoji;
   late Offset globalOffset;
   late bool isExpanded = false;
-  late List<bool> emojiEnlarged = List.generate(7, (index) => false);
+  late List<bool> emojiEnlarged = List.generate(2, (index) => false);
 
   @override
   void initState() {
@@ -37,14 +37,13 @@ class _PostMediaUIState extends State<PostMediaUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
         title: Text(
           "Bài viết",
           style: themeData.textTheme.titleMedium,
         ),
         leading: IconButton(
-            onPressed: () => Navigator.maybePop(context),
-            icon: const Icon(Icons.arrow_back)),
+            onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -57,8 +56,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
                   padding: const EdgeInsets.all(10),
                   child: AFBShimmer(
                       enabled: isLoading,
-                      child:
-                          AFBCircleAvatar(imageUrl: widget.post.author.avatar)),
+                      child: AFBCircleAvatar(imageUrl: widget.post.author.avatar)),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,10 +76,9 @@ class _PostMediaUIState extends State<PostMediaUI> {
                         child: GestureDetector(
                           onTap: () {},
                           child: Text(
-                            formatPostCreatedTime(widget.post.created),
-                            style: themeData.textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w300,
-                                color: Colors.grey),
+                            formatCreatedTime(widget.post.created),
+                            style: themeData.textTheme.bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
                           ),
                         )),
                   ],
@@ -91,28 +88,20 @@ class _PostMediaUIState extends State<PostMediaUI> {
                   padding: const EdgeInsets.only(right: 10),
                   child: GestureDetector(
                       onTap: () {
-                        context.showAFBModalBottomSheet(blocks: [
+                        context.showAFBOptionModalBottomSheet(blocks: [
                           [
                             AFBBottomSheetListTile(
                                 onTap: () {},
                                 leading: Icons.notifications,
                                 title: "Tắt thông báo về bài viết này"),
                             AFBBottomSheetListTile(
-                                onTap: () {},
-                                leading: Icons.save,
-                                title: "Lưu bài viết"),
+                                onTap: () {}, leading: Icons.save, title: "Lưu bài viết"),
                             AFBBottomSheetListTile(
-                                onTap: () {},
-                                leading: Icons.delete,
-                                title: "Xóa"),
+                                onTap: () {}, leading: Icons.delete, title: "Xóa"),
                             AFBBottomSheetListTile(
-                                onTap: () {},
-                                leading: Icons.edit,
-                                title: "Chỉnh sửa bài viết"),
+                                onTap: () {}, leading: Icons.edit, title: "Chỉnh sửa bài viết"),
                             AFBBottomSheetListTile(
-                                onTap: () {},
-                                leading: Icons.link,
-                                title: "Sao chép liên kết"),
+                                onTap: () {}, leading: Icons.link, title: "Sao chép liên kết"),
                           ]
                         ]);
                       },
@@ -153,42 +142,35 @@ class _PostMediaUIState extends State<PostMediaUI> {
                                 },
                                 child: Text(
                                   "...Xem thêm",
-                                  style: themeData.textTheme.bodyMedium
-                                      ?.copyWith(
-                                          color: themeData
-                                              .colorScheme.inverseSurface,
-                                          fontWeight: FontWeight.w500),
+                                  style: themeData.textTheme.bodyMedium?.copyWith(
+                                      color: themeData.colorScheme.inverseSurface,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               )))
                     ]);
                   } else if (isExpanded) {
-                    return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text.rich(
-                            formatPostDescribed(
-                                widget.post.described, themeData),
-                            maxLines: 10000000,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Container(
-                              color: themeData.colorScheme.surface,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isExpanded = !isExpanded;
-                                  });
-                                },
-                                child: Text(
-                                  "Thu gọn",
-                                  style: themeData.textTheme.bodyMedium
-                                      ?.copyWith(
-                                          color: themeData
-                                              .colorScheme.inverseSurface,
-                                          fontWeight: FontWeight.w500),
-                                ),
-                              ))
-                        ]);
+                    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                      Text.rich(
+                        formatPostDescribed(widget.post.described, themeData),
+                        maxLines: 10000000,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Container(
+                          color: themeData.colorScheme.surface,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isExpanded = !isExpanded;
+                              });
+                            },
+                            child: Text(
+                              "Thu gọn",
+                              style: themeData.textTheme.bodyMedium?.copyWith(
+                                  color: themeData.colorScheme.inverseSurface,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ))
+                    ]);
                   } else {
                     return Text.rich(
                       formatPostDescribed(widget.post.described, themeData),
@@ -226,7 +208,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => DetailImageView(
+                                builder: (context) => PostDetailMediaUI(
                                       post: widget.post,
                                       initIndex: index,
                                     )));

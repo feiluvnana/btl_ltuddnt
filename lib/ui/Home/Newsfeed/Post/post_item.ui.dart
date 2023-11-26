@@ -1,33 +1,37 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/newsfeed.bloc.dart';
+import 'dart:io';
+
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/emoji.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Create&Update/post_create_update_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/mark.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_create_modify.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_media.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/post_report_ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/post_media.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_expandable_text.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_grid_image_view.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_webview.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/expandable_text.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/media_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
-class PostItem extends StatefulWidget {
+class PostItem extends ConsumerStatefulWidget {
   final Post post;
 
   const PostItem({super.key, required this.post});
 
   @override
-  State<PostItem> createState() => _PostItemState();
+  ConsumerState<PostItem> createState() => _PostItemState();
 }
 
-class _PostItemState extends State<PostItem>
-    with AutomaticKeepAliveClientMixin {
+class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClientMixin {
   late bool isShowEmoji;
   late Offset globalOffset;
   late List<bool> emojiEnlarged = List.generate(2, (index) => false);
@@ -43,6 +47,7 @@ class _PostItemState extends State<PostItem>
   Widget build(BuildContext context) {
     super.build(context);
     ThemeData themeData = Theme.of(context);
+    var user = ref.watch(authenControllerProvider.select((value) => value.value?.user));
     return Stack(
       children: [
         Column(
@@ -62,16 +67,16 @@ class _PostItemState extends State<PostItem>
                       onTap: () {},
                       child: Text(
                         widget.post.author.name,
-                        style: themeData.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                        style:
+                            themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
                     GestureDetector(
                       onTap: () {},
                       child: Text(
-                        formatPostCreatedTime(widget.post.created),
-                        style: themeData.textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w300, color: Colors.grey),
+                        formatCreatedTime(widget.post.created),
+                        style: themeData.textTheme.bodySmall
+                            ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
                       ),
                     ),
                   ],
@@ -82,87 +87,77 @@ class _PostItemState extends State<PostItem>
                   child: GestureDetector(
                       onTap: () {
                         print(widget.post.toJson());
-                        context.showAFBModalBottomSheet(blocks: [
+                        context.showAFBOptionModalBottomSheet(blocks: [
                           [
                             AFBBottomSheetListTile(
-                                onTap: () {},
-                                leading: Icons.save,
-                                title: "Lưu bài viết"),
-                            AFBBottomSheetListTile(
-                                onTap: () {
-                                  context.showAFBDialog<bool>(
-                                    title: Text("Xóa bài viết?",
-                                        style: themeData.textTheme.bodyLarge),
-                                    content: const Text(
-                                        "Bạn có thể chỉnh sửa bài viết nếu cần thay đổi."),
-                                    actions: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          context.read<NewsfeedBloc>().add(
-                                              NewsfeedDeletePost(
-                                                  id: widget.post.id));
-                                          Navigator.maybePop(context);
-                                          Navigator.maybePop(context);
-                                        },
-                                        child: Text("XÓA",
-                                            style: themeData
-                                                .textTheme.bodyMedium
-                                                ?.copyWith(
-                                                    color: themeData
-                                                        .primaryColor)),
-                                      ),
-                                      GestureDetector(
-                                          onTap: () => Navigator.maybePop(
-                                                  context)
-                                              .whenComplete(() => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          PostCreateUpdateUI(
-                                                              post: widget
-                                                                  .post)))),
-                                          child: const Text("CHỈNH SỬA")),
-                                      GestureDetector(
-                                          onTap: () =>
-                                              Navigator.maybePop(context),
-                                          child: const Text("HỦY")),
-                                    ],
-                                  );
-                                },
-                                leading: Icons.delete,
-                                title: "Xóa bài viết"),
-                            AFBBottomSheetListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              PostCreateUpdateUI(
-                                                post: widget.post,
-                                              )));
-                                },
-                                leading: Icons.edit,
-                                title: "Chỉnh sửa bài viết")
+                                onTap: () {}, leading: Icons.save, title: "Lưu bài viết"),
+                            if (user?.id == widget.post.author.id)
+                              AFBBottomSheetListTile(
+                                  onTap: () {
+                                    context.showAFBDialog<bool>(
+                                      title: Text("Xóa bài viết?",
+                                          style: themeData.textTheme.bodyLarge),
+                                      content: const Text(
+                                          "Bạn có thể chỉnh sửa bài viết nếu cần thay đổi."),
+                                      actions: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            ref
+                                                .read(newsfeedControllerProvider.notifier)
+                                                .deletePost(id: widget.post.id);
+                                            Navigator.maybePop(context);
+                                            Navigator.maybePop(context);
+                                          },
+                                          child: Text("XÓA",
+                                              style: themeData.textTheme.bodyMedium
+                                                  ?.copyWith(color: themeData.primaryColor)),
+                                        ),
+                                        GestureDetector(
+                                            onTap: () => Navigator.maybePop(context).whenComplete(
+                                                () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => PostCreateModifyUI(
+                                                            post: widget.post)))),
+                                            child: const Text("CHỈNH SỬA")),
+                                        GestureDetector(
+                                            onTap: () => Navigator.maybePop(context),
+                                            child: const Text("HỦY")),
+                                      ],
+                                    );
+                                  },
+                                  leading: Icons.delete,
+                                  title: "Xóa bài viết"),
+                            if (user?.id == widget.post.author.id)
+                              AFBBottomSheetListTile(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => PostCreateModifyUI(
+                                                  post: widget.post,
+                                                )));
+                                  },
+                                  leading: Icons.edit,
+                                  title: "Chỉnh sửa bài viết")
                           ],
                           [
                             AFBBottomSheetListTile(
                                 onTap: () {},
                                 leading: Icons.notifications,
                                 title: "Tắt thông báo về bài viết này"),
+                            if (user?.id != widget.post.author.id)
+                              AFBBottomSheetListTile(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => PostReportUI(post: widget.post)));
+                                  },
+                                  leading: Icons.feedback,
+                                  title: "Báo cáo bài viết"),
                             AFBBottomSheetListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              PostReportUI(post: widget.post)));
-                                },
-                                leading: Icons.feedback,
-                                title: "Báo cáo bài viết"),
-                            AFBBottomSheetListTile(
-                                onTap: () {},
-                                leading: Icons.link,
-                                title: "Sao chép liên kết")
+                                onTap: () {}, leading: Icons.link, title: "Sao chép liên kết")
                           ]
                         ]);
                       },
@@ -172,12 +167,11 @@ class _PostItemState extends State<PostItem>
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: ExpandableText(post: widget.post),
+              child: AFBExpandableText(post: widget.post),
             ),
             if (getFirstLink(widget.post.described) != null)
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: AFBWebPreview(url: getFirstLink(widget.post.described)!),
               ),
             if ((widget.post.image?.length ?? 0) > 0)
@@ -185,14 +179,12 @@ class _PostItemState extends State<PostItem>
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: AspectRatio(
                   aspectRatio: 1,
-                  child: GridMediaView(
+                  child: AFBGridImageView(
                       onClickMedia: (index) {
-                        print("tap");
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    PostMediaUI(post: widget.post)));
+                                builder: (context) => PostMediaUI(post: widget.post)));
                       },
                       medias: List.generate(
                           widget.post.image?.length ?? 0,
@@ -201,6 +193,26 @@ class _PostItemState extends State<PostItem>
                                 fit: BoxFit.cover,
                               ))),
                 ),
+              ),
+            if (widget.post.video != null)
+              Stack(
+                children: [
+                  FutureBuilder(
+                    future: VideoThumbnail.thumbnailFile(video: widget.post.video?.url ?? ""),
+                    builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                      return AspectRatio(
+                        aspectRatio: 1,
+                        child: Image.file(File(snapshot.data ?? ""),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stack) => Container()),
+                      );
+                    },
+                  ),
+                  Positioned.fill(
+                      child: Center(
+                    child: Icon(Icons.play_arrow, color: themeData.canvasColor, size: 50),
+                  ))
+                ],
               ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -211,12 +223,12 @@ class _PostItemState extends State<PostItem>
                   //   dissapointed: widget.post.disappointed,
                   // ),
                   Text(" ${widget.post.feel} lượt feel",
-                      style: themeData.textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w300, color: Colors.grey)),
+                      style: themeData.textTheme.bodySmall
+                          ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                   const Spacer(),
                   Text(" ${(widget.post.commentMark)} bình luận",
-                      style: themeData.textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w300, color: Colors.grey)),
+                      style: themeData.textTheme.bodySmall
+                          ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
                 ],
               ),
             ),
@@ -242,14 +254,14 @@ class _PostItemState extends State<PostItem>
                     },
                     onLongPressUp: () {
                       if (emojiEnlarged[0]) {
-                        context
-                            .read<NewsfeedBloc>()
-                            .add(NewsfeedFeel(widget.post.id, 1));
+                        ref
+                            .read(newsfeedControllerProvider.notifier)
+                            .feelPost(post: widget.post, type: 1);
                       }
                       if (emojiEnlarged[1]) {
-                        context
-                            .read<NewsfeedBloc>()
-                            .add(NewsfeedFeel(widget.post.id, 0));
+                        ref
+                            .read(newsfeedControllerProvider.notifier)
+                            .feelPost(post: widget.post, type: 0);
                       }
                       setState(() {
                         isShowEmoji = false;
@@ -257,27 +269,37 @@ class _PostItemState extends State<PostItem>
                     },
                     child: RichText(
                         text: TextSpan(
+                            children: [
+                          const WidgetSpan(
+                              alignment: PlaceholderAlignment.middle,
+                              child: Icon(Icons.favorite, color: Colors.grey)),
+                          TextSpan(text: widget.post.isFelt ? " Thay đổi feel" : " Feel")
+                        ],
+                            style: themeData.textTheme.bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey))),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          isScrollControlled: false,
+                          scrollControlDisabledMaxHeightRatio: 0.9,
+                          context: context,
+                          builder: (context) {
+                            return const MarkUI();
+                          });
+                    },
+                    child: RichText(
+                        text: TextSpan(
                             children: const [
                           WidgetSpan(
                               alignment: PlaceholderAlignment.middle,
-                              child: Icon(Icons.favorite, color: Colors.grey)),
-                          TextSpan(text: " Thích")
+                              child: Icon(Icons.chat_bubble, color: Colors.grey)),
+                          TextSpan(text: " Bình luận")
                         ],
-                            style: themeData.textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w300,
-                                color: Colors.grey))),
+                            style: themeData.textTheme.bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey))),
                   ),
-                  RichText(
-                      text: TextSpan(
-                          children: const [
-                        WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: Icon(Icons.add_comment, color: Colors.grey)),
-                        TextSpan(text: " Bình luận")
-                      ],
-                          style: themeData.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w300,
-                              color: Colors.grey))),
                 ],
               ),
             ),
@@ -294,13 +316,12 @@ class _PostItemState extends State<PostItem>
                     inputFormatters: const [EmojiInputFormatter()],
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
+                    autofocus: false,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            gapPadding: 0),
+                            borderRadius: BorderRadius.circular(20), gapPadding: 0),
                         hintText: "Viết bình luận...",
-                        contentPadding:
-                            const EdgeInsets.only(left: 15, top: 5, bottom: 5),
+                        contentPadding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
                         suffixIcon: IconButton(
                           onPressed: () {},
                           icon: const Icon(Icons.send),
@@ -395,8 +416,7 @@ class _ReactionSliderItem extends StatelessWidget {
       children: [
         Padding(
           padding: enlarged ? EdgeInsets.zero : const EdgeInsets.all(0),
-          child: SvgPicture.asset(assetIcon,
-              width: enlarged ? 70 : 40, height: enlarged ? 70 : 40),
+          child: SvgPicture.asset(assetIcon, width: enlarged ? 70 : 40, height: enlarged ? 70 : 40),
         ),
       ],
     );

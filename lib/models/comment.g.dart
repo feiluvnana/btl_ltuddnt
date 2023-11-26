@@ -11,9 +11,6 @@ _$CommentImpl _$$CommentImplFromJson(Map<String, dynamic> json) =>
       const DateTimeConverter().fromJson(json['created'] as String),
       json['content'] as String,
       Author.fromJson(json['poster'] as Map<String, dynamic>),
-      (json['comments'] as List<dynamic>)
-          .map((e) => Comment.fromJson(e as Map<String, dynamic>))
-          .toList(),
     );
 
 Map<String, dynamic> _$$CommentImplToJson(_$CommentImpl instance) =>
@@ -21,5 +18,4 @@ Map<String, dynamic> _$$CommentImplToJson(_$CommentImpl instance) =>
       'created': const DateTimeConverter().toJson(instance.created),
       'content': instance.content,
       'poster': instance.poster.toJson(),
-      'comments': instance.comments.map((e) => e.toJson()).toList(),
     };

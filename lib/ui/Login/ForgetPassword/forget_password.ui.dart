@@ -1,18 +1,18 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/verify_code.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ForgetPasswordUI extends StatefulWidget {
+class ForgetPasswordUI extends ConsumerStatefulWidget {
   const ForgetPasswordUI({super.key});
 
   @override
-  State<ForgetPasswordUI> createState() => _ForgetPasswordUIState();
+  ConsumerState<ForgetPasswordUI> createState() => _ForgetPasswordUIState();
 }
 
-class _ForgetPasswordUIState extends State<ForgetPasswordUI> {
+class _ForgetPasswordUIState extends ConsumerState<ForgetPasswordUI> {
   final email = TextEditingController();
   bool isLocked = false;
 
@@ -24,7 +24,7 @@ class _ForgetPasswordUIState extends State<ForgetPasswordUI> {
       onPopInvoked: (didPop) =>
           Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
       child: Scaffold(
-        appBar: TransparentAppBar(
+        appBar: AFBTransparentAppBar(
           leading: IconButton(
               onPressed: () =>
                   Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
@@ -49,20 +49,22 @@ class _ForgetPasswordUIState extends State<ForgetPasswordUI> {
               AFBPrimaryEButton(
                   onPressed: isLocked
                       ? null
-                      : () {
+                      : () async {
                           setState(() {
                             isLocked = true;
                           });
-                          context.read<AuthenBloc>().add(AuthenGetVerifyCode(email.text, () {
+                          ref.read(authenControllerProvider.notifier).getVerifyCode(
+                              email: email.text,
+                              onSuccess: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => VerifyCodeUI(
                                             mode: VerifyMode.resetpassword, email: email.text)));
-                              },
-                                  () => setState(() {
-                                        isLocked = false;
-                                      })));
+                              });
+                          () => setState(() {
+                                isLocked = false;
+                              });
                         },
                   child: Text(isLocked ? "Đang tìm kiếm" : "Tìm tài khoản")),
             ],

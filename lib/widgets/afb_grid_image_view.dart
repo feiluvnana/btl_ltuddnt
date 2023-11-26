@@ -5,21 +5,19 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hl_image_picker_android/hl_image_picker_android.dart';
 
-class GridMediaView extends StatelessWidget {
+class AFBGridImageView extends StatelessWidget {
   final List<AFBNetworkImage> medias;
   final Post? post;
   final void Function(int index) onClickMedia;
 
-  const GridMediaView(
-      {super.key, required this.medias, required this.onClickMedia, this.post});
+  const AFBGridImageView({super.key, required this.medias, required this.onClickMedia, this.post});
 
   @override
   Widget build(BuildContext context) {
     return switch (medias.length) {
       1 => GestureDetector(
           onTap: () => onClickMedia(0),
-          child:
-              medias.first.copyWith(width: MediaQuery.sizeOf(context).width)),
+          child: medias.first.copyWith(width: MediaQuery.sizeOf(context).width)),
       2 => Row(children: [
           Expanded(
               child: AspectRatio(
@@ -27,8 +25,7 @@ class GridMediaView extends StatelessWidget {
                   child: GestureDetector(
                       onTap: () => onClickMedia(2),
                       behavior: HitTestBehavior.translucent,
-                      child: medias[0].copyWith(
-                          width: MediaQuery.sizeOf(context).width / 2)))),
+                      child: medias[0].copyWith(width: MediaQuery.sizeOf(context).width / 2)))),
           const SizedBox(width: 4),
           Expanded(
               child: LongPressDraggable(
@@ -37,8 +34,7 @@ class GridMediaView extends StatelessWidget {
                 aspectRatio: 1 / 2,
                 child: GestureDetector(
                     onTap: () => onClickMedia(2),
-                    child: medias[1].copyWith(
-                        width: MediaQuery.sizeOf(context).width / 2))),
+                    child: medias[1].copyWith(width: MediaQuery.sizeOf(context).width / 2))),
           ))
         ]),
       3 => Row(children: [
@@ -49,16 +45,14 @@ class GridMediaView extends StatelessWidget {
                 aspectRatio: 1,
                 child: GestureDetector(
                     onTap: () => onClickMedia(0),
-                    child: medias.first
-                        .copyWith(width: MediaQuery.sizeOf(context).width / 2)),
+                    child: medias.first.copyWith(width: MediaQuery.sizeOf(context).width / 2)),
               ),
               const SizedBox(height: 4),
               AspectRatio(
                   aspectRatio: 1,
                   child: GestureDetector(
                       onTap: () => onClickMedia(1),
-                      child: medias[1].copyWith(
-                          width: MediaQuery.sizeOf(context).width / 2)))
+                      child: medias[1].copyWith(width: MediaQuery.sizeOf(context).width / 2)))
             ],
           )),
           const SizedBox(width: 4),
@@ -67,8 +61,7 @@ class GridMediaView extends StatelessWidget {
                   aspectRatio: 1 / 2,
                   child: GestureDetector(
                       onTap: () => onClickMedia(2),
-                      child: medias[2].copyWith(
-                          width: MediaQuery.sizeOf(context).width / 2))))
+                      child: medias[2].copyWith(width: MediaQuery.sizeOf(context).width / 2))))
         ]),
       _ => GridView.count(
           physics: const NeverScrollableScrollPhysics(),
@@ -80,26 +73,22 @@ class GridMediaView extends StatelessWidget {
               medias.length,
               (index) => GestureDetector(
                   onTap: () => onClickMedia(index),
-                  child: medias[index]
-                      .copyWith(width: MediaQuery.sizeOf(context).width / 2))))
+                  child: medias[index].copyWith(width: MediaQuery.sizeOf(context).width / 2))))
     };
   }
 }
 
-class GridImageEdit extends StatelessWidget {
+class AFBGridImageEdit extends StatelessWidget {
   final List<dynamic> image;
-  final void Function(List<dynamic> media,
-      {int? begin, int? end, int? deleted})? onUpdated;
+  final void Function(List<dynamic> media, {int? begin, int? end, int? deleted})? onUpdated;
 
-  const GridImageEdit({super.key, required this.image, this.onUpdated});
+  const AFBGridImageEdit({super.key, required this.image, this.onUpdated});
 
   @override
   Widget build(BuildContext context) {
     var image = this
         .image
-        .map((e) => (e is HLPickerItem)
-            ? Image.file(File(e.path), fit: BoxFit.cover)
-            : e)
+        .map((e) => (e is HLPickerItem) ? Image.file(File(e.path), fit: BoxFit.cover) : e)
         .toList();
     return switch (image.length) {
       1 => image.first,

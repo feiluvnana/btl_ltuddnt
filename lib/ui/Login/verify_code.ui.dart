@@ -1,24 +1,24 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/change_profile_after_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum VerifyMode { signup, resetpassword }
 
-class VerifyCodeUI extends StatefulWidget {
+class VerifyCodeUI extends ConsumerStatefulWidget {
   final VerifyMode mode;
   final String email;
   const VerifyCodeUI({super.key, required this.mode, required this.email});
 
   @override
-  State<VerifyCodeUI> createState() => _VerifyCodeUIState();
+  ConsumerState<VerifyCodeUI> createState() => _VerifyCodeUIState();
 }
 
-class _VerifyCodeUIState extends State<VerifyCodeUI> {
+class _VerifyCodeUIState extends ConsumerState<VerifyCodeUI> {
   final code = TextEditingController();
   final password = TextEditingController();
   bool isLocked = false;
@@ -44,7 +44,7 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
                   child: const Text("HỦY")),
               GestureDetector(
                 onTap: () {
-                  context.read<AuthenBloc>().add(const AuthenLogout());
+                  ref.read(authenControllerProvider.notifier).logout();
                   Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
                 },
                 child: Text("THOÁT",
@@ -61,7 +61,7 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
         if (value) Navigator.pop(context);
       }),
       child: Scaffold(
-        appBar: TransparentAppBar(
+        appBar: AFBTransparentAppBar(
           title: Text(
             widget.mode == VerifyMode.signup ? "Nhập mã xác nhận" : "Đặt lại mật khẩu",
             style: themeData.textTheme.titleMedium,
@@ -101,42 +101,37 @@ class _VerifyCodeUIState extends State<VerifyCodeUI> {
               AFBPrimaryEButton(
                   onPressed: isLocked
                       ? null
-                      : () {
+                      : () async {
                           setState(() => isLocked = true);
                           if (widget.mode == VerifyMode.resetpassword) {
-                            context.read<AuthenBloc>().add(AuthenResetPassword(
+                            await ref.read(authenControllerProvider.notifier).resetPassword(
+                                email: widget.email, code: code.text, password: password.text);
+                          } else {
+                            await ref.read(authenControllerProvider.notifier).checkVerifyCode(
                                 email: widget.email,
                                 code: code.text,
-                                password: password.text,
-                                successCallback: () {
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, "/login", (route) => false);
-                                },
-                                finallyCallback: () => setState(() => isLocked = false)));
-                          } else {
-                            context
-                                .read<AuthenBloc>()
-                                .add(AuthenCheckVerifyCode(widget.email, code.text, () {
+                                onSuccess: () {
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
                                           builder: (_) => const ChangeProfileAfterSignupUI()),
                                       (route) => false);
-                                }, () => setState(() => isLocked = false)));
+                                });
                           }
+                          setState(() => isLocked = false);
                         },
                   child: const Text("Tiếp")),
               ElevatedButton(
                   onPressed: () {
-                    context.showAFBModalBottomSheet<bool>(
+                    context.showAFBOptionModalBottomSheet<bool>(
                       blocks: [
                         [
                           AFBBottomSheetListTile(
                               onTap: () {
                                 Navigator.maybePop(context);
-                                context
-                                    .read<AuthenBloc>()
-                                    .add(AuthenGetVerifyCode(widget.email, () {}));
+                                ref
+                                    .read(authenControllerProvider.notifier)
+                                    .getVerifyCode(email: widget.email);
                               },
                               leading: Icons.repeat,
                               title: "Gửi lại mã xác nhận"),

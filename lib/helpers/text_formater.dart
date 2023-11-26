@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:intl/intl.dart';
 
-String formatPostCreatedTime(DateTime date) {
+String formatCreatedTime(DateTime date) {
   Duration diff = DateTime.now().difference(date);
-  if (diff.inMinutes < 1) return "Vừa xong";
+  if (diff.inSeconds <= 60) return "Vừa xong";
+  if (diff.inHours < 1) return "${diff.inMinutes} phút trước";
   if (diff.inDays < 1) return "${diff.inHours} giờ trước";
   if (diff.inDays < 7) return "${diff.inDays} ngày trước";
   if (diff.inDays < 365) return DateFormat("dd/MM").format(date);
-  return (diff.inDays ~/ 365).toString();
+  return "${(diff.inDays ~/ 365)} năm trước";
 }
 
 String? getFirstLink(String text) {

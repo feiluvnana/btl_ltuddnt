@@ -10,9 +10,10 @@ extension Extension on HLImagePickerAndroid {
     HLCropOptions? cropOptions,
     LocalizedImagePicker? localized,
   }) async {
-    var usedPermission = ((await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32)
-        ? Permission.storage
-        : Permission.photos;
+    var usedPermission =
+        ((await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32)
+            ? Permission.storage
+            : Permission.photos;
     var status = await usedPermission.status.then((value) async {
       if (value == PermissionStatus.permanentlyDenied) {
         await openAppSettings();
@@ -26,6 +27,37 @@ extension Extension on HLImagePickerAndroid {
         ? openPicker(
             selectedIds: selectedIds,
             pickerOptions: pickerOptions?.copyWith(mediaType: MediaType.image),
+            cropping: cropping,
+            cropOptions: cropOptions,
+            localized: localized,
+          )
+        : Future.value([]);
+  }
+
+  Future<List<HLPickerItem>> video({
+    List<String>? selectedIds,
+    HLPickerOptions? pickerOptions,
+    bool? cropping,
+    HLCropOptions? cropOptions,
+    LocalizedImagePicker? localized,
+  }) async {
+    var usedPermission =
+        ((await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32)
+            ? Permission.storage
+            : Permission.photos;
+    var status = await usedPermission.status.then((value) async {
+      if (value == PermissionStatus.permanentlyDenied) {
+        await openAppSettings();
+        return await usedPermission.request();
+      } else if (value != PermissionStatus.granted) {
+        return await usedPermission.request();
+      }
+      return value;
+    });
+    return status == PermissionStatus.granted
+        ? openPicker(
+            selectedIds: selectedIds,
+            pickerOptions: pickerOptions?.copyWith(mediaType: MediaType.video),
             cropping: cropping,
             cropOptions: cropOptions,
             localized: localized,
@@ -65,11 +97,14 @@ extension Helper on HLPickerOptions {
         minFileSize: minFileSize ?? this.minFileSize,
         enablePreview: enablePreview ?? this.enablePreview,
         convertHeicToJPG: convertHeicToJPG ?? this.convertHeicToJPG,
-        convertLivePhotosToJPG: convertLivePhotosToJPG ?? this.convertLivePhotosToJPG,
+        convertLivePhotosToJPG:
+            convertLivePhotosToJPG ?? this.convertLivePhotosToJPG,
         recordVideoMaxSecond: recordVideoMaxSecond ?? this.recordVideoMaxSecond,
         isExportThumbnail: isExportThumbnail ?? this.isExportThumbnail,
-        thumbnailCompressQuality: thumbnailCompressQuality ?? this.thumbnailCompressQuality,
-        thumbnailCompressFormat: thumbnailCompressFormat ?? this.thumbnailCompressFormat,
+        thumbnailCompressQuality:
+            thumbnailCompressQuality ?? this.thumbnailCompressQuality,
+        thumbnailCompressFormat:
+            thumbnailCompressFormat ?? this.thumbnailCompressFormat,
         maxDuration: maxDuration ?? this.maxDuration,
         minDuration: minDuration ?? this.minDuration,
         numberOfColumn: numberOfColumn ?? this.numberOfColumn,

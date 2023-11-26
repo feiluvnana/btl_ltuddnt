@@ -1,19 +1,19 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/blocs/authen.bloc.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/save_info_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/transparent_app_bar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PasswordSignupUI extends StatefulWidget {
+class PasswordSignupUI extends ConsumerStatefulWidget {
   const PasswordSignupUI({super.key});
 
   @override
-  State<PasswordSignupUI> createState() => _PasswordSignupUIState();
+  ConsumerState<PasswordSignupUI> createState() => _PasswordSignupUIState();
 }
 
-class _PasswordSignupUIState extends State<PasswordSignupUI> {
+class _PasswordSignupUIState extends ConsumerState<PasswordSignupUI> {
   final formKey = GlobalKey<FormState>();
   bool isHidden = true;
 
@@ -21,7 +21,7 @@ class _PasswordSignupUIState extends State<PasswordSignupUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: TransparentAppBar(
+      appBar: AFBTransparentAppBar(
         title: Text(
           "Mật khẩu",
           style: themeData.textTheme.titleMedium,
@@ -39,20 +39,22 @@ class _PasswordSignupUIState extends State<PasswordSignupUI> {
             const Text(
                 "Tạo mật khẩu gồm <wait_for_description>. Bạn nên chọn mật khẩu thật khó đoán."),
             const SizedBox(height: 10),
-            BlocBuilder<AuthenBloc, AuthenState>(
-              buildWhen: (previous, current) =>
-                  previous.signupInfo["password"] != current.signupInfo["password"],
-              builder: (context, state) {
+            Builder(
+              builder: (context) {
+                final signupInfo =
+                    ref.watch(authenControllerProvider.select((value) => value.value?.signupInfo));
+                final password = ref.watch(authenControllerProvider
+                    .select((value) => value.value?.signupInfo["password"]));
                 return Form(
                   key: formKey,
                   child: TextFormField(
-                    initialValue: state.signupInfo["password"],
+                    initialValue: password,
                     validator: Validators.signupPasswordValidator,
                     obscureText: isHidden,
                     onChanged: (value) {
-                      context
-                          .read<AuthenBloc>()
-                          .add(AuthenSignupInfoChange({...state.signupInfo, "password": value}));
+                      ref
+                          .read(authenControllerProvider.notifier)
+                          .updateSignupInfo(info: {...signupInfo ?? {}, "password": value});
                     },
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(15),
