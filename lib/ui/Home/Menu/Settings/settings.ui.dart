@@ -1,6 +1,7 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/personal.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/security.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Noti/noti.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_block.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_noti.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_personal.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_security.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,8 @@ class _SettingsUIState extends State<SettingsUI> {
     {
       "icon": Icons.manage_accounts,
       "action": () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalUI()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const SettingsPersonalUI()));
       },
       "label": "Thông tin cá nhân",
       "description": "Cập nhật tên của bạn."
@@ -24,17 +26,20 @@ class _SettingsUIState extends State<SettingsUI> {
     {
       "icon": Icons.security,
       "action": () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const SecurityUI()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const SettingsSecurityUI()));
       },
       "label": "Bảo mật",
       "description": "Đổi mật khẩu và thực hiện các hoạt động để tăng cường bảo mật tài khoản."
     }
   ];
 
-  final List<dynamic> privacySettingsData = [
+  late final List<dynamic> privacySettingsData = [
     {
       "icon": Icons.no_accounts,
-      "action": () {},
+      "action": () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsBlockUI()));
+      },
       "label": "Chặn",
       "description": "Quản lý các tài khoản bị chặn."
     }
@@ -44,7 +49,7 @@ class _SettingsUIState extends State<SettingsUI> {
     {
       "icon": Icons.edit_notifications,
       "action": () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const NotiUI()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsNotiUI()));
       },
       "label": "Cài đặt thông báo",
       "description": "Cho phép cài đặt việc nhận các thông báo của ứng dụng."

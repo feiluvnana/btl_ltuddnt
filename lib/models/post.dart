@@ -21,17 +21,17 @@ class Post with _$Post {
     ///Nội dung bài viết.
     String described,
 
-    // ///Thời điểm chỉnh sửa bài viết.
-    // @DateTimeOrNullConverter() DateTime? modified,
+    ///Đã chỉnh sửa chưa.
+    @BooleanConverter() bool? modified,
 
-    // ///Số người dùng đánh giá bài viết là fake.
-    // @IntegerOrNullConverter() int? fake,
+    ///Số người dùng đánh giá bài viết là fake.
+    @IntegerOrNullConverter() int? fake,
 
-    // ///Số người dùng đánh giá bài viết là trust.
-    // @IntegerOrNullConverter() int? trust,
+    ///Số người dùng đánh giá bài viết là trust.
+    @IntegerOrNullConverter() int? trust,
 
-    // ///Số người dùng bày tỏ cảm xúc là kudos.
-    // @IntegerOrNullConverter() int? kudos,
+    ///Số người dùng bày tỏ cảm xúc là kudos.
+    @IntegerOrNullConverter() int? kudos,
 
     ///Số người dùng bày tỏ cảm xúc là kudos.
     @IntegerOrNullConverter() int? feel,
@@ -39,14 +39,14 @@ class Post with _$Post {
     ///Số bình luận và mark
     @IntegerOrNullConverter() @JsonKey(name: "comment_mark") int? commentMark,
 
-    // ///Số người dùng bày tỏ cảm xúc là disappointed.
-    // @IntegerOrNullConverter() int? disappointed,
+    ///Số người dùng bày tỏ cảm xúc là disappointed.
+    @IntegerOrNullConverter() int? disappointed,
 
     // ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
     // @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
 
     ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
-    @BooleanConverter() @JsonKey(name: "is_felt") bool isFelt,
+    @FeelTypeConverter() @JsonKey(name: "is_felt") FeelType isFelt,
 
     // ///Người dùng đã đánh giá cho bài viết này chưa.
     // @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
@@ -64,29 +64,29 @@ class Post with _$Post {
     // Category? category,
 
     ///Trạng thái của người viết bài.
-    String state,
-
+    String state, {
     ///Kiểm tra xem người chủ bài viết có chặn người dùng không?
-    @BooleanConverter() @JsonKey(name: "is_blocked") bool isBlocked,
+    @Default(false) @BooleanConverter() @JsonKey(name: "is_blocked") bool isBlocked,
 
     ///Kiểm tra xem người dùng có sửa được bài viết hay không? Không sửa được nếu không phải chủ nhân hoặc đang bị khóa bài viết.
-    @BooleanConverter() @JsonKey(name: "can_edit") bool canEdit,
+    @Default(false) @BooleanConverter() @JsonKey(name: "can_edit") bool canEdit,
 
     ///1 bài viết đã bị khóa vì vi phạm tiêu chuẩn cộng đồng, 2 bài viết bị chặn ở một số quốc gia, 3: nội dung của tất cả hình ảnh hoặc video bị che đi. Trường hợp muốn che đi một số ảnh thì trả về một danh sách dạng xâu (chẳng hạn “3,0,2” sẽ che các ảnh số 0 và số 2).
-    @IntegerConverter() int banned,
+    @Default(0) @IntegerConverter() int banned,
+  }
 
-    // ///Người đọc có thể viết mark cho bài hay không?
-    // @IntegerConverter() @JsonKey(name: "can_mark") int canMark,
+      // ///Người đọc có thể viết mark cho bài hay không?
+      // @IntegerConverter() @JsonKey(name: "can_mark") int canMark,
 
-    // ///Người đọc có thể rate: kudos/disappointed cho bài hay không?
-    // @IntegerConverter() @JsonKey(name: "can_rate") int canRate,
+      // ///Người đọc có thể rate: kudos/disappointed cho bài hay không?
+      // @IntegerConverter() @JsonKey(name: "can_rate") int canRate,
 
-    // ///Đường link share bài viết.
-    // String? url,
+      // ///Đường link share bài viết.
+      // String? url,
 
-    // ///Thông báo từ server.
-    // String messages,
-  ) = _Post;
+      // ///Thông báo từ server.
+      // String messages,
+      ) = _Post;
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
 }

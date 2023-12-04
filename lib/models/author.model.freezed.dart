@@ -26,7 +26,7 @@ mixin _$Author {
   String get avatar => throw _privateConstructorUsedError;
   @IntegerOrNullConverter()
   int? get coins => throw _privateConstructorUsedError;
-  String? get listing => throw _privateConstructorUsedError;
+  List<dynamic>? get listing => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,7 +43,7 @@ abstract class $AuthorCopyWith<$Res> {
       String name,
       String avatar,
       @IntegerOrNullConverter() int? coins,
-      String? listing});
+      List<dynamic>? listing});
 }
 
 /// @nodoc
@@ -85,7 +85,7 @@ class _$AuthorCopyWithImpl<$Res, $Val extends Author>
       listing: freezed == listing
           ? _value.listing
           : listing // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as List<dynamic>?,
     ) as $Val);
   }
 }
@@ -102,7 +102,7 @@ abstract class _$$AuthorImplCopyWith<$Res> implements $AuthorCopyWith<$Res> {
       String name,
       String avatar,
       @IntegerOrNullConverter() int? coins,
-      String? listing});
+      List<dynamic>? listing});
 }
 
 /// @nodoc
@@ -140,9 +140,9 @@ class __$$AuthorImplCopyWithImpl<$Res>
           : coins // ignore: cast_nullable_to_non_nullable
               as int?,
       freezed == listing
-          ? _value.listing
+          ? _value._listing
           : listing // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as List<dynamic>?,
     ));
   }
 }
@@ -152,7 +152,8 @@ class __$$AuthorImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$AuthorImpl with DiagnosticableTreeMixin implements _Author {
   const _$AuthorImpl(@IntegerConverter() this.id, this.name, this.avatar,
-      @IntegerOrNullConverter() this.coins, this.listing);
+      @IntegerOrNullConverter() this.coins, final List<dynamic>? listing)
+      : _listing = listing;
 
   factory _$AuthorImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthorImplFromJson(json);
@@ -167,8 +168,15 @@ class _$AuthorImpl with DiagnosticableTreeMixin implements _Author {
   @override
   @IntegerOrNullConverter()
   final int? coins;
+  final List<dynamic>? _listing;
   @override
-  final String? listing;
+  List<dynamic>? get listing {
+    final value = _listing;
+    if (value == null) return null;
+    if (_listing is EqualUnmodifiableListView) return _listing;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -196,13 +204,13 @@ class _$AuthorImpl with DiagnosticableTreeMixin implements _Author {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
             (identical(other.coins, coins) || other.coins == coins) &&
-            (identical(other.listing, listing) || other.listing == listing));
+            const DeepCollectionEquality().equals(other._listing, _listing));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, avatar, coins, listing);
+  int get hashCode => Object.hash(runtimeType, id, name, avatar, coins,
+      const DeepCollectionEquality().hash(_listing));
 
   @JsonKey(ignore: true)
   @override
@@ -224,7 +232,7 @@ abstract class _Author implements Author {
       final String name,
       final String avatar,
       @IntegerOrNullConverter() final int? coins,
-      final String? listing) = _$AuthorImpl;
+      final List<dynamic>? listing) = _$AuthorImpl;
 
   factory _Author.fromJson(Map<String, dynamic> json) = _$AuthorImpl.fromJson;
 
@@ -239,7 +247,7 @@ abstract class _Author implements Author {
   @IntegerOrNullConverter()
   int? get coins;
   @override
-  String? get listing;
+  List<dynamic>? get listing;
   @override
   @JsonKey(ignore: true)
   _$$AuthorImplCopyWith<_$AuthorImpl> get copyWith =>

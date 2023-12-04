@@ -31,21 +31,21 @@ class ApiRoot {
   }
 
   static Future<Map<String, dynamic>?> post(String path, Object? data,
-      {Map<String, dynamic>? params, Map<String, dynamic>? headers}) async {
+      {Map<String, dynamic>? headers}) async {
     var result = await Connectivity().checkConnectivity();
     if (result != ConnectivityResult.wifi && result != ConnectivityResult.mobile) return null;
     try {
       Dio dio = await _getDio(headers);
-      var response = await dio.post(path, data: data, queryParameters: params);
+      var response = (data != null) ? await dio.post(path, data: data) : await dio.post(path);
       if (kDebugMode) {
-        print(
-            "Method:POST\nURL:${response.realUri}\nBody:${(data is FormData) ? data.files.first.value.contentType : data}\nStatus:${response.statusCode}\nResponse:${response.data}");
+        debugPrint(
+            "Method:POST\nURL:${response.realUri}\nBody:${(data is FormData) ? data.fields : data}\nStatus:${response.statusCode}\nResponse:${response.data}");
       }
       return response.data;
     } on DioException catch (e) {
       if (kDebugMode) {
-        print(
-            "Method:POST\nURL:${e.response?.realUri}\nBody:${(data is FormData) ? data.files.first.value.contentType : data}\nStatus:${e.response?.statusCode}\nResponse:${e.response?.data}");
+        debugPrint(
+            "Method:POST\nURL:${e.response?.realUri}\nBody:${(data is FormData) ? data.fields : data}\nStatus:${e.response?.statusCode}\nResponse:${e.response?.data}");
       }
       return e.response?.data;
     }

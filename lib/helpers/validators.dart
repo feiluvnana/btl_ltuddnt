@@ -1,6 +1,6 @@
 class Validators {
-  ///Xác thực tài khoản khi đăng nhập.
-  static String? loginUsernameValidator(String? username) {
+  ///Xác thực tài khoản.
+  static String? usernameValidator(String? username) {
     if (username?.isEmpty != false) return "Không để trống tài khoản";
     if (!RegExp(r"[a-z0-9]+@[a-z]+\.[a-z]{2,3}").hasMatch(username!)) {
       return "Tài khoản không đúng định dạng";
@@ -8,11 +8,20 @@ class Validators {
     return null;
   }
 
-  ///Xác thực mật khẩu khi đăng nhập.
-  static String? loginPasswordValidator(String? password) {
+  ///Xác thực mật khẩu.
+  static String? passwordValidator(String? password) {
     if (password?.isEmpty != false) return "Không để trống mật khẩu";
-    if (!RegExp(r"\w+").hasMatch(password!)) {
+    if (!RegExp(r"^[A-Za-z0-9]{6,10}$").hasMatch(password!)) {
       return "Mật khẩu không đúng định dạng";
+    }
+    return null;
+  }
+
+  ///Xác thực mã xác nhận
+  static String? verifyCodeValidator(String? code) {
+    if (code?.isEmpty != false) return "Không để trống mã xác nhận";
+    if (!RegExp(r"^[A-Za-z0-9]{6,10}$").hasMatch(code!)) {
+      return "Mã xác nhận phải gồm 6 chữ số";
     }
     return null;
   }
@@ -53,22 +62,4 @@ class Validators {
 
   //   return null;
   // }
-
-  ///Xác thực email khi đăng ký.
-  static String? signupEmailValidator(String? email) {
-    if (email?.isEmpty != false) return "Không để trống email";
-    if (!RegExp(r"[a-z0-9]+@[a-z]+\.[a-z]{2,3}").hasMatch(email!)) {
-      return "Email không đúng định dạng";
-    }
-    return null;
-  }
-
-  ///Xác thực mật khẩu khi đăng ký.
-  static String? signupPasswordValidator(String? password) {
-    if (password?.isEmpty != false) return "Không để trống mật khẩu";
-    if (!RegExp(r"^[A-Za-z][A-Za-z0-9_]{7,29}").hasMatch(password!)) {
-      return "Mật khẩu không đúng định dạng";
-    }
-    return null;
-  }
 }

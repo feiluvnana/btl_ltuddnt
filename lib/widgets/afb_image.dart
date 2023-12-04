@@ -5,14 +5,15 @@ class AFBNetworkImage extends StatelessWidget {
   final double? width, height;
   final BoxFit? fit;
   final String url;
+  final bool reduceQuality;
 
   const AFBNetworkImage(
-      {Key? key,
+      {super.key,
       this.width,
       this.height,
       this.fit = BoxFit.cover,
-      required this.url})
-      : super(key: key);
+      required this.url,
+      this.reduceQuality = false});
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +23,11 @@ class AFBNetworkImage extends StatelessWidget {
       fit: fit,
       width: width,
       height: height,
-      memCacheWidth: width?.toInt(),
-      memCacheHeight: height?.toInt(),
+      memCacheHeight: reduceQuality ? height?.toInt() : null,
+      memCacheWidth: reduceQuality ? width?.toInt() : null,
       errorWidget: (context, url, error) => const FlutterLogo(),
-      placeholder: (context, _) => Container(
-          decoration:
-              BoxDecoration(color: themeData.colorScheme.onInverseSurface)),
+      placeholder: (context, _) =>
+          Container(decoration: BoxDecoration(color: themeData.colorScheme.onInverseSurface)),
     );
   }
 
@@ -36,6 +36,7 @@ class AFBNetworkImage extends StatelessWidget {
         url: url,
         fit: fit ?? this.fit,
         width: width ?? this.width,
-        height: height ?? this.height);
+        height: height ?? this.height,
+        reduceQuality: reduceQuality);
   }
 }

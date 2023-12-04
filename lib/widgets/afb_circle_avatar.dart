@@ -15,8 +15,8 @@ class AFBCircleAvatar extends StatelessWidget {
         width: radius ?? 40,
         height: radius ?? 40,
         clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle, border: Border.all(color: Colors.black12)),
+        decoration:
+            BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.black12)),
         child: AFBNetworkImage(
           url: imageUrl,
           fit: BoxFit.cover,

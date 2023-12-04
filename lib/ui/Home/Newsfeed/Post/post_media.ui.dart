@@ -1,6 +1,6 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_detail_image.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_detail_media.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';

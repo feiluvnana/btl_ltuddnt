@@ -5,20 +5,20 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appba
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SecurityUI extends StatefulWidget {
-  const SecurityUI({super.key});
+class SettingsSecurityUI extends StatefulWidget {
+  const SettingsSecurityUI({super.key});
 
   @override
-  State<SecurityUI> createState() => _SecurityUIState();
+  State<SettingsSecurityUI> createState() => _SettingsSecurityUIState();
 }
 
-class _SecurityUIState extends State<SecurityUI> {
+class _SettingsSecurityUIState extends State<SettingsSecurityUI> {
   late final List<dynamic> securitySettingsData = [
     {
       "icon": const Icon(Icons.key, size: 36),
       "action": () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const SecurityChangePassUI()));
+            context, MaterialPageRoute(builder: (context) => const SettingsSecurityChangePassUI()));
       },
       "label": "Đổi mật khẩu",
       "description": "Bạn nên sử dụng mật khẩu mạnh mà bạn chưa dùng ở đâu khác."
@@ -56,14 +56,14 @@ class _SecurityUIState extends State<SecurityUI> {
   }
 }
 
-class SecurityChangePassUI extends ConsumerStatefulWidget {
-  const SecurityChangePassUI({super.key});
+class SettingsSecurityChangePassUI extends ConsumerStatefulWidget {
+  const SettingsSecurityChangePassUI({super.key});
 
   @override
-  ConsumerState<SecurityChangePassUI> createState() => _SecurityChangePassUIState();
+  ConsumerState<SettingsSecurityChangePassUI> createState() => _SecurityChangePassUIState();
 }
 
-class _SecurityChangePassUIState extends ConsumerState<SecurityChangePassUI> {
+class _SecurityChangePassUIState extends ConsumerState<SettingsSecurityChangePassUI> {
   final formKey = GlobalKey<FormState>();
   final password = TextEditingController();
   final newPassword = TextEditingController();
@@ -142,7 +142,7 @@ class _SecurityChangePassUIState extends ConsumerState<SecurityChangePassUI> {
                               onSuccess: () {
                                 Navigator.maybePop(context);
                               });
-                          () => setState(() => isLocked = false);
+                          setState(() => isLocked = false);
                         },
                   child: const Center(child: Text("Xác nhận")),
                 ),

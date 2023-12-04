@@ -1,4 +1,5 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/change_profile_after_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
@@ -21,6 +22,7 @@ class VerifyCodeUI extends ConsumerStatefulWidget {
 class _VerifyCodeUIState extends ConsumerState<VerifyCodeUI> {
   final code = TextEditingController();
   final password = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   bool isLocked = false;
 
   @override
@@ -46,6 +48,7 @@ class _VerifyCodeUIState extends ConsumerState<VerifyCodeUI> {
                 onTap: () {
                   ref.read(authenControllerProvider.notifier).logout();
                   Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+                  ref.read(authenControllerProvider.notifier).updateSignupInfo(info: {});
                 },
                 child: Text("THOÁT",
                     style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor)),
@@ -74,82 +77,94 @@ class _VerifyCodeUIState extends ConsumerState<VerifyCodeUI> {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text("Nhập mã xác nhận",
-                  style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-              Text(
-                  "Để ${widget.mode == VerifyMode.signup ? "xác nhận tài khoản" : "đặt lại mật khẩu"}, hãy nhập mã mà chúng tôi đã gửi đến địa chỉ ${widget.email}."),
-              const SizedBox(height: 10),
-              TextField(
-                controller: code,
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(15),
-                    label: const Text("Mã xác nhận"),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-              ),
-              if (widget.mode == VerifyMode.resetpassword) const SizedBox(height: 10),
-              if (widget.mode == VerifyMode.resetpassword)
-                TextField(
-                  controller: password,
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text("Nhập mã xác nhận",
+                    style:
+                        themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                    "Để ${widget.mode == VerifyMode.signup ? "xác nhận tài khoản" : "đặt lại mật khẩu"}, hãy nhập mã mà chúng tôi đã gửi đến địa chỉ ${widget.email}."),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: code,
+                  validator: Validators.verifyCodeValidator,
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(15),
-                      label: const Text("Mật khẩu mới"),
+                      label: const Text("Mã xác nhận"),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
                 ),
-              AFBPrimaryEButton(
-                  onPressed: isLocked
-                      ? null
-                      : () async {
-                          setState(() => isLocked = true);
-                          if (widget.mode == VerifyMode.resetpassword) {
-                            await ref.read(authenControllerProvider.notifier).resetPassword(
-                                email: widget.email, code: code.text, password: password.text);
-                          } else {
-                            await ref.read(authenControllerProvider.notifier).checkVerifyCode(
-                                email: widget.email,
-                                code: code.text,
-                                onSuccess: () {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => const ChangeProfileAfterSignupUI()),
-                                      (route) => false);
-                                });
-                          }
-                          setState(() => isLocked = false);
-                        },
-                  child: const Text("Tiếp")),
-              ElevatedButton(
-                  onPressed: () {
-                    context.showAFBOptionModalBottomSheet<bool>(
-                      blocks: [
-                        [
-                          AFBBottomSheetListTile(
-                              onTap: () {
-                                Navigator.maybePop(context);
-                                ref
-                                    .read(authenControllerProvider.notifier)
-                                    .getVerifyCode(email: widget.email);
-                              },
-                              leading: Icons.repeat,
-                              title: "Gửi lại mã xác nhận"),
-                          AFBBottomSheetListTile(
-                              onTap: () {
-                                Navigator.maybePop(context)
-                                    .whenComplete(() => decideCanPop().then((value) {
-                                          if (value) Navigator.pop(context);
-                                        }));
-                              },
-                              leading: Icons.arrow_back,
-                              title: "Thoát"),
-                        ]
-                      ],
-                    );
-                  },
-                  child: const Text("Tôi không nhận được mã")),
-            ],
+                if (widget.mode == VerifyMode.resetpassword) const SizedBox(height: 10),
+                if (widget.mode == VerifyMode.resetpassword)
+                  TextFormField(
+                    controller: password,
+                    validator: Validators.passwordValidator,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(15),
+                        label: const Text("Mật khẩu mới"),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+                  ),
+                AFBPrimaryEButton(
+                    onPressed: isLocked
+                        ? null
+                        : () async {
+                            if (formKey.currentState?.validate() != true) return;
+                            setState(() => isLocked = true);
+                            if (widget.mode == VerifyMode.resetpassword) {
+                              await ref.read(authenControllerProvider.notifier).resetPassword(
+                                  email: widget.email, code: code.text, password: password.text);
+                              if (mounted) {
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, "/login", (route) => false);
+                              }
+                            } else {
+                              await ref.read(authenControllerProvider.notifier).checkVerifyCode(
+                                  email: widget.email,
+                                  code: code.text,
+                                  onSuccess: () {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => const ChangeProfileAfterSignupUI()),
+                                        (route) => false);
+                                  });
+                            }
+                            setState(() => isLocked = false);
+                          },
+                    child: const Text("Tiếp")),
+                ElevatedButton(
+                    onPressed: () {
+                      context.showAFBOptionModalBottomSheet<bool>(
+                        blocks: [
+                          [
+                            AFBBottomSheetListTile(
+                                onTap: () {
+                                  Navigator.maybePop(context);
+                                  ref
+                                      .read(authenControllerProvider.notifier)
+                                      .getVerifyCode(email: widget.email);
+                                },
+                                leading: Icons.repeat,
+                                title: "Gửi lại mã xác nhận"),
+                            AFBBottomSheetListTile(
+                                onTap: () {
+                                  Navigator.maybePop(context)
+                                      .whenComplete(() => decideCanPop().then((value) {
+                                            if (value) Navigator.pop(context);
+                                          }));
+                                },
+                                leading: Icons.arrow_back,
+                                title: "Thoát"),
+                          ]
+                        ],
+                      );
+                    },
+                    child: const Text("Tôi không nhận được mã")),
+              ],
+            ),
           ),
         ),
       ),

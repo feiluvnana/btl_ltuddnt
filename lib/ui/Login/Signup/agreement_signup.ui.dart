@@ -112,7 +112,7 @@ class _AgreementSignupUIState extends ConsumerState<AgreementSignupUI> {
                   child: Text(
                     "Bạn đã có tài khoản ư?",
                     style: themeData.textTheme.bodyLarge
-                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.bold),
+                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

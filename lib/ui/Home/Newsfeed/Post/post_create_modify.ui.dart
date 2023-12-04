@@ -13,6 +13,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hl_image_picker_android/hl_image_picker_android.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
@@ -51,7 +52,7 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
             .video(
                 cropping: false,
                 selectedIds: video is HLPickerItem ? [(video as HLPickerItem).id] : null,
-                pickerOptions: const HLPickerOptions(maxSelectedAssets: 4))
+                pickerOptions: const HLPickerOptions(maxSelectedAssets: 1))
             .then((value) {
           setState(() {
             video = value.first;
@@ -65,14 +66,24 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
   ];
   final ctrl = TextEditingController();
   final focusNode = FocusNode();
+  var isExpanded = true;
+  var canPop = false;
 
-  List<dynamic>? image = [];
+  List<dynamic>? image;
   dynamic video;
 
   //For edit image
-  List<int>? imageDel, imageSort;
+  List<AFBNetworkImage>? initialImage;
 
-  bool isExpanded = true;
+  bool equals(dynamic image1, dynamic image2) {
+    if (image1 is AFBNetworkImage && image2 is AFBNetworkImage) {
+      if (image1.url == image2.url) return true;
+    }
+    if (image1 is HLPickerItem && image2 is HLPickerItem) {
+      if (image1.id == image2.id) return true;
+    }
+    return false;
+  }
 
   @override
   void initState() {
@@ -80,6 +91,10 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
     image =
         widget.post?.image?.map((e) => AFBNetworkImage(url: e.url, fit: BoxFit.cover)).toList() ??
             [];
+    initialImage =
+        widget.post?.image?.map((e) => AFBNetworkImage(url: e.url, fit: BoxFit.cover)).toList() ??
+            [];
+    video = widget.post?.video;
     ctrl.text = Emoji.revert(widget.post?.described ?? "");
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
@@ -95,6 +110,7 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
   }
 
   Future<bool> decideCanPop() async {
+    if (canPop) return true;
     final themeData = Theme.of(context);
     return (widget.post == null)
         ? (await context.showAFBOptionModalBottomSheet<bool>(
@@ -112,13 +128,9 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
                   [
                     AFBBottomSheetListTile(
                         onTap: () {
-                          //TODO: Save draft
-                          Navigator.maybePop(context, true);
-                        },
-                        leading: Icons.save,
-                        title: "Lưu làm bản nháp"),
-                    AFBBottomSheetListTile(
-                        onTap: () {
+                          setState(() {
+                            canPop = true;
+                          });
                           Navigator.maybePop(context, true);
                         },
                         leading: Icons.delete,
@@ -144,6 +156,9 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
                     child: const Text("TIẾP TỤC CHỈNH SỬA")),
                 GestureDetector(
                   onTap: () {
+                    setState(() {
+                      canPop = true;
+                    });
                     Navigator.maybePop(context, true);
                   },
                   child: Text("BỎ",
@@ -159,9 +174,13 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return PopScope(
-      canPop: false,
+      canPop: canPop,
       onPopInvoked: (didPop) => decideCanPop().then((value) {
-        if (value) Navigator.pop(context);
+        if (value) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            Navigator.maybePop(context);
+          });
+        }
       }),
       child: Scaffold(
         appBar: AFBTransparentAppBar(
@@ -171,22 +190,47 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
           ),
           leading: IconButton(
               onPressed: () {
-                decideCanPop().then((value) {
-                  if (value) Navigator.pop(context);
-                });
+                Navigator.maybePop(context);
               },
               icon: const Icon(Icons.arrow_back)),
           actions: [
             TextButton(
                 onPressed: () {
-                  ref.read(newsfeedControllerProvider.notifier).addPost(
-                      described: ctrl.text,
-                      status: "Not Hyped",
-                      image: image?.map((e) => File(e.path)).toList(),
-                      video: video is HLPickerItem ? File((video as HLPickerItem).path) : File(""));
-                  Navigator.pop(context);
+                  if (widget.post == null) {
+                    ref.read(newsfeedControllerProvider.notifier).addPost(
+                        described: ctrl.text,
+                        status: "Not Hyped",
+                        image: image?.map((e) => File(e.path)).toList(),
+                        video:
+                            video is HLPickerItem ? File((video as HLPickerItem).path) : File(""));
+                  } else {
+                    List<HLPickerItem>? newImage = image?.whereType<HLPickerItem>().toList();
+                    List<int>? newIndexOfInitialImage = initialImage
+                        ?.map<int>((e1) => image!.indexWhere((e2) => equals(e1, e2)))
+                        .toList();
+                    List<int>? imageDel;
+                    List<int>? imageSort;
+                    for (var i = 0; i < (newIndexOfInitialImage?.length ?? 0); i++) {
+                      if (newIndexOfInitialImage?[i] == -1) {
+                        imageDel = [...imageDel ?? [], i + 1];
+                      }
+                    }
+                    imageSort = newImage?.isNotEmpty == true
+                        ? null
+                        : newIndexOfInitialImage?.map((e) => e + 1).toList();
+                    ref.read(newsfeedControllerProvider.notifier).editPost(
+                        id: widget.post!.id,
+                        described: ctrl.text,
+                        video: video,
+                        image: newImage?.map<File>((e) => File(e.path)).toList(),
+                        imageDel: imageDel,
+                        imageSort: imageSort,
+                        status: "Not Hyped");
+                  }
+
+                  Navigator.maybePop(context);
                 },
-                child: const Text("ĐĂNG"))
+                child: Text(widget.post != null ? "CHỈNH SỬA" : "ĐĂNG"))
           ],
         ),
         body: SingleChildScrollView(
@@ -222,7 +266,7 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
                   decoration: const InputDecoration(
                       border: InputBorder.none, hintText: "Bạn đang nghĩ gì?"),
                 )),
-            if (image != null)
+            if (image?.isNotEmpty == true)
               AspectRatio(
                   aspectRatio: 1,
                   child: AFBGridImageEdit(
@@ -231,6 +275,7 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
                       setState(() {
                         this.image = image;
                       });
+                      print("---\n$image\n$begin\n$end\n$deleted");
                     },
                   )),
             if (video != null)

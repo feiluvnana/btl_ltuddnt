@@ -28,17 +28,13 @@ class _Skeleton extends StatefulWidget {
 
 class _SkeletonState extends State<_Skeleton> with TickerProviderStateMixin {
   late final AnimationController _controller;
-  final List<Color> _colors = const [
-    Color(0xFFDFDFE8),
-    Color(0xFFEAEAEA),
-    Color(0xFFDFDFE8)
-  ];
+  final List<Color> _colors = const [Color(0xFFDFDFE8), Color(0xFFEAEAEA), Color(0xFFDFDFE8)];
 
   @override
   void initState() {
-    _controller = AnimationController(
-        value: 0, duration: const Duration(milliseconds: 2000), vsync: this)
-      ..repeat(reverse: true);
+    _controller =
+        AnimationController(value: 0, duration: const Duration(milliseconds: 2000), vsync: this)
+          ..repeat(reverse: true);
     super.initState();
   }
 
@@ -56,8 +52,7 @@ class _SkeletonState extends State<_Skeleton> with TickerProviderStateMixin {
                       begin: const Alignment(-1.0, -0.25),
                       end: const Alignment(1.0, 0.25),
                       tileMode: TileMode.clamp,
-                      transform: _SlidingGradientTransform(
-                          slidePercent: _controller.value))));
+                      transform: _SlidingGradientTransform(slidePercent: _controller.value))));
         },
       ),
     );
@@ -79,7 +74,6 @@ class _SlidingGradientTransform extends GradientTransform {
 
   @override
   Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
-    return Matrix4.translationValues(
-        bounds.width * (slidePercent - 0.25), 0.0, 0.0);
+    return Matrix4.translationValues(bounds.width * (slidePercent - 0.25), 0.0, 0.0);
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/friend.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
@@ -6,11 +8,28 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appba
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FriendSuggestedUI extends ConsumerWidget {
+class FriendSuggestedUI extends ConsumerStatefulWidget {
   const FriendSuggestedUI({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FriendSuggestedUI> createState() => _FriendSuggestedUIState();
+}
+
+class _FriendSuggestedUIState extends ConsumerState<FriendSuggestedUI> {
+  final ctrl = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    ctrl.addListener(() {
+      if (ctrl.offset >= 0.7 * ctrl.position.maxScrollExtent) {
+        ref.read(friendControllerProvider.notifier).getSuggestedFriends();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var themeData = Theme.of(context);
     return Scaffold(
         appBar: AFBTransparentAppBar(
@@ -28,15 +47,24 @@ class FriendSuggestedUI extends ConsumerWidget {
             ),
             Expanded(
               child: Builder(builder: (context) {
-                //TODO: remove this in the future
-                var filteredSuggestedFriends = ref
-                    .read(friendControllerProvider.select((value) => value.value?.suggestedFriends))
-                    ?.where((element) => element.username != "")
-                    .toList();
-                return ListView.builder(
-                  itemBuilder: (context, index) =>
-                      FriendItem(friend: filteredSuggestedFriends![index]),
-                  itemCount: filteredSuggestedFriends?.length ?? 0,
+                var suggestedFriends = ref.watch(
+                    friendControllerProvider.select((value) => value.value?.suggestedFriends));
+                return ListView.custom(
+                  controller: ctrl,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  childrenDelegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return FriendItem(
+                            key: ValueKey<int>(suggestedFriends![index].id),
+                            friend: suggestedFriends[index]);
+                      },
+                      childCount: suggestedFriends?.length ?? 0,
+                      findChildIndexCallback: (key) {
+                        var index = suggestedFriends
+                            ?.indexWhere((e) => e.id == (key as ValueKey<int>).value);
+                        if (index == -1) return null;
+                        return index;
+                      }),
                 );
               }),
             )
@@ -45,38 +73,84 @@ class FriendSuggestedUI extends ConsumerWidget {
   }
 }
 
-class FriendItem extends StatelessWidget {
+class FriendItem extends ConsumerStatefulWidget {
   final Friend friend;
 
   const FriendItem({super.key, required this.friend});
 
   @override
+  ConsumerState<FriendItem> createState() => _FriendItemState();
+}
+
+enum RequestState { available, cancellable, unavailable }
+
+class _FriendItemState extends ConsumerState<FriendItem> with AutomaticKeepAliveClientMixin {
+  var state = RequestState.available;
+  Timer? timer;
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final themeData = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: SizedBox(
-        height: 80,
         width: MediaQuery.sizeOf(context).width - 20,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            AFBCircleAvatar(imageUrl: friend.avatar, radius: 70),
+            AFBCircleAvatar(imageUrl: widget.friend.avatar, radius: 70),
             const SizedBox(width: 10),
             Expanded(
                 child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(friend.username, style: themeData.textTheme.titleMedium),
-                if (friend.sameFriends > 0)
-                  Text("${friend.sameFriends} bạn chung",
+                Text(widget.friend.username, style: themeData.textTheme.titleMedium),
+                if (widget.friend.sameFriends > 0)
+                  Text("${widget.friend.sameFriends} bạn chung",
                       style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w300)),
-                Row(children: [
-                  Expanded(
-                      child: AFBPrimaryEButton(onPressed: () {}, child: const Text("Thêm bạn bè"))),
-                  const SizedBox(width: 10),
-                  Expanded(child: AFBSecondaryEButton(onPressed: () {}, child: const Text("Gỡ")))
-                ])
+                Row(
+                    children: switch (state) {
+                  RequestState.available => [
+                      Expanded(
+                          child: AFBPrimaryEButton(
+                              onPressed: () {
+                                setState(() {
+                                  state = RequestState.cancellable;
+                                });
+                                timer = Timer(const Duration(seconds: 2), () {
+                                  setState(() {
+                                    state = RequestState.unavailable;
+                                  });
+                                  ref
+                                      .read(friendControllerProvider.notifier)
+                                      .setRequestFriend(widget.friend.id);
+                                });
+                              },
+                              child: const Text("Thêm bạn bè"))),
+                      const SizedBox(width: 10),
+                      Expanded(
+                          child: AFBSecondaryEButton(onPressed: () {}, child: const Text("Gỡ")))
+                    ],
+                  RequestState.cancellable => [
+                      Expanded(
+                        child: AFBSecondaryEButton(
+                            onPressed: () {
+                              timer?.cancel();
+                              setState(() {
+                                timer = null;
+                                state = RequestState.available;
+                              });
+                            },
+                            child: const Text("Hủy")),
+                      ),
+                    ],
+                  RequestState.unavailable => [
+                      const Expanded(
+                          child:
+                              AFBSecondaryEButton(onPressed: null, child: Text("Đã gửi lời mời"))),
+                    ]
+                })
               ],
             ))
           ],
@@ -84,4 +158,7 @@ class FriendItem extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

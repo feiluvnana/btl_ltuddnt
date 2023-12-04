@@ -45,7 +45,7 @@ class EmailSignupUI extends ConsumerWidget {
                   child: TextFormField(
                     initialValue: email,
                     keyboardType: TextInputType.emailAddress,
-                    validator: Validators.signupEmailValidator,
+                    validator: Validators.usernameValidator,
                     onChanged: (value) {
                       ref
                           .read(authenControllerProvider.notifier)
@@ -85,11 +85,12 @@ class EmailSignupUI extends ConsumerWidget {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+                    ref.read(authenControllerProvider.notifier).updateSignupInfo(info: {});
                   },
                   child: Text(
                     "Bạn đã có tài khoản ư?",
                     style: themeData.textTheme.bodyLarge
-                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.bold),
+                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

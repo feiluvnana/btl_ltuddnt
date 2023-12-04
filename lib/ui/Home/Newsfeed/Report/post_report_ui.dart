@@ -114,7 +114,7 @@ class _PostReportUIState extends State<PostReportUI> {
                       Text(" Vấn đề khác"),
                     ])),
               ]),
-              const Divider(),
+              const Divider(thickness: 5),
               if (subject != null &&
                   choice.firstWhere((element) => element.$1 == subject).$2.isNotEmpty) ...[
                 Text("Vui lòng chọn chi tiết vấn đề để tiếp tục",
@@ -244,7 +244,7 @@ class PostReportCompletionUI extends ConsumerWidget {
               ]),
               textAlign: TextAlign.center,
             ),
-            const Divider(),
+            const Divider(thickness: 5),
             Text("Các bước khác bạn có thể thực hiện", style: themeData.textTheme.titleSmall),
             GestureDetector(
               child: Padding(

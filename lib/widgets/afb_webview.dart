@@ -17,13 +17,11 @@ class AFBWebPreview extends StatelessWidget {
         builder: (context, snapshot) {
           return InkWell(
             onTap: () {
-              InAppBrowser().openUrlRequest(
-                  urlRequest: URLRequest(url: Uri.tryParse(url)));
+              InAppBrowser().openUrlRequest(urlRequest: URLRequest(url: Uri.tryParse(url)));
             },
             child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      color: themeData.colorScheme.onInverseSurface)),
+              decoration:
+                  BoxDecoration(border: Border.all(color: themeData.colorScheme.onInverseSurface)),
               child: AspectRatio(
                 aspectRatio: 4,
                 child: Row(
@@ -41,32 +39,27 @@ class AFBWebPreview extends StatelessWidget {
                         flex: 3,
                         child: Container(
                             padding: const EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                                color: themeData.colorScheme.onInverseSurface),
+                            decoration:
+                                BoxDecoration(color: themeData.colorScheme.onInverseSurface),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(url,
                                     style: themeData.textTheme.labelSmall
-                                        ?.copyWith(
-                                            fontWeight: FontWeight.w300)),
+                                        ?.copyWith(fontWeight: FontWeight.w300),
+                                    maxLines: 1),
                                 AFBShimmer(
                                   enabled: snapshot.data == null,
-                                  child: Text(
-                                      snapshot.data?.title ??
-                                          "Không có tiêu đề",
+                                  child: Text(snapshot.data?.title ?? "Không có tiêu đề",
                                       style: themeData.textTheme.titleMedium,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis),
                                 ),
                                 AFBShimmer(
                                   enabled: snapshot.data == null,
-                                  child: Text(
-                                      snapshot.data?.description ??
-                                          "Không có mô tả nào.",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis),
+                                  child: Text(snapshot.data?.description ?? "Không có mô tả nào.",
+                                      maxLines: 1, overflow: TextOverflow.ellipsis),
                                 ),
                               ],
                             )))

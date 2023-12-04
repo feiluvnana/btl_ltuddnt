@@ -28,7 +28,7 @@ class _PostDetailMediaUIState extends State<PostDetailMediaUI> {
     return Scaffold(
       appBar: AFBTransparentAppBar(
           leading: IconButton(
-              onPressed: () => Navigator.maybePop(context), icon: Icon(Icons.arrow_back))),
+              onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back))),
       backgroundColor: Colors.black,
       body: Stack(
         children: [
@@ -147,7 +147,7 @@ class _PostDetailMediaUIState extends State<PostDetailMediaUI> {
                         style: themeData.textTheme.bodySmall
                             ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
                       ),
-                      const Divider(),
+                      const Divider(thickness: 5),
                       const Row(
                         children: [],
                       )

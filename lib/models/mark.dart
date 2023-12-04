@@ -7,8 +7,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'mark.freezed.dart';
 part 'mark.g.dart';
 
-enum MarkType { trust, fake }
-
 @freezed
 class Mark with _$Mark {
   @JsonSerializable(explicitToJson: true)

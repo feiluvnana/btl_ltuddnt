@@ -80,7 +80,7 @@ class AFBGridImageView extends StatelessWidget {
 
 class AFBGridImageEdit extends StatelessWidget {
   final List<dynamic> image;
-  final void Function(List<dynamic> media, {int? begin, int? end, int? deleted})? onUpdated;
+  final void Function(List<dynamic> media)? onUpdated;
 
   const AFBGridImageEdit({super.key, required this.image, this.onUpdated});
 
@@ -91,37 +91,51 @@ class AFBGridImageEdit extends StatelessWidget {
         .map((e) => (e is HLPickerItem) ? Image.file(File(e.path), fit: BoxFit.cover) : e)
         .toList();
     return switch (image.length) {
-      1 => image.first,
+      1 => GestureDetector(
+          onDoubleTap: () {
+            onUpdated?.call([]);
+          },
+          child: image.first),
       2 => Row(children: [
           Expanded(
               child: DragTarget<int>(
-            builder: (context, _, __) => LongPressDraggable<int>(
-                feedback: SizedBox(
-                    height: MediaQuery.sizeOf(context).width,
-                    width: MediaQuery.sizeOf(context).width / 2,
-                    child: image[0]),
-                data: 0,
-                child: AspectRatio(aspectRatio: 1 / 2, child: image[0])),
+            builder: (context, _, __) => GestureDetector(
+              onDoubleTap: () {
+                onUpdated?.call(this.image.sublist(1));
+              },
+              child: LongPressDraggable<int>(
+                  feedback: SizedBox(
+                      height: MediaQuery.sizeOf(context).width,
+                      width: MediaQuery.sizeOf(context).width / 2,
+                      child: image[0]),
+                  data: 0,
+                  child: AspectRatio(aspectRatio: 1 / 2, child: image[0])),
+            ),
             onWillAccept: (object) => object == 1,
             onAccept: (object) {
-              onUpdated?.call(this.image.reversed.toList(), begin: 1, end: 0);
+              onUpdated?.call(this.image.reversed.toList());
             },
           )),
           const SizedBox(width: 4),
           Expanded(
-              child: DragTarget<int>(
-            builder: (context, _, __) => LongPressDraggable<int>(
-              data: 1,
-              feedback: SizedBox(
-                  height: MediaQuery.sizeOf(context).width,
-                  width: MediaQuery.sizeOf(context).width / 2,
-                  child: image[1]),
-              child: AspectRatio(aspectRatio: 1 / 2, child: image[1]),
-            ),
-            onWillAccept: (object) => object == 0,
-            onAccept: (object) {
-              onUpdated?.call(this.image.reversed.toList(), begin: 0, end: 1);
+              child: GestureDetector(
+            onDoubleTap: () {
+              onUpdated?.call(this.image.sublist(0, 1));
             },
+            child: DragTarget<int>(
+              builder: (context, _, __) => LongPressDraggable<int>(
+                data: 1,
+                feedback: SizedBox(
+                    height: MediaQuery.sizeOf(context).width,
+                    width: MediaQuery.sizeOf(context).width / 2,
+                    child: image[1]),
+                child: AspectRatio(aspectRatio: 1 / 2, child: image[1]),
+              ),
+              onWillAccept: (object) => object == 0,
+              onAccept: (object) {
+                onUpdated?.call(this.image.reversed.toList());
+              },
+            ),
           ))
         ]),
       3 => Row(children: [
@@ -129,64 +143,79 @@ class AFBGridImageEdit extends StatelessWidget {
               child: Column(
             children: [
               Expanded(
-                  child: DragTarget<int>(
-                builder: (context, _, __) => LongPressDraggable<int>(
-                    feedback: SizedBox(
-                        height: MediaQuery.sizeOf(context).width / 2,
-                        width: MediaQuery.sizeOf(context).width / 2,
-                        child: image[0]),
-                    data: 0,
-                    child: AspectRatio(aspectRatio: 1, child: image[0])),
-                onWillAccept: (object) => object != 0,
-                onAccept: (object) {
-                  var temp = this.image;
-                  dynamic mid = temp[object];
-                  temp[object] = temp[0];
-                  temp[0] = mid;
-                  onUpdated?.call(temp, begin: object, end: 0);
+                  child: GestureDetector(
+                onDoubleTap: () {
+                  onUpdated?.call(this.image.sublist(1));
                 },
+                child: DragTarget<int>(
+                  builder: (context, _, __) => LongPressDraggable<int>(
+                      feedback: SizedBox(
+                          height: MediaQuery.sizeOf(context).width / 2,
+                          width: MediaQuery.sizeOf(context).width / 2,
+                          child: image[0]),
+                      data: 0,
+                      child: AspectRatio(aspectRatio: 1, child: image[0])),
+                  onWillAccept: (object) => object != 0,
+                  onAccept: (object) {
+                    var temp = this.image;
+                    dynamic mid = temp[object];
+                    temp[object] = temp[0];
+                    temp[0] = mid;
+                    onUpdated?.call(temp);
+                  },
+                ),
               )),
               const SizedBox(width: 4),
               Expanded(
-                  child: DragTarget<int>(
-                builder: (context, _, __) => LongPressDraggable<int>(
-                  data: 1,
-                  feedback: SizedBox(
-                      height: MediaQuery.sizeOf(context).width / 2,
-                      width: MediaQuery.sizeOf(context).width / 2,
-                      child: image[1]),
-                  child: AspectRatio(aspectRatio: 1, child: image[1]),
-                ),
-                onWillAccept: (object) => object != 1,
-                onAccept: (object) {
-                  var temp = this.image;
-                  dynamic mid = temp[object];
-                  temp[object] = temp[1];
-                  temp[1] = mid;
-                  onUpdated?.call(temp, begin: object, end: 1);
+                  child: GestureDetector(
+                onDoubleTap: () {
+                  onUpdated?.call([this.image[0], this.image[2]]);
                 },
+                child: DragTarget<int>(
+                  builder: (context, _, __) => LongPressDraggable<int>(
+                    data: 1,
+                    feedback: SizedBox(
+                        height: MediaQuery.sizeOf(context).width / 2,
+                        width: MediaQuery.sizeOf(context).width / 2,
+                        child: image[1]),
+                    child: AspectRatio(aspectRatio: 1, child: image[1]),
+                  ),
+                  onWillAccept: (object) => object != 1,
+                  onAccept: (object) {
+                    var temp = this.image;
+                    dynamic mid = temp[object];
+                    temp[object] = temp[1];
+                    temp[1] = mid;
+                    onUpdated?.call(temp);
+                  },
+                ),
               ))
             ],
           )),
           const SizedBox(width: 4),
           Expanded(
-              child: DragTarget<int>(
-            builder: (context, _, __) => LongPressDraggable<int>(
-              data: 2,
-              feedback: SizedBox(
-                  height: MediaQuery.sizeOf(context).width,
-                  width: MediaQuery.sizeOf(context).width / 2,
-                  child: image[2]),
-              child: AspectRatio(aspectRatio: 1 / 2, child: image[2]),
-            ),
-            onWillAccept: (object) => object != 2,
-            onAccept: (object) {
-              var temp = this.image;
-              dynamic mid = temp[object];
-              temp[object] = temp[2];
-              temp[2] = mid;
-              onUpdated?.call(temp, begin: object, end: 2);
+              child: GestureDetector(
+            onDoubleTap: () {
+              onUpdated?.call([this.image[0], this.image[1]]);
             },
+            child: DragTarget<int>(
+              builder: (context, _, __) => LongPressDraggable<int>(
+                data: 2,
+                feedback: SizedBox(
+                    height: MediaQuery.sizeOf(context).width,
+                    width: MediaQuery.sizeOf(context).width / 2,
+                    child: image[2]),
+                child: AspectRatio(aspectRatio: 1 / 2, child: image[2]),
+              ),
+              onWillAccept: (object) => object != 2,
+              onAccept: (object) {
+                var temp = this.image;
+                dynamic mid = temp[object];
+                temp[object] = temp[2];
+                temp[2] = mid;
+                onUpdated?.call(temp);
+              },
+            ),
           ))
         ]),
       _ => GridView.count(
@@ -197,23 +226,29 @@ class AFBGridImageEdit extends StatelessWidget {
           childAspectRatio: 1,
           children: List.generate(
               image.length,
-              (index) => DragTarget<int>(
-                    builder: (context, _, __) => LongPressDraggable<int>(
-                      data: index,
-                      feedback: SizedBox(
-                          height: MediaQuery.sizeOf(context).width / 2,
-                          width: MediaQuery.sizeOf(context).width / 2,
-                          child: image[index]),
-                      child: AspectRatio(aspectRatio: 1, child: image[index]),
-                    ),
-                    onWillAccept: (object) => object != index,
-                    onAccept: (object) {
-                      var temp = this.image;
-                      dynamic mid = temp[object];
-                      temp[object] = temp[index];
-                      temp[index] = mid;
-                      onUpdated?.call(temp, begin: object, end: index);
+              (index) => GestureDetector(
+                    onDoubleTap: () {
+                      onUpdated?.call(
+                          [...this.image.sublist(0, index), ...this.image.sublist(index + 1, 4)]);
                     },
+                    child: DragTarget<int>(
+                      builder: (context, _, __) => LongPressDraggable<int>(
+                        data: index,
+                        feedback: SizedBox(
+                            height: MediaQuery.sizeOf(context).width / 2,
+                            width: MediaQuery.sizeOf(context).width / 2,
+                            child: image[index]),
+                        child: AspectRatio(aspectRatio: 1, child: image[index]),
+                      ),
+                      onWillAccept: (object) => object != index,
+                      onAccept: (object) {
+                        var temp = this.image;
+                        dynamic mid = temp[object];
+                        temp[object] = temp[index];
+                        temp[index] = mid;
+                        onUpdated?.call(temp);
+                      },
+                    ),
                   )))
     };
   }

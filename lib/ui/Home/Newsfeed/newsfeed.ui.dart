@@ -9,18 +9,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class NewsfeedUI extends ConsumerStatefulWidget {
   const NewsfeedUI({super.key});
 
+  static final ctrl = ScrollController();
+
   @override
   ConsumerState<NewsfeedUI> createState() => _NewsfeedUIState();
 }
 
 class _NewsfeedUIState extends ConsumerState<NewsfeedUI> with AutomaticKeepAliveClientMixin {
-  final ctrl = ScrollController();
-
   @override
   void initState() {
     super.initState();
-    ctrl.addListener(() {
-      if (ctrl.offset >= 0.7 * ctrl.position.maxScrollExtent) {
+    NewsfeedUI.ctrl.addListener(() {
+      if (NewsfeedUI.ctrl.offset >= 0.7 * NewsfeedUI.ctrl.position.maxScrollExtent) {
         ref.read(newsfeedControllerProvider.notifier).getPosts();
       }
     });
@@ -49,12 +49,14 @@ class _NewsfeedUIState extends ConsumerState<NewsfeedUI> with AutomaticKeepAlive
               ),
             false => ListView.builder(
                 findChildIndexCallback: (key) {
-                  return posts!.indexWhere((element) => (key as ObjectKey).value == element.id) + 1;
+                  var index = posts?.indexWhere((e) => e.id == (key as ValueKey<int>).value);
+                  if (index == -1) return null;
+                  return index;
                 },
-                controller: ctrl,
+                controller: NewsfeedUI.ctrl,
                 itemBuilder: (context, index) => index == 0
                     ? const CreatePostBar()
-                    : PostItem(key: ObjectKey(posts![index - 1].id), post: posts[index - 1]),
+                    : PostItem(key: ValueKey<int>(posts![index - 1].id), post: posts[index - 1]),
                 itemCount: (posts?.length ?? 0) + 1),
             true => const Column(
                 children: [

@@ -13,22 +13,22 @@ extension AFBPopUp on BuildContext {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (header != null)
-                Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: header),
+                Padding(padding: const EdgeInsets.only(left: 10, right: 10), child: header),
               if (header != null) const SizedBox(height: 8),
               ListView.builder(
                   shrinkWrap: true,
                   itemBuilder: (context, index) => Container(
                       clipBehavior: Clip.hardEdge,
-                      margin: const EdgeInsets.only(
-                          left: 10, right: 10, bottom: 15),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: themeData.canvasColor),
+                      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
                       child: Column(
                           mainAxisSize: MainAxisSize.min,
-                          children: blocks[index])),
+                          children: blocks[index]
+                              .map((e) => Material(
+                                    color: themeData.canvasColor,
+                                    child: e,
+                                  ))
+                              .toList())),
                   itemCount: blocks.length)
             ],
           );
@@ -39,12 +39,9 @@ extension AFBPopUp on BuildContext {
   }
 
   Future<T?> showAFBDialog<T>(
-      {required Widget title,
-      required List<Widget> actions,
-      required Widget content}) {
+      {required Widget title, required List<Widget> actions, required Widget content}) {
     return showDialog<T>(
         context: this,
-        builder: (context) =>
-            AlertDialog(title: title, content: content, actions: actions));
+        builder: (context) => AlertDialog(title: title, content: content, actions: actions));
   }
 }

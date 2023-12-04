@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/extension.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/json_converter.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
@@ -20,7 +22,8 @@ class NewsfeedState with _$NewsfeedState {
 
 @Riverpod(keepAlive: true)
 class NewsfeedController extends _$NewsfeedController {
-  bool isFetching = false;
+  bool canFetch = true;
+  int lastId = 0;
 
   @override
   FutureOr<NewsfeedState> build() async {
@@ -34,30 +37,24 @@ class NewsfeedController extends _$NewsfeedController {
   }
 
   void refresh() {
-    isFetching = false;
+    canFetch = true;
+    lastId = 0;
     state = AsyncValue.data(state.requireValue.copyWith(posts: null));
     init();
   }
 
   Future<void> init() async {
     await Api()
-        .getListPosts(
-            userId: await secureStorage
-                .read(key: "user")
-                .then((value) => int.parse(jsonDecode(value ?? "{}")["id"])),
-            inCampaign: 0,
-            campaignId: 1,
-            latitute: 1.0,
-            longitute: 1.0,
-            lastId: 0,
-            index: 0,
-            count: 20)
+        .getListPosts(inCampaign: 0, campaignId: 1, latitute: 1.0, longitute: 1.0, lastId: lastId)
         .then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
+        lastId = int.parse(value["data"]["last_id"]);
         Fluttertoast.showToast(msg: "Lấy bài viết thành công.");
         secureStorage.write(key: "posts", value: jsonEncode(value["data"]["post"]));
         state = AsyncValue.data(state.requireValue.copyWith(
@@ -73,6 +70,8 @@ class NewsfeedController extends _$NewsfeedController {
         .then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
@@ -81,36 +80,80 @@ class NewsfeedController extends _$NewsfeedController {
     });
   }
 
-  Future<void> getPosts() async {
-    if (isFetching) return;
-    isFetching = true;
+  Future<void> editPost(
+      {required int id,
+      List<File>? image,
+      File? video,
+      String? described,
+      String? status,
+      List<int>? imageDel,
+      List<int>? imageSort}) async {
+    Fluttertoast.showToast(msg: "Bài viết đang được tải lên. Hãy đợi trong giây lát.");
     await Api()
-        .getListPosts(
-            userId: await secureStorage
-                .read(key: "user")
-                .then((value) => int.parse(jsonDecode(value ?? "{}")["id"])),
-            inCampaign: 0,
-            campaignId: 1,
-            latitute: 1.0,
-            longitute: 1.0,
-            lastId: state.requireValue.posts?.last.id ?? 0,
-            index: 0,
-            count: 20)
+        .editPost(
+            image: image,
+            video: video,
+            described: described,
+            status: status,
+            id: id,
+            imageDel: imageDel,
+            imageSort: imageSort)
+        .then((value) async {
+      if (value == null) {
+        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      } else if (value["code"] != "1000") {
+        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+      } else {
+        await Api().getPost(int.parse(value["data"]["id"])).then((value) {
+          if (value == null) {
+            Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+          } else if (value["code"] == "9998") {
+            ref.reset();
+          } else if (value["code"] != "1000") {
+            Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+          } else {
+            var temp = state.value?.posts?.toList();
+            var index = temp?.indexWhere((element) => element.id == id);
+            if (index != -1 && index != null) {
+              temp?.replaceRange(index, index + 1, [Post.fromJson(value["data"])]);
+              state = AsyncValue.data(state.value!.copyWith(posts: temp));
+              Fluttertoast.showToast(msg: "Sửa bài viết thành công.");
+            }
+          }
+        });
+      }
+    });
+  }
+
+  Future<void> getPosts() async {
+    if (!canFetch) return;
+    state = const AsyncValue.loading();
+    canFetch = false;
+    await Api()
+        .getListPosts(inCampaign: 0, campaignId: 1, latitute: 1.0, longitute: 1.0, lastId: lastId)
         .then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else if (value["data"]["post"].isNotEmpty) {
         Fluttertoast.showToast(msg: "Lấy bài viết thành công.");
-        if (value["data"]["post"].length < 20) isFetching = false;
-        state = AsyncValue.data(state.requireValue.copyWith(posts: [
-          ...state.requireValue.posts ?? [],
+        if (value["data"]["new_items"].toString() == "0") {
+          canFetch = true;
+          debugPrint("locked fetch ${value["data"]["post"].length}");
+        }
+        lastId = int.parse(value["data"]["last_id"]);
+        state = AsyncValue.data(state.value!.copyWith(posts: [
+          ...state.value?.posts ?? [],
           ...(value["data"]["post"] as List).map((e) => Post.fromJson(e))
         ]));
       }
     });
-    isFetching = !isFetching;
+    canFetch = !canFetch;
   }
 
   Future<void> reportPost(
@@ -118,6 +161,8 @@ class NewsfeedController extends _$NewsfeedController {
     await Api().reportPost(id, subject, detail).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
@@ -130,6 +175,8 @@ class NewsfeedController extends _$NewsfeedController {
     await Api().deletePost(id).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
@@ -141,15 +188,17 @@ class NewsfeedController extends _$NewsfeedController {
   }
 
   Future<void> feelPost({required Post post, required int type}) async {
-    if (!post.isFelt) {
-      state = AsyncValue.data(state.requireValue.copyWith(
-          posts: state.requireValue.posts
+    if (post.isFelt == FeelType.none) {
+      state = AsyncValue.data(state.value!.copyWith(
+          posts: state.value!.posts
               ?.map((e) => e.id == post.id ? e.copyWith(feel: (e.feel ?? 0) + 1) : e)
               .toList()));
     }
     await Api().feel(post.id, type).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       }

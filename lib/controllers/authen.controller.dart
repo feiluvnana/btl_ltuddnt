@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/extension.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/user.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
@@ -34,6 +35,8 @@ class AuthenController extends _$AuthenController {
     return await Api().login(email, password).then((value) async {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định");
         return null;
@@ -55,6 +58,8 @@ class AuthenController extends _$AuthenController {
     await Api().changePassword(password, newPassword).then((value) async {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
@@ -65,10 +70,10 @@ class AuthenController extends _$AuthenController {
               key: "user",
               value: jsonEncode(
                   state.requireValue.user?.copyWith(token: value["data"]["token"]).toJson()));
-          state = AsyncValue.data(state.requireValue
-              .copyWith(user: state.requireValue.user?.copyWith(token: value["data"]["token"])));
         });
         onSuccess?.call();
+        state = AsyncValue.data(state.requireValue
+            .copyWith(user: state.requireValue.user?.copyWith(token: value["data"]["token"])));
       }
     });
   }
@@ -87,6 +92,8 @@ class AuthenController extends _$AuthenController {
     await Api().getVerifyCode(email ?? state.requireValue.user!.email!).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
@@ -105,6 +112,8 @@ class AuthenController extends _$AuthenController {
     await Api().checkVerifyCode(email, code).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
@@ -121,6 +130,8 @@ class AuthenController extends _$AuthenController {
     await Api().changeProfileAfterSignup(username, avatar).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
@@ -140,6 +151,8 @@ class AuthenController extends _$AuthenController {
         .then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
@@ -157,6 +170,8 @@ class AuthenController extends _$AuthenController {
     await Api().resetPassword(email, code, password).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
@@ -164,5 +179,10 @@ class AuthenController extends _$AuthenController {
         onSuccess?.call();
       }
     });
+  }
+
+  void deleteAccount() {
+    state = AsyncValue.data(state.value!.copyWith(user: null));
+    secureStorage.delete(key: "user");
   }
 }

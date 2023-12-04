@@ -1,12 +1,12 @@
-import 'dart:io';
-
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/emoji.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/json_converter.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/mark.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_create_modify.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_detail_media.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_media.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/post_report_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
@@ -15,12 +15,12 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_grid_image_view.d
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_video_player.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 class PostItem extends ConsumerStatefulWidget {
   final Post post;
@@ -86,7 +86,7 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                   padding: const EdgeInsets.only(right: 10),
                   child: GestureDetector(
                       onTap: () {
-                        print(widget.post.toJson());
+                        debugPrint(widget.post.toJson().toString());
                         context.showAFBOptionModalBottomSheet(blocks: [
                           [
                             AFBBottomSheetListTile(
@@ -131,6 +131,7 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                             if (user?.id == widget.post.author.id)
                               AFBBottomSheetListTile(
                                   onTap: () {
+                                    Navigator.pop(context);
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -174,13 +175,20 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: AFBWebPreview(url: getFirstLink(widget.post.described)!),
               ),
-            if ((widget.post.image?.length ?? 0) > 0)
+            if (widget.post.image?.isNotEmpty == true)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: AFBGridImageView(
                       onClickMedia: (index) {
+                        if (widget.post.image?.length == 1) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PostDetailMediaUI(post: widget.post)));
+                          return;
+                        }
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -191,29 +199,12 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                           (index) => AFBNetworkImage(
                                 url: widget.post.image![index].url,
                                 fit: BoxFit.cover,
+                                reduceQuality: true,
                               ))),
                 ),
               ),
             if (widget.post.video != null)
-              Stack(
-                children: [
-                  FutureBuilder(
-                    future: VideoThumbnail.thumbnailFile(video: widget.post.video?.url ?? ""),
-                    builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                      return AspectRatio(
-                        aspectRatio: 1,
-                        child: Image.file(File(snapshot.data ?? ""),
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stack) => Container()),
-                      );
-                    },
-                  ),
-                  Positioned.fill(
-                      child: Center(
-                    child: Icon(Icons.play_arrow, color: themeData.canvasColor, size: 50),
-                  ))
-                ],
-              ),
+              SizedBox(child: AFBVideoPlayer(url: widget.post.video!.url ?? "")),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
@@ -270,10 +261,19 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                     child: RichText(
                         text: TextSpan(
                             children: [
-                          const WidgetSpan(
+                          WidgetSpan(
                               alignment: PlaceholderAlignment.middle,
-                              child: Icon(Icons.favorite, color: Colors.grey)),
-                          TextSpan(text: widget.post.isFelt ? " Thay đổi feel" : " Feel")
+                              child: switch (widget.post.isFelt) {
+                                FeelType.none => const Icon(Icons.favorite, color: Colors.grey),
+                                FeelType.dissapointed => SvgPicture.asset("assets/emojis/sad.svg"),
+                                FeelType.kudos => SvgPicture.asset("assets/emojis/haha.svg")
+                              }),
+                          TextSpan(
+                              text: switch (widget.post.isFelt) {
+                            FeelType.none => "Feel",
+                            FeelType.dissapointed => "Thất vọng",
+                            FeelType.kudos => "Thích thú"
+                          })
                         ],
                             style: themeData.textTheme.bodySmall
                                 ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey))),

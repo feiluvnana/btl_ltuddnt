@@ -1,3 +1,4 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/json_converter.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/mark.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
@@ -106,7 +107,7 @@ class _MarkUIState extends State<MarkUI> {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text("Mark", style: themeData.textTheme.titleMedium),
         ),
-        const Divider(),
+        const Divider(thickness: 5),
         Column(
           children: List.generate(marks?.length ?? 0, (index) => MarkItem(mark: marks![index])),
         )

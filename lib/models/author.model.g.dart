@@ -11,7 +11,7 @@ _$AuthorImpl _$$AuthorImplFromJson(Map<String, dynamic> json) => _$AuthorImpl(
       json['name'] as String,
       json['avatar'] as String,
       const IntegerOrNullConverter().fromJson(json['coins'] as String?),
-      json['listing'] as String?,
+      json['listing'] as List<dynamic>?,
     );
 
 Map<String, dynamic> _$$AuthorImplToJson(_$AuthorImpl instance) =>

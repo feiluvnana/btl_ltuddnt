@@ -1,6 +1,9 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/profile.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Profile/profile.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
@@ -44,11 +47,14 @@ class MenuHeader extends StatelessWidget {
             style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
         const Spacer(),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsUI()));
+          },
           child: Container(
             padding: const EdgeInsets.all(8),
             margin: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(color: Colors.black26, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+                color: themeData.colorScheme.onInverseSurface, shape: BoxShape.circle),
             child: const Icon(Icons.settings),
           ),
         ),
@@ -57,7 +63,8 @@ class MenuHeader extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(8),
             margin: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(color: Colors.black26, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+                color: themeData.colorScheme.onInverseSurface, shape: BoxShape.circle),
             child: const Icon(Icons.search),
           ),
         )
@@ -119,7 +126,7 @@ class _MenuHelpCenterState extends State<MenuHelpCenter> {
           ),
         ),
         ...List.generate(isCollapsed ? 0 : menu.length, (index) {
-          return AFBMenuOptionListTile(data: menu[index]);
+          return AFBMenuEButton(data: menu[index]);
         }),
       ],
     );
@@ -133,7 +140,9 @@ class MenuProfile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ThemeData themeData = Theme.of(context);
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileUI()));
+      },
       child: Row(
         children: [
           const SizedBox(width: 10),
@@ -145,7 +154,7 @@ class MenuProfile extends ConsumerWidget {
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-              "Username",
+              ref.watch(profileControllerProvider).value?.profile?.username ?? "",
               style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
@@ -173,6 +182,7 @@ class MenuLogoutButton extends ConsumerWidget {
             ..read(newsfeedControllerProvider.notifier).reset()
             ..read(friendControllerProvider.notifier).reset();
           Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+          ref.read(authenControllerProvider.notifier).updateSignupInfo(info: {});
         },
         child:
             const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("Đăng xuất")]),
@@ -214,33 +224,35 @@ class _MenuShortcutsState extends State<MenuShortcuts> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: Text(
-            "Tất cả lối tắt",
-            style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
-        ...List.generate(isCollapsed ? menu.length ~/ 2 : menu.length, (index) {
-          return AFBMenuOptionListTile(data: menu[index]);
-        }),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          child: AFBSecondaryEButton(
-            onPressed: () {
-              setState(() {
-                isCollapsed = !isCollapsed;
-              });
-            },
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text(isCollapsed ? "Xem thêm" : "Ẩn bớt")]),
-          ),
-        )
-      ],
+    return LayoutBuilder(
+      builder: (context, constraint) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text("Tất cả lối tắt",
+                  style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+            ),
+            ...List.generate(isCollapsed ? menu.length ~/ 2 : menu.length, (index) {
+              return AFBMenuEButton(data: menu[index]);
+            }),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              child: AFBSecondaryEButton(
+                onPressed: () {
+                  setState(() {
+                    isCollapsed = !isCollapsed;
+                  });
+                },
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Text(isCollapsed ? "Xem thêm" : "Ẩn bớt")]),
+              ),
+            )
+          ],
+        );
+      },
     );
   }
 }
@@ -298,7 +310,7 @@ class _MenuSettingsState extends State<MenuSettings> {
           ),
         ),
         ...List.generate(isCollapsed ? 0 : menu.length, (index) {
-          return AFBMenuOptionListTile(data: menu[index]);
+          return AFBMenuEButton(data: menu[index]);
         }),
       ],
     );

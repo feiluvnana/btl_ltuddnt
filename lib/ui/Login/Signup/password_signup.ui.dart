@@ -1,6 +1,6 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/save_info_signup.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/agreement_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +49,7 @@ class _PasswordSignupUIState extends ConsumerState<PasswordSignupUI> {
                   key: formKey,
                   child: TextFormField(
                     initialValue: password,
-                    validator: Validators.signupPasswordValidator,
+                    validator: Validators.passwordValidator,
                     obscureText: isHidden,
                     onChanged: (value) {
                       ref
@@ -79,7 +79,7 @@ class _PasswordSignupUIState extends ConsumerState<PasswordSignupUI> {
                 onPressed: () {
                   if (formKey.currentState?.validate() != true) return;
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => const SaveInfoSignupUI()));
+                      context, MaterialPageRoute(builder: (_) => const AgreementSignupUI()));
                 },
                 child: const Text("Tiếp")),
             const Spacer(),
@@ -89,11 +89,12 @@ class _PasswordSignupUIState extends ConsumerState<PasswordSignupUI> {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+                    ref.read(authenControllerProvider.notifier).updateSignupInfo(info: {});
                   },
                   child: Text(
                     "Bạn đã có tài khoản ư?",
                     style: themeData.textTheme.bodyLarge
-                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.bold),
+                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

@@ -3,18 +3,19 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
 import 'package:flutter/material.dart';
 
-class PersonalUI extends StatefulWidget {
-  const PersonalUI({super.key});
+class SettingsPersonalUI extends StatefulWidget {
+  const SettingsPersonalUI({super.key});
 
   @override
-  State<PersonalUI> createState() => _PersonalUIState();
+  State<SettingsPersonalUI> createState() => _SettingsPersonalUIState();
 }
 
-class _PersonalUIState extends State<PersonalUI> {
+class _SettingsPersonalUIState extends State<SettingsPersonalUI> {
   late final List<dynamic> personalSettingsData = [
     {
       "action": () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalNameUI()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const SettingsPersonalNameUI()));
       },
       "label": "Tên",
       "description": "Placeholder."
@@ -51,8 +52,8 @@ class _PersonalUIState extends State<PersonalUI> {
   }
 }
 
-class PersonalNameUI extends StatelessWidget {
-  const PersonalNameUI({super.key});
+class SettingsPersonalNameUI extends StatelessWidget {
+  const SettingsPersonalNameUI({super.key});
 
   @override
   Widget build(BuildContext context) {

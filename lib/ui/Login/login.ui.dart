@@ -63,142 +63,152 @@ class _LoginUIState extends ConsumerState<LoginUI> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) async {
-        afbAppRetain.invokeMethod("sendToBackground");
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Builder(
-            builder: (context) {
-              final user = ref.watch(authenControllerProvider.select((value) => value.value?.user));
-              return (user != null)
-                  ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      const FlutterLogo(size: 110),
-                      const SizedBox(height: 30),
-                      ListTile(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => const LoginPasswordUI()));
-                        },
-                        leading: AFBCircleAvatar(imageUrl: user.avatar, radius: 60),
-                        title: Text(user.username, style: themeData.textTheme.titleMedium),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.more_vert),
+    return SafeArea(
+      child: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) async {
+          afbAppRetain.invokeMethod("sendToBackground");
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Builder(
+              builder: (context) {
+                final user =
+                    ref.watch(authenControllerProvider.select((value) => value.value?.user));
+                return (user != null)
+                    ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        const FlutterLogo(size: 110),
+                        const SizedBox(height: 30),
+                        ListTile(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => const LoginPasswordUI()));
+                          },
+                          leading: AFBCircleAvatar(imageUrl: user.avatar, radius: 60),
+                          title: Text(user.username, style: themeData.textTheme.titleMedium),
+                          trailing: PopupMenuButton(
+                              itemBuilder: (context) => <PopupMenuEntry>[
+                                    PopupMenuItem(
+                                      onTap: () => ref
+                                          .read(authenControllerProvider.notifier)
+                                          .deleteAccount(),
+                                      child: const Text("Xóa tài khoản khỏi thiết bị"),
+                                    ),
+                                  ]),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                      ),
-                      const SizedBox(height: 30),
-                      AFBBottomSheetListTile(
-                          onTap: () {}, leading: Icons.add, title: "Đăng nhập bằng tài khoản khác"),
-                      AFBBottomSheetListTile(
-                          onTap: () {},
-                          leading: Icons.app_registration,
-                          title: "Đăng ký tài khoản Anti Fakebook")
-                    ])
-                  : Form(
-                      key: formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          GestureDetector(
+                        const SizedBox(height: 30),
+                        AFBBottomSheetListTile(
                             onTap: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text("Tiếng Việt", style: themeData.textTheme.bodySmall),
-                                Icon(
-                                  Icons.keyboard_arrow_down,
-                                  color: themeData.textTheme.bodySmall?.color,
-                                  size: themeData.textTheme.bodySmall?.fontSize,
-                                )
-                              ],
-                            ),
-                          ),
-                          const Spacer(),
-                          TextFormField(
-                            controller: email,
-                            validator: Validators.loginUsernameValidator,
-                            onChanged: (value) => setState(() {}),
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15),
-                                label: const Text("Số di động hoặc email"),
-                                border:
-                                    OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-                          ),
-                          const SizedBox(height: 15),
-                          TextFormField(
-                            controller: password,
-                            obscureText: isHidden,
-                            validator: Validators.loginPasswordValidator,
-                            onChanged: (value) => setState(() {}),
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15),
-                                label: const Text("Mật khẩu"),
-                                suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        isHidden = !isHidden;
-                                      });
-                                    },
-                                    child: Icon(
-                                        isHidden
-                                            ? Icons.visibility_outlined
-                                            : Icons.visibility_off_outlined,
-                                        size: 30)),
-                                border:
-                                    OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-                          ),
-                          const SizedBox(height: 15),
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: themeData.canvasColor,
-                                backgroundColor: password.text.isNotEmpty && email.text.isNotEmpty
-                                    ? themeData.primaryColor
-                                    : null,
-                              ),
-                              onPressed:
-                                  (password.text.isNotEmpty && email.text.isNotEmpty && !isLocked)
-                                      ? () async {
-                                          if (formKey.currentState?.validate() == true) {
-                                            setState(() {
-                                              isLocked = true;
-                                            });
-                                            await ref
-                                                .read(authenControllerProvider.notifier)
-                                                .login(email: email.text, password: password.text)
-                                                .then((value) => router(value));
-                                            () => setState(() => isLocked = false);
-                                          }
-                                        }
-                                      : null,
+                            leading: Icons.add,
+                            title: "Đăng nhập bằng tài khoản khác"),
+                        AFBBottomSheetListTile(
+                            onTap: () {},
+                            leading: Icons.app_registration,
+                            title: "Đăng ký tài khoản Anti Fakebook")
+                      ])
+                    : Form(
+                        key: formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            GestureDetector(
+                              onTap: () {},
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  isLocked
-                                      ? const CupertinoActivityIndicator()
-                                      : const Icon(Icons.login),
-                                  const Text(" Đăng nhập"),
+                                  Text("Tiếng Việt", style: themeData.textTheme.bodySmall),
+                                  Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: themeData.textTheme.bodySmall?.color,
+                                    size: themeData.textTheme.bodySmall?.fontSize,
+                                  )
                                 ],
-                              )),
-                          TextButton(
-                              onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                                  context, "/forget", (route) => false),
-                              child: const Center(child: Text("Bạn quên mật khẩu ư?"))),
-                          const Spacer(),
-                          AFBSecondaryEButton(
-                              onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                                  context, "/signup", (route) => false),
-                              child: const Text("Tạo tài khoản mới")),
-                        ],
-                      ),
-                    );
-            },
+                              ),
+                            ),
+                            const Spacer(),
+                            TextFormField(
+                              controller: email,
+                              validator: Validators.usernameValidator,
+                              onChanged: (value) => setState(() {}),
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(15),
+                                  label: const Text("Số di động hoặc email"),
+                                  border:
+                                      OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+                            ),
+                            const SizedBox(height: 15),
+                            TextFormField(
+                              controller: password,
+                              obscureText: isHidden,
+                              validator: Validators.passwordValidator,
+                              onChanged: (value) => setState(() {}),
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(15),
+                                  label: const Text("Mật khẩu"),
+                                  suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          isHidden = !isHidden;
+                                        });
+                                      },
+                                      child: Icon(
+                                          isHidden
+                                              ? Icons.visibility_outlined
+                                              : Icons.visibility_off_outlined,
+                                          size: 30)),
+                                  border:
+                                      OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+                            ),
+                            const SizedBox(height: 15),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: themeData.canvasColor,
+                                  backgroundColor: password.text.isNotEmpty && email.text.isNotEmpty
+                                      ? themeData.primaryColor
+                                      : null,
+                                ),
+                                onPressed:
+                                    (password.text.isNotEmpty && email.text.isNotEmpty && !isLocked)
+                                        ? () async {
+                                            if (formKey.currentState?.validate() == true) {
+                                              setState(() {
+                                                isLocked = true;
+                                              });
+                                              await ref
+                                                  .read(authenControllerProvider.notifier)
+                                                  .login(email: email.text, password: password.text)
+                                                  .then((value) => router(value));
+                                              setState(() => isLocked = false);
+                                            }
+                                          }
+                                        : null,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    isLocked
+                                        ? const CupertinoActivityIndicator()
+                                        : const Icon(Icons.login),
+                                    const Text(" Đăng nhập"),
+                                  ],
+                                )),
+                            TextButton(
+                                onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                                    context, "/forget", (route) => false),
+                                child: const Center(child: Text("Bạn quên mật khẩu ư?"))),
+                            const Spacer(),
+                            AFBSecondaryEButton(
+                                onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                                    context, "/signup", (route) => false),
+                                child: const Text("Tạo tài khoản mới")),
+                          ],
+                        ),
+                      );
+              },
+            ),
           ),
         ),
       ),
@@ -277,7 +287,7 @@ class _LoginPasswordUIState extends ConsumerState<LoginPasswordUI> {
                   TextFormField(
                     obscureText: isHidden,
                     controller: password,
-                    validator: Validators.loginPasswordValidator,
+                    validator: Validators.passwordValidator,
                     onChanged: (value) => setState(() {}),
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(15),
@@ -310,7 +320,7 @@ class _LoginPasswordUIState extends ConsumerState<LoginPasswordUI> {
                                     .read(authenControllerProvider.notifier)
                                     .login(email: user.email!, password: password.text)
                                     .then((value) => router(value));
-                                () => setState(() => isLocked = false);
+                                setState(() => isLocked = false);
                               }
                             }
                           : null,

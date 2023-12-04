@@ -6,7 +6,7 @@ part of 'friend.controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$friendControllerHash() => r'2794c75f9e8aa31febbf838b2c17f6b1b0448b01';
+String _$friendControllerHash() => r'457a40a7aef3814d38113a29ec46f1d2cdca5a04';
 
 /// See also [FriendController].
 @ProviderFor(FriendController)

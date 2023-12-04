@@ -1,5 +1,8 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/mark.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+enum MarkType { trust, fake }
+
+enum FeelType { none, dissapointed, kudos }
 
 class DateTimeConverter implements JsonConverter<DateTime, String> {
   const DateTimeConverter();
@@ -71,4 +74,16 @@ class MarkTypeConverter implements JsonConverter<MarkType, String> {
 
   @override
   String toJson(MarkType value) => value.name;
+}
+
+class FeelTypeConverter implements JsonConverter<FeelType, String> {
+  const FeelTypeConverter();
+
+  @override
+  FeelType fromJson(String value) {
+    return FeelType.values[int.parse(value) + 1];
+  }
+
+  @override
+  String toJson(FeelType value) => (value.index - 1).toString();
 }
