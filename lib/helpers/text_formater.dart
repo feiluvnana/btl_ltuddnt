@@ -77,7 +77,7 @@ TextSpan formatPostDescribed(String described, ThemeData themeData) {
       spans.add(TextSpan(
           text: f.keys.first,
           recognizer: TapGestureRecognizer()..onTap = () {},
-          style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor)));
+          style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.colorScheme.primary)));
     } else {
       spans.add(TextSpan(text: f.keys.first));
     }

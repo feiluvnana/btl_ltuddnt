@@ -4,7 +4,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/friend.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,7 +35,7 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
   Widget build(BuildContext context) {
     var themeData = Theme.of(context);
     return Scaffold(
-        appBar: AFBTransparentAppBar(
+        appBar: AFBAppBar(
           title: Text("Tất cả bạn bè", style: themeData.textTheme.titleMedium),
           leading: IconButton(
               onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -82,7 +82,8 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
                                 },
                                 leading: Icons.filter_alt_off,
                                 title: "Mặc định",
-                                color: sort == SortType.normal ? themeData.primaryColor : null),
+                                color:
+                                    sort == SortType.normal ? themeData.colorScheme.primary : null),
                             AFBBottomSheetListTile(
                                 onTap: () {
                                   Navigator.pop(context);
@@ -92,7 +93,9 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
                                 },
                                 leading: Icons.arrow_upward,
                                 title: "Bạn bè lâu nhất trước tiên",
-                                color: sort == SortType.ascending ? themeData.primaryColor : null),
+                                color: sort == SortType.ascending
+                                    ? themeData.colorScheme.primary
+                                    : null),
                             AFBBottomSheetListTile(
                                 onTap: () {
                                   Navigator.pop(context);
@@ -102,7 +105,9 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
                                 },
                                 leading: Icons.arrow_downward,
                                 title: "Bạn bè mới nhất trước tiên",
-                                color: sort == SortType.descending ? themeData.primaryColor : null)
+                                color: sort == SortType.descending
+                                    ? themeData.colorScheme.primary
+                                    : null)
                           ]
                         ]);
                       },

@@ -4,7 +4,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image_picker.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hl_image_picker_android/hl_image_picker_android.dart';
@@ -26,7 +26,7 @@ class _ChangeProfileAfterSignupUIState extends ConsumerState<ChangeProfileAfterS
     ThemeData themeData = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text(
           "Thêm thông tin",
           style: themeData.textTheme.titleMedium,

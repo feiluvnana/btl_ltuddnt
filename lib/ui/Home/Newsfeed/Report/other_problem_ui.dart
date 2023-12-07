@@ -1,6 +1,6 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/problem_detail_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 
 class OtherProblemUI extends StatelessWidget {
@@ -29,7 +29,7 @@ class OtherProblemUI extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Vấn đề khác", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -41,7 +41,7 @@ class OtherProblemUI extends StatelessWidget {
           itemBuilder: (context, index) => Container(
             decoration: BoxDecoration(
                 border: index != label.length - 1
-                    ? const Border(bottom: BorderSide(color: Colors.black26))
+                    ? Border(bottom: BorderSide(color: themeData.colorScheme.onInverseSurface))
                     : null),
             child: AFBChevronRightListTile(
               title: label[index],

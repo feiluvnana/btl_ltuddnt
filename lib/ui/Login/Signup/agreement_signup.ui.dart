@@ -1,7 +1,7 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/verify_code.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +20,7 @@ class _AgreementSignupUIState extends ConsumerState<AgreementSignupUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text(
           "Đồng ý với điều khoản và chính sách của Anti Fakebook",
           style: themeData.textTheme.titleMedium,
@@ -41,7 +41,8 @@ class _AgreementSignupUIState extends ConsumerState<AgreementSignupUI> {
                       "Những người dùng dịch vụ của chúng tôi có thể đã tải thông tin liên hệ của bạn lên Anti Fakebook. "),
               TextSpan(
                   text: "Tìm hiểu thêm.",
-                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium
+                      ?.copyWith(color: themeData.colorScheme.primary),
                   recognizer: TapGestureRecognizer()..onTap = () {})
             ])),
             const SizedBox(height: 10),
@@ -53,17 +54,20 @@ class _AgreementSignupUIState extends ConsumerState<AgreementSignupUI> {
               const TextSpan(text: "bạn đồng ý tạo tài khoản, cũng như chấp thuận "),
               TextSpan(
                   text: "Điều khoản",
-                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium
+                      ?.copyWith(color: themeData.colorScheme.primary),
                   recognizer: TapGestureRecognizer()..onTap = () {}),
               const TextSpan(text: ", "),
               TextSpan(
                   text: "Chính sách quyền riêng tư",
-                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium
+                      ?.copyWith(color: themeData.colorScheme.primary),
                   recognizer: TapGestureRecognizer()..onTap = () {}),
               const TextSpan(text: " và "),
               TextSpan(
                   text: "Chính sách cookie",
-                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium
+                      ?.copyWith(color: themeData.colorScheme.primary),
                   recognizer: TapGestureRecognizer()..onTap = () {}),
               const TextSpan(text: " của Anti Fakebook."),
             ])),
@@ -71,7 +75,8 @@ class _AgreementSignupUIState extends ConsumerState<AgreementSignupUI> {
             Text.rich(TextSpan(children: [
               TextSpan(
                   text: "Chính sách quyền riêng tư",
-                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium
+                      ?.copyWith(color: themeData.colorScheme.primary),
                   recognizer: TapGestureRecognizer()..onTap = () {}),
               const TextSpan(
                   text:
@@ -111,8 +116,8 @@ class _AgreementSignupUIState extends ConsumerState<AgreementSignupUI> {
                       Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
                   child: Text(
                     "Bạn đã có tài khoản ư?",
-                    style: themeData.textTheme.bodyLarge
-                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.w500),
+                    style: themeData.textTheme.bodyLarge?.copyWith(
+                        color: themeData.colorScheme.primary, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

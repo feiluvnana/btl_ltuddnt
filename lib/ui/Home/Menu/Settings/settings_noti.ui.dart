@@ -1,6 +1,6 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/settings.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -66,7 +66,7 @@ class _NotiUIState extends ConsumerState<SettingsNotiUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Cài đặt thông báo", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -155,7 +155,7 @@ class _NotiSettingsMethodUIState extends ConsumerState<SettingsNotiMethodUI> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Thông báo đẩy", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),

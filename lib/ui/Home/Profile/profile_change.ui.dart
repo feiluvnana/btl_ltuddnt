@@ -5,7 +5,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dar
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image_picker.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hl_image_picker_android/hl_image_picker_android.dart';
@@ -27,7 +27,7 @@ class _ProfileChangeUIState extends ConsumerState<ProfileChangeUI> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
         title: Text("Chỉnh sửa trang cá nhân", style: themeData.textTheme.titleMedium),

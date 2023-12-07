@@ -6,7 +6,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_shimmer.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 
 class PostMediaUI extends StatefulWidget {
@@ -37,7 +37,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text(
           "Bài viết",
           style: themeData.textTheme.titleMedium,

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 
 class PostDetailMediaUI extends StatefulWidget {
@@ -26,10 +26,9 @@ class _PostDetailMediaUIState extends State<PostDetailMediaUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
           leading: IconButton(
               onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back))),
-      backgroundColor: Colors.black,
       body: Stack(
         children: [
           PageView.builder(
@@ -67,8 +66,8 @@ class _PostDetailMediaUIState extends State<PostDetailMediaUI> {
                     children: [
                       Text(
                         widget.post!.author.name,
-                        style: themeData.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.bold, color: themeData.canvasColor),
+                        style: themeData.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold, color: themeData.colorScheme.onPrimary),
                       ),
                       LayoutBuilder(builder: (context, size) {
                         var tp = TextPainter(
@@ -86,7 +85,7 @@ class _PostDetailMediaUIState extends State<PostDetailMediaUI> {
                               maxLines: 5,
                               overflow: TextOverflow.ellipsis,
                               style: themeData.textTheme.bodyMedium
-                                  ?.copyWith(color: themeData.canvasColor),
+                                  ?.copyWith(color: themeData.colorScheme.onPrimary),
                             ),
                             Positioned(
                                 bottom: 0,
@@ -116,7 +115,7 @@ class _PostDetailMediaUIState extends State<PostDetailMediaUI> {
                                   maxLines: 10000000,
                                   overflow: TextOverflow.ellipsis,
                                   style: themeData.textTheme.bodyMedium
-                                      ?.copyWith(color: themeData.canvasColor),
+                                      ?.copyWith(color: themeData.colorScheme.onPrimary),
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -137,7 +136,8 @@ class _PostDetailMediaUIState extends State<PostDetailMediaUI> {
                             formatPostDescribed(widget.post!.described, themeData),
                             overflow: TextOverflow.ellipsis,
                             style: themeData.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold, color: themeData.canvasColor),
+                                fontWeight: FontWeight.bold,
+                                color: themeData.colorScheme.onPrimary),
                           );
                         }
                       }),

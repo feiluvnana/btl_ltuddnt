@@ -58,7 +58,7 @@ class _FriendUIState extends ConsumerState<FriendRequestedUI> {
             TextSpan(
                 text: (requestedFriends?.length ?? 0).toString(),
                 style: themeData.textTheme.bodyLarge
-                    ?.copyWith(fontWeight: FontWeight.bold, color: Colors.red)),
+                    ?.copyWith(fontWeight: FontWeight.bold, color: themeData.colorScheme.error)),
           ])),
         ),
         Expanded(
@@ -101,7 +101,8 @@ class FriendRequestedHeader extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(8),
             margin: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(color: Colors.black26, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+                color: themeData.colorScheme.onInverseSurface, shape: BoxShape.circle),
             child: const Icon(Icons.search),
           ),
         )

@@ -67,6 +67,28 @@ class Api {
         }));
   }
 
+  Future<Map<String, dynamic>?> getListVideos(
+      {int? userId,
+      int? inCampaign,
+      int? campaignId,
+      required double latitute,
+      required double longitute,
+      required int lastId,
+      int? index}) async {
+    return ApiRoot.post(
+        "/get_list_videos",
+        jsonEncode({
+          if (userId != null) "user_id": userId.toString(),
+          if (inCampaign != null) "in_campaign": inCampaign.toString(),
+          if (campaignId != null) "campaign_id": campaignId.toString(),
+          "latitude": latitute.toString(),
+          "longitude": longitute.toString(),
+          "last_id": lastId.toString(),
+          "count": "15",
+          "index": "0"
+        }));
+  }
+
   Future<Map<String, dynamic>?> getPost(int id) async {
     return ApiRoot.post("/get_post", jsonEncode({"id": id.toString()}));
   }

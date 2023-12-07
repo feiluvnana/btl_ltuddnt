@@ -2,7 +2,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/password_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +16,7 @@ class EmailSignupUI extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text(
           "Email",
           style: themeData.textTheme.titleMedium,
@@ -65,7 +65,8 @@ class EmailSignupUI extends ConsumerWidget {
                       "Bạn cũng sẽ nhận được email từ chúng tôi và có thể lựa chọn loại bỏ email bất cứ lúc nào. "),
               TextSpan(
                   text: "Tìm hiểu thêm.",
-                  style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.bodyMedium
+                      ?.copyWith(color: themeData.colorScheme.primary),
                   recognizer: TapGestureRecognizer()..onTap = () {})
             ])),
             AFBPrimaryEButton(
@@ -89,8 +90,8 @@ class EmailSignupUI extends ConsumerWidget {
                   },
                   child: Text(
                     "Bạn đã có tài khoản ư?",
-                    style: themeData.textTheme.bodyLarge
-                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.w500),
+                    style: themeData.textTheme.bodyLarge?.copyWith(
+                        color: themeData.colorScheme.primary, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

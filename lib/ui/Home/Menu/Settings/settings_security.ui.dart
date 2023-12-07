@@ -1,7 +1,7 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,7 +29,7 @@ class _SettingsSecurityUIState extends State<SettingsSecurityUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Bảo mật", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -75,7 +75,7 @@ class _SecurityChangePassUIState extends ConsumerState<SettingsSecurityChangePas
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Đổi mật khẩu", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),

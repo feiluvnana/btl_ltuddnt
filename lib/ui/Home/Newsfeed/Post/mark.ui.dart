@@ -1,9 +1,10 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/json_converter.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/mark.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MarkItem extends StatelessWidget {
   final Mark mark;
@@ -33,7 +34,11 @@ class MarkItem extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [Text(mark.poster.name), Text(mark.markContent)]),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(mark.poster.name, style: themeData.textTheme.titleMedium),
+                      Text(mark.markContent)
+                    ]),
               ),
             ),
             Padding(
@@ -78,23 +83,26 @@ class MarkItem extends StatelessWidget {
   }
 }
 
-class MarkUI extends StatefulWidget {
-  const MarkUI({super.key});
+class MarkUI extends ConsumerStatefulWidget {
+  final int postId;
+  const MarkUI({super.key, required this.postId});
 
   @override
-  State<MarkUI> createState() => _MarkUIState();
+  ConsumerState<MarkUI> createState() => _MarkUIState();
 }
 
-class _MarkUIState extends State<MarkUI> {
+class _MarkUIState extends ConsumerState<MarkUI> {
   List<Mark>? marks;
 
   @override
   void initState() {
     super.initState();
-    Api().getMarkComment(1, 0, 10).then((value) {
-      setState(() =>
-          marks = ((value?["data"] ?? []) as List).map<Mark>((e) => Mark.fromJson(e)).toList());
-    });
+    ref
+        .read(newsfeedControllerProvider.notifier)
+        .getMarkComment(widget.postId, 0)
+        .then((value) => setState(() {
+              marks = value;
+            }));
   }
 
   @override
@@ -108,9 +116,15 @@ class _MarkUIState extends State<MarkUI> {
           child: Text("Mark", style: themeData.textTheme.titleMedium),
         ),
         const Divider(thickness: 5),
-        Column(
-          children: List.generate(marks?.length ?? 0, (index) => MarkItem(mark: marks![index])),
-        )
+        Expanded(
+          child: SingleChildScrollView(
+            child: ((marks?.length ?? -1) != 0)
+                ? Column(
+                    children:
+                        List.generate(marks?.length ?? 0, (index) => MarkItem(mark: marks![index])))
+                : const Center(child: Text("Chưa có bình luận nào")),
+          ),
+        ),
       ],
     );
   }

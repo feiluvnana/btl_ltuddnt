@@ -2,7 +2,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/settings.controll
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/blockeduser.model.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,7 +18,7 @@ class _SettingsBlockUIState extends ConsumerState<SettingsBlockUI> {
   Widget build(BuildContext context) {
     var themeData = Theme.of(context);
     return Scaffold(
-        appBar: AFBTransparentAppBar(
+        appBar: AFBAppBar(
           title: Text("Tất cả bạn bè", style: themeData.textTheme.titleMedium),
           leading: IconButton(
               onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),

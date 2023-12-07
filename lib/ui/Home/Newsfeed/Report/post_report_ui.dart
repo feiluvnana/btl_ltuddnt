@@ -2,7 +2,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controll
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/other_problem_ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -74,7 +74,7 @@ class _PostReportUIState extends State<PostReportUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Báo cáo bài viết", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -200,7 +200,7 @@ class PostReportCompletionUI extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Báo cáo bài viết", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),

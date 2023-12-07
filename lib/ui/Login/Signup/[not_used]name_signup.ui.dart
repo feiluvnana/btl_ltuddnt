@@ -87,8 +87,8 @@
 //             ),
 //             ElevatedButton(
 //                 style: ElevatedButton.styleFrom(
-//                     foregroundColor: themeData.canvasColor,
-//                     backgroundColor: themeData.primaryColor),
+//                     foregroundColor: themeData.colorScheme.onPrimary,
+//                     backgroundColor: themeData.colorScheme.primary),
 //                 onPressed: () {
 //                   if (formKey.currentState?.validate() != true) return;
 //                   Navigator.push(context, MaterialPageRoute(builder: (_) {
@@ -111,7 +111,7 @@
 //                   child: Text(
 //                     "Bạn đã có tài khoản ư?",
 //                     style: themeData.textTheme.bodyLarge?.copyWith(
-//                         color: themeData.primaryColor,
+//                         color: themeData.colorScheme.primary,
 //                         fontWeight: FontWeight.bold),
 //                   ),
 //                 ),

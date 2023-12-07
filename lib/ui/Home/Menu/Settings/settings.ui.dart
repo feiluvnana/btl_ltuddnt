@@ -2,7 +2,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/setting
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_noti.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_personal.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_security.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 
 class SettingsUI extends StatefulWidget {
@@ -60,7 +60,7 @@ class _SettingsUIState extends State<SettingsUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Cài đặt", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),

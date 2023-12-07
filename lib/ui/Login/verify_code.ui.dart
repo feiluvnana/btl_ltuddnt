@@ -4,7 +4,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/change_profil
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -51,7 +51,8 @@ class _VerifyCodeUIState extends ConsumerState<VerifyCodeUI> {
                   ref.read(authenControllerProvider.notifier).updateSignupInfo(info: {});
                 },
                 child: Text("THOÁT",
-                    style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor)),
+                    style: themeData.textTheme.bodyMedium
+                        ?.copyWith(color: themeData.colorScheme.primary)),
               )
             ],
           ) ??
@@ -64,7 +65,7 @@ class _VerifyCodeUIState extends ConsumerState<VerifyCodeUI> {
         if (value) Navigator.pop(context);
       }),
       child: Scaffold(
-        appBar: AFBTransparentAppBar(
+        appBar: AFBAppBar(
           title: Text(
             widget.mode == VerifyMode.signup ? "Nhập mã xác nhận" : "Đặt lại mật khẩu",
             style: themeData.textTheme.titleMedium,

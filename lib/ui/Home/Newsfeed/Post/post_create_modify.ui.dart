@@ -11,7 +11,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image_picker.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -139,7 +139,7 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
                         onTap: () {
                           Navigator.maybePop(context, false);
                         },
-                        color: themeData.primaryColor,
+                        color: themeData.colorScheme.primary,
                         leading: Icons.check,
                         title: "Tiếp tục chỉnh sửa")
                   ]
@@ -162,8 +162,8 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
                     Navigator.maybePop(context, true);
                   },
                   child: Text("BỎ",
-                      style:
-                          themeData.textTheme.bodyMedium?.copyWith(color: themeData.primaryColor)),
+                      style: themeData.textTheme.bodyMedium
+                          ?.copyWith(color: themeData.colorScheme.primary)),
                 )
               ],
             ) ??
@@ -183,7 +183,7 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
         }
       }),
       child: Scaffold(
-        appBar: AFBTransparentAppBar(
+        appBar: AFBAppBar(
           title: Text(
             widget.post == null ? "Tạo bài viết" : "Chỉnh sửa bài viết",
             style: themeData.textTheme.titleMedium,
@@ -297,7 +297,7 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
                   ),
                   Positioned.fill(
                       child: Center(
-                    child: Icon(Icons.play_arrow, color: themeData.canvasColor, size: 50),
+                    child: Icon(Icons.play_arrow, color: themeData.colorScheme.onPrimary, size: 50),
                   ))
                 ],
               ),
@@ -321,8 +321,7 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateModifyUI> {
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
                         height: 50,
-                        decoration: const BoxDecoration(
-                            border: Border(top: BorderSide(color: Colors.grey))),
+                        decoration: const BoxDecoration(border: Border(top: BorderSide())),
                         child: Row(
                           children: [
                             ...List.generate(

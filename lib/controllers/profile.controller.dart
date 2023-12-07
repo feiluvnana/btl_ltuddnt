@@ -55,6 +55,23 @@ class ProfileController extends _$ProfileController {
     });
   }
 
+  Future<Profile?> getUserInfo(int? userId) {
+    return Api().getUserInfo(userId).then((value) {
+      if (value == null) {
+        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+        return null;
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      } else if (value["code"] != "1000") {
+        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        return null;
+      } else {
+        return Profile.fromJson(value["data"]);
+      }
+      return null;
+    });
+  }
+
   void reset() {
     state = const AsyncValue.data(ProfileState());
   }

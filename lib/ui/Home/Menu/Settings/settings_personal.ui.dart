@@ -1,16 +1,19 @@
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/settings.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SettingsPersonalUI extends StatefulWidget {
+class SettingsPersonalUI extends ConsumerStatefulWidget {
   const SettingsPersonalUI({super.key});
 
   @override
-  State<SettingsPersonalUI> createState() => _SettingsPersonalUIState();
+  ConsumerState<SettingsPersonalUI> createState() => _SettingsPersonalUIState();
 }
 
-class _SettingsPersonalUIState extends State<SettingsPersonalUI> {
+class _SettingsPersonalUIState extends ConsumerState<SettingsPersonalUI> {
   late final List<dynamic> personalSettingsData = [
     {
       "action": () {
@@ -18,7 +21,7 @@ class _SettingsPersonalUIState extends State<SettingsPersonalUI> {
             context, MaterialPageRoute(builder: (context) => const SettingsPersonalNameUI()));
       },
       "label": "Tên",
-      "description": "Placeholder."
+      "description": ref.watch(authenControllerProvider).value?.user?.username ?? "Tên người dùng."
     }
   ];
 
@@ -26,7 +29,7 @@ class _SettingsPersonalUIState extends State<SettingsPersonalUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Thông tin cá nhân", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -59,7 +62,7 @@ class SettingsPersonalNameUI extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text("Tên", style: themeData.textTheme.titleMedium),
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
@@ -78,7 +81,7 @@ class SettingsPersonalNameUI extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
               child: Text("Tên", style: themeData.textTheme.titleMedium),
             ),
-            Divider(color: themeData.canvasColor),
+            Divider(color: themeData.colorScheme.onPrimary),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(

@@ -4,6 +4,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controll
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/profile.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Profile/profile.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
@@ -200,17 +201,35 @@ class MenuShortcuts extends StatefulWidget {
 
 class _MenuShortcutsState extends State<MenuShortcuts> {
   final List<Map<String, dynamic>> menu = [
-    {"label": "Hoạt động quảng cáo gần đây", "icon": Icons.ads_click, "action": () {}},
+    // {"label": "Hoạt động quảng cáo gần đây", "icon": Icons.ads_click, "action": () {}},
     // {"label": "Kỷ niệm", "icon": Icons.history, "action": () {}},
     // {"label": "Đã lưu", "icon": Icons.bookmark, "action": () {}},
-    // {"label": "Video", "icon": Icons.video_camera_back, "action": () {}},
-    {"label": "Marketplace", "icon": Icons.store, "action": () {}},
-    {"label": "Nhóm", "icon": Icons.group, "action": () {}},
-    {"label": "Tìm bạn bè", "icon": Icons.person_search, "action": () {}},
-    {"label": "Bảng feed", "icon": Icons.home, "action": () {}},
-    {"label": "Avatar", "icon": Icons.not_accessible, "action": () {}},
-    {"label": "Chơi game", "icon": Icons.videogame_asset, "action": () {}},
-    {"label": "Game giả tưởng", "icon": Icons.videogame_asset, "action": () {}},
+    {
+      "label": "Video",
+      "icon": Icons.video_camera_back,
+      "action": () {
+        HomeUIState.tabController.index = 2;
+      }
+    },
+    // {"label": "Marketplace", "icon": Icons.store, "action": () {}},
+    // {"label": "Nhóm", "icon": Icons.group, "action": () {}},
+    {
+      "label": "Tìm bạn bè",
+      "icon": Icons.person_search,
+      "action": () {
+        HomeUIState.tabController.index = 1;
+      }
+    },
+    {
+      "label": "Bảng feed",
+      "icon": Icons.home,
+      "action": () {
+        HomeUIState.tabController.index = 0;
+      }
+    },
+    // {"label": "Avatar", "icon": Icons.not_accessible, "action": () {}},
+    // {"label": "Chơi game", "icon": Icons.videogame_asset, "action": () {}},
+    // {"label": "Game giả tưởng", "icon": Icons.videogame_asset, "action": () {}},
     // {"label": "Hẹn hò", "icon": Icons.heart_broken, "action": () {}},
     // {"label": "Messenger Kids", "icon": Icons.chat_bubble, "action": () {}},
     // {"label": "Reels", "icon": Icons.video_camera_back, "action": () {}},

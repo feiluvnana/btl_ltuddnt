@@ -25,7 +25,7 @@ extension AFBPopUp on BuildContext {
                           mainAxisSize: MainAxisSize.min,
                           children: blocks[index]
                               .map((e) => Material(
-                                    color: themeData.canvasColor,
+                                    color: themeData.colorScheme.onPrimary,
                                     child: e,
                                   ))
                               .toList())),

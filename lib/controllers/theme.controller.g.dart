@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'profile.controller.dart';
+part of 'theme.controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$profileControllerHash() => r'8fd417d8e784cd29c70e1e758d42970f554419fa';
+String _$themeControllerHash() => r'65d404c6844fe13411d1ae7324e024451243337d';
 
-/// See also [ProfileController].
-@ProviderFor(ProfileController)
-final profileControllerProvider =
-    AsyncNotifierProvider<ProfileController, ProfileState>.internal(
-  ProfileController.new,
-  name: r'profileControllerProvider',
+/// See also [ThemeController].
+@ProviderFor(ThemeController)
+final themeControllerProvider =
+    NotifierProvider<ThemeController, ThemeState>.internal(
+  ThemeController.new,
+  name: r'themeControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$profileControllerHash,
+      : _$themeControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ProfileController = AsyncNotifier<ProfileState>;
+typedef _$ThemeController = Notifier<ThemeState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -3,12 +3,14 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controll
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/search.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/settings.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/profile.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/theme.controller.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/watch.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Friend/friend_requested.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/menu.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/newsfeed.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Search/search.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Watch/watch.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,7 +35,8 @@ class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
       ..read(settingsControllerProvider.notifier).init()
       ..read(profileControllerProvider.notifier).init()
       ..read(friendControllerProvider.notifier).init()
-      ..read(searchControllerProvider.notifier).init();
+      ..read(searchControllerProvider.notifier).init()
+      ..read(watchControllerProvider.notifier).init();
     super.initState();
   }
 
@@ -44,7 +47,7 @@ class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
       canPop: false,
       onPopInvoked: (didPop) async {},
       child: Scaffold(
-          appBar: AFBTransparentAppBar(
+          appBar: AFBAppBar(
             toolbarHeight: tabController.index == 0 ? 100 : null,
             title: Column(
               children: [
@@ -54,8 +57,8 @@ class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
                     children: [
                       Text(
                         "Anti Fakebook",
-                        style: themeData.textTheme.headlineSmall
-                            ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.bold),
+                        style: themeData.textTheme.headlineSmall?.copyWith(
+                            color: themeData.colorScheme.primary, fontWeight: FontWeight.bold),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -81,6 +84,9 @@ class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
                           NewsfeedUI.ctrl.jumpTo(0);
                         }
                       }
+                      ref
+                          .read(themeControllerProvider.notifier)
+                          .setThemeMode(index == 2 ? ThemeMode.dark : ThemeMode.light);
                     },
                     tabs: [
                       Icon(

@@ -7,7 +7,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -166,9 +166,9 @@ class _LoginUIState extends ConsumerState<LoginUI> {
                             const SizedBox(height: 15),
                             ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  foregroundColor: themeData.canvasColor,
+                                  foregroundColor: themeData.colorScheme.onPrimary,
                                   backgroundColor: password.text.isNotEmpty && email.text.isNotEmpty
-                                      ? themeData.primaryColor
+                                      ? themeData.colorScheme.primary
                                       : null,
                                 ),
                                 onPressed:
@@ -267,7 +267,7 @@ class _LoginPasswordUIState extends ConsumerState<LoginPasswordUI> {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
           leading: IconButton(
               onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back))),
       body: Padding(
@@ -308,8 +308,8 @@ class _LoginPasswordUIState extends ConsumerState<LoginPasswordUI> {
                   const SizedBox(height: 15),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          foregroundColor: themeData.canvasColor,
-                          backgroundColor: themeData.primaryColor),
+                          foregroundColor: themeData.colorScheme.onPrimary,
+                          backgroundColor: themeData.colorScheme.primary),
                       onPressed: (!isLocked && password.text.isNotEmpty)
                           ? () async {
                               if (formKey.currentState?.validate() == true) {

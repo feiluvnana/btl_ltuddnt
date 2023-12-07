@@ -9,6 +9,8 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_cr
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_detail_media.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_media.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/post_report_ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Profile/profile.ui.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Profile/profile_other.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_expandable_text.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_grid_image_view.dart';
@@ -64,7 +66,18 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        if (user?.id == widget.post.author.id) {
+                          Navigator.push(
+                              context, MaterialPageRoute(builder: (context) => const ProfileUI()));
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfileOtherUI(userId: widget.post.author.id)));
+                        }
+                      },
                       child: Text(
                         widget.post.author.name,
                         style:
@@ -110,7 +123,7 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                                           },
                                           child: Text("XÓA",
                                               style: themeData.textTheme.bodyMedium
-                                                  ?.copyWith(color: themeData.primaryColor)),
+                                                  ?.copyWith(color: themeData.colorScheme.primary)),
                                         ),
                                         GestureDetector(
                                             onTap: () => Navigator.maybePop(context).whenComplete(
@@ -286,7 +299,7 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                           scrollControlDisabledMaxHeightRatio: 0.9,
                           context: context,
                           builder: (context) {
-                            return const MarkUI();
+                            return MarkUI(postId: widget.post.id);
                           });
                     },
                     child: RichText(
@@ -342,7 +355,7 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                 borderRadius: BorderRadius.circular(30),
                 clipBehavior: Clip.hardEdge,
                 child: Container(
-                  decoration: BoxDecoration(color: themeData.canvasColor),
+                  decoration: BoxDecoration(color: themeData.colorScheme.onPrimary),
                   child: Builder(builder: (context) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),

@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'profile.controller.dart';
+part of 'overlay.controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$profileControllerHash() => r'8fd417d8e784cd29c70e1e758d42970f554419fa';
+String _$overlayControllerHash() => r'b4a58849cb9c4808be355f3376904082ae96f7ac';
 
-/// See also [ProfileController].
-@ProviderFor(ProfileController)
-final profileControllerProvider =
-    AsyncNotifierProvider<ProfileController, ProfileState>.internal(
-  ProfileController.new,
-  name: r'profileControllerProvider',
+/// See also [OverlayController].
+@ProviderFor(OverlayController)
+final overlayControllerProvider =
+    NotifierProvider<OverlayController, OverlayState>.internal(
+  OverlayController.new,
+  name: r'overlayControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$profileControllerHash,
+      : _$overlayControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ProfileController = AsyncNotifier<ProfileState>;
+typedef _$OverlayController = Notifier<OverlayState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

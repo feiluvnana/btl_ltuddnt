@@ -1,7 +1,7 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/verify_code.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,7 +24,7 @@ class _ForgetPasswordUIState extends ConsumerState<ForgetPasswordUI> {
       onPopInvoked: (didPop) =>
           Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),
       child: Scaffold(
-        appBar: AFBTransparentAppBar(
+        appBar: AFBAppBar(
           leading: IconButton(
               onPressed: () =>
                   Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false),

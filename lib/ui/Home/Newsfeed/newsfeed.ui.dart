@@ -98,10 +98,8 @@ class CreatePostBar extends ConsumerWidget {
             },
             child: Container(
               padding: const EdgeInsets.only(left: 15, top: 8, bottom: 8),
-              decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all()),
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all()),
               child: const Text("Bạn đang nghĩ gì?"),
             ),
           ),

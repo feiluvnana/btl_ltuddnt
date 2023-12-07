@@ -1,7 +1,7 @@
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/search.controller.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/keyword.model.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_item.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,7 +21,7 @@ class _SearchUIState extends ConsumerState<SearchUI> {
     return PopScope(
       onPopInvoked: (didPop) => ref.read(searchControllerProvider.notifier).deleteResult(),
       child: Scaffold(
-        appBar: AFBTransparentAppBar(
+        appBar: AFBAppBar(
           leading: IconButton(
               onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
           title: ClipRRect(
@@ -82,6 +82,7 @@ class KeywordItem extends ConsumerWidget {
     return ListTile(
       leading: const Icon(Icons.search),
       title: Text(keyword.keyword),
+      onTap: () => ref.read(searchControllerProvider.notifier).search(keyword.keyword),
       trailing: IconButton(
           onPressed: () {
             ref.read(searchControllerProvider.notifier).deleteSearch(keyword.id);

@@ -12,7 +12,7 @@ class AFBDangerEButton extends StatelessWidget {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
             elevation: 0,
-            foregroundColor: themeData.canvasColor,
+            foregroundColor: themeData.colorScheme.onPrimary,
             backgroundColor: themeData.colorScheme.error),
         onPressed: onPressed,
         child: child);
@@ -31,8 +31,8 @@ class AFBPrimaryEButton extends StatelessWidget {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
             elevation: 0,
-            foregroundColor: themeData.canvasColor,
-            backgroundColor: themeData.primaryColor),
+            foregroundColor: themeData.colorScheme.onPrimary,
+            backgroundColor: themeData.colorScheme.primary),
         onPressed: onPressed,
         child: child);
   }

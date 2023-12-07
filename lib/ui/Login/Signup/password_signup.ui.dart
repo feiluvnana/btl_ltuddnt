@@ -2,7 +2,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/agreement_signup.ui.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,7 +21,7 @@ class _PasswordSignupUIState extends ConsumerState<PasswordSignupUI> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         title: Text(
           "Mật khẩu",
           style: themeData.textTheme.titleMedium,
@@ -93,8 +93,8 @@ class _PasswordSignupUIState extends ConsumerState<PasswordSignupUI> {
                   },
                   child: Text(
                     "Bạn đã có tài khoản ư?",
-                    style: themeData.textTheme.bodyLarge
-                        ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.w500),
+                    style: themeData.textTheme.bodyLarge?.copyWith(
+                        color: themeData.colorScheme.primary, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

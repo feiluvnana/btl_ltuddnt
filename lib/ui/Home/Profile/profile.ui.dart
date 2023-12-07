@@ -11,7 +11,7 @@ import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dar
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
 import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_transparent_appbar.dart';
+import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -93,7 +93,7 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
     final imageSessionAspectRatio =
         MediaQuery.orientationOf(context) == Orientation.portrait ? 1.55 : 1.7;
     return Scaffold(
-      appBar: AFBTransparentAppBar(
+      appBar: AFBAppBar(
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
       ),
@@ -139,7 +139,8 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
                               height: avatarDiameter,
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: themeData.canvasColor, width: 2)),
+                                  border:
+                                      Border.all(color: themeData.colorScheme.onPrimary, width: 2)),
                               child: AFBCircleAvatar(
                                 imageUrl: userinfo?.avatar ?? "",
                               ),

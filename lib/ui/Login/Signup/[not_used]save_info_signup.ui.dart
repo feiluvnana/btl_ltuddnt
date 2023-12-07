@@ -55,7 +55,7 @@
 //                   child: Text(
 //                     "Bạn đã có tài khoản ư?",
 //                     style: themeData.textTheme.bodyLarge
-//                         ?.copyWith(color: themeData.primaryColor, fontWeight: FontWeight.w500),
+//                         ?.copyWith(color: themeData.colorScheme.primary, fontWeight: FontWeight.w500),
 //                   ),
 //                 ),
 //               ),
