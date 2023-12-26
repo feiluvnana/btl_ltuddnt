@@ -26,10 +26,10 @@ mixin _$User {
   String get username => throw _privateConstructorUsedError;
   String? get token => throw _privateConstructorUsedError;
   String get avatar => throw _privateConstructorUsedError;
-  @IntegerConverter()
-  int get active => throw _privateConstructorUsedError;
-  @IntegerConverter()
-  int get coins => throw _privateConstructorUsedError;
+  @IntegerOrNullConverter()
+  int? get active => throw _privateConstructorUsedError;
+  @IntegerOrNullConverter()
+  int? get coins => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -47,8 +47,8 @@ abstract class $UserCopyWith<$Res> {
       String username,
       String? token,
       String avatar,
-      @IntegerConverter() int active,
-      @IntegerConverter() int coins});
+      @IntegerOrNullConverter() int? active,
+      @IntegerOrNullConverter() int? coins});
 }
 
 /// @nodoc
@@ -69,8 +69,8 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? username = null,
     Object? token = freezed,
     Object? avatar = null,
-    Object? active = null,
-    Object? coins = null,
+    Object? active = freezed,
+    Object? coins = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -93,14 +93,14 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String,
-      active: null == active
+      active: freezed == active
           ? _value.active
           : active // ignore: cast_nullable_to_non_nullable
-              as int,
-      coins: null == coins
+              as int?,
+      coins: freezed == coins
           ? _value.coins
           : coins // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ) as $Val);
   }
 }
@@ -118,8 +118,8 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       String username,
       String? token,
       String avatar,
-      @IntegerConverter() int active,
-      @IntegerConverter() int coins});
+      @IntegerOrNullConverter() int? active,
+      @IntegerOrNullConverter() int? coins});
 }
 
 /// @nodoc
@@ -137,8 +137,8 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? username = null,
     Object? token = freezed,
     Object? avatar = null,
-    Object? active = null,
-    Object? coins = null,
+    Object? active = freezed,
+    Object? coins = freezed,
   }) {
     return _then(_$UserImpl(
       null == id
@@ -161,14 +161,14 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String,
-      null == active
+      freezed == active
           ? _value.active
           : active // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == coins
+              as int?,
+      freezed == coins
           ? _value.coins
           : coins // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ));
   }
 }
@@ -183,8 +183,8 @@ class _$UserImpl implements _User {
       this.username,
       this.token,
       this.avatar,
-      @IntegerConverter() this.active,
-      @IntegerConverter() this.coins);
+      @IntegerOrNullConverter() this.active,
+      @IntegerOrNullConverter() this.coins);
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
@@ -201,11 +201,11 @@ class _$UserImpl implements _User {
   @override
   final String avatar;
   @override
-  @IntegerConverter()
-  final int active;
+  @IntegerOrNullConverter()
+  final int? active;
   @override
-  @IntegerConverter()
-  final int coins;
+  @IntegerOrNullConverter()
+  final int? coins;
 
   @override
   String toString() {
@@ -253,8 +253,8 @@ abstract class _User implements User {
       final String username,
       final String? token,
       final String avatar,
-      @IntegerConverter() final int active,
-      @IntegerConverter() final int coins) = _$UserImpl;
+      @IntegerOrNullConverter() final int? active,
+      @IntegerOrNullConverter() final int? coins) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
@@ -270,11 +270,11 @@ abstract class _User implements User {
   @override
   String get avatar;
   @override
-  @IntegerConverter()
-  int get active;
+  @IntegerOrNullConverter()
+  int? get active;
   @override
-  @IntegerConverter()
-  int get coins;
+  @IntegerOrNullConverter()
+  int? get coins;
   @override
   @JsonKey(ignore: true)
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>

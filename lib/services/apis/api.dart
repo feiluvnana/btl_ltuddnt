@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/notisettings.model.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api_root.dart';
+import 'package:Anti_Fakebook/models/notisettings.model.dart';
+import 'package:Anti_Fakebook/services/apis/api_root.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
 
@@ -94,18 +95,26 @@ class Api {
   }
 
   Future<Map<String, dynamic>?> addPost(
-      {List<File>? image, File? video, String? described, String? status}) async {
+      {List<File>? image,
+      File? video,
+      String? described,
+      String? status,
+      void Function(int, int)? onSendProgress}) async {
     return ApiRoot.post(
         "/add_post",
         FormData.fromMap({
-          "image": image?.map((e) => MultipartFile.fromFileSync(e.path)).toList(),
+          "image": image
+              ?.map((e) => MultipartFile.fromFileSync(e.path,
+                  contentType: MediaType("image", e.path.split(".").last)))
+              .toList(),
           "video": video == null
               ? null
               : await MultipartFile.fromFile(video.path, contentType: MediaType("video", "mp4")),
-          "described": described,
+          "described": described == "" ? " " : described,
           "status": status,
           "auto_accept": "1"
-        }));
+        }),
+        onSendProgress: onSendProgress);
   }
 
   Future<Map<String, dynamic>?> editPost(
@@ -121,7 +130,11 @@ class Api {
         FormData.fromMap({
           "id": id.toString(),
           if (described != null) "described": described,
-          if (image != null) "image": image.map((e) => MultipartFile.fromFileSync(e.path)).toList(),
+          if (image != null)
+            "image": image
+                .map((e) => MultipartFile.fromFileSync(e.path,
+                    contentType: MediaType("image", e.path.split(".").last)))
+                .toList(),
           if (video != null)
             "video":
                 await MultipartFile.fromFile(video.path, contentType: MediaType("video", "mp4")),
@@ -169,28 +182,33 @@ class Api {
   }
 
   Future<Map<String, dynamic>?> getPushSettings() {
-    return ApiRoot.post("/settings/get_push_settings", null);
+    return ApiRoot.post("/get_push_settings", null);
   }
 
   Future<Map<String, dynamic>?> setPushSettings(NotiSettings notiSettings) {
-    return ApiRoot.post("/settings/set_push_settings", jsonEncode(notiSettings.toJson()));
+    return ApiRoot.post("/set_push_settings", jsonEncode(notiSettings.toJson()));
   }
 
   Future<Map<String, dynamic>?> setRequestFriend(int userId) {
     return ApiRoot.post("/set_request_friend", jsonEncode({"user_id": userId}));
   }
 
-  Future<Map<String, dynamic>?> setAcceptFriend(int userId) {
-    return ApiRoot.post("/set_accept_friend", jsonEncode({"user_id": userId, "is_accept": "1"}));
+  Future<Map<String, dynamic>?> setAcceptFriend(int userId, int isAccept) {
+    return ApiRoot.post(
+        "/set_accept_friend", jsonEncode({"user_id": userId, "is_accept": isAccept.toString()}));
+  }
+
+  Future<Map<String, dynamic>?> unfriend(int userId) {
+    return ApiRoot.post("/unfriend", jsonEncode({"user_id": userId}));
   }
 
   Future<Map<String, dynamic>?> getRequestedFriends(int index) async {
     return ApiRoot.post("/get_requested_friends", jsonEncode({"index": index, "count": 15}));
   }
 
-  Future<Map<String, dynamic>?> getUserFriends(int index, int userId) async {
+  Future<Map<String, dynamic>?> getUserFriends(int index, int userId, [int count = 15]) async {
     return ApiRoot.post(
-        "/get_user_friends", jsonEncode({"index": index, "count": 15, "user_id": userId}));
+        "/get_user_friends", jsonEncode({"index": index, "count": count, "user_id": userId}));
   }
 
   Future<Map<String, dynamic>?> getListBlocks(int index) async {
@@ -218,5 +236,45 @@ class Api {
   Future<Map<String, dynamic>?> delSavedSearch({int? searchId, int? all}) async {
     return ApiRoot.post("/del_saved_search",
         jsonEncode({if (searchId != null) "search_id": searchId, if (all != null) "all": all}));
+  }
+
+  Future<Map<String, dynamic>?> setDevToken() async {
+    return ApiRoot.post("/set_devtoken",
+        jsonEncode({"devtype": "1", "devtoken": await FirebaseMessaging.instance.getToken()}));
+  }
+
+  Future<Map<String, dynamic>?> checkEmail(String email) async {
+    return ApiRoot.post("/check_email", jsonEncode({"email": email}));
+  }
+
+  Future<Map<String, dynamic>?> getNotification(int index) async {
+    return ApiRoot.post("/get_notification", jsonEncode({"index": index, "count": 20}));
+  }
+
+  Future<Map<String, dynamic>?> setUserInfo(
+      {String? username,
+      String? description,
+      String? address,
+      String? city,
+      String? country,
+      File? coverImage,
+      File? avatar,
+      String? link}) async {
+    return ApiRoot.post(
+        "/set_user_info",
+        FormData.fromMap({
+          if (username != null) "username": username,
+          if (description != null) "description": description,
+          if (avatar != null)
+            "avatar": await MultipartFile.fromFile(avatar.path,
+                contentType: MediaType("image", avatar.path.split(".").last)),
+          if (address != null) "address": address,
+          if (city != null) "city": city,
+          if (country != null) "country": country,
+          if (coverImage != null)
+            "cover_image": await MultipartFile.fromFile(coverImage.path,
+                contentType: MediaType("image", coverImage.path.split(".").last)),
+          if (link != null) "link": link
+        }));
   }
 }

@@ -1,4 +1,4 @@
-package com.example.btl_lap_trinh_ung_dung_da_nen_tang
+package vn.io.catan.antifakebook
 
 import io.flutter.embedding.android.FlutterActivity
 import androidx.annotation.NonNull

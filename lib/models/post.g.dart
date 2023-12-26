@@ -7,27 +7,40 @@ part of 'post.dart';
 // **************************************************************************
 
 _$PostImpl _$$PostImplFromJson(Map<String, dynamic> json) => _$PostImpl(
-      const IntegerConverter().fromJson(json['id'] as String),
-      json['name'] as String,
-      const DateTimeConverter().fromJson(json['created'] as String),
-      json['described'] as String,
-      _$JsonConverterFromJson<String, bool>(
-          json['modified'], const BooleanConverter().fromJson),
-      const IntegerOrNullConverter().fromJson(json['fake'] as String?),
-      const IntegerOrNullConverter().fromJson(json['trust'] as String?),
-      const IntegerOrNullConverter().fromJson(json['kudos'] as String?),
-      const IntegerOrNullConverter().fromJson(json['feel'] as String?),
-      const IntegerOrNullConverter().fromJson(json['comment_mark'] as String?),
-      const IntegerOrNullConverter().fromJson(json['disappointed'] as String?),
-      const FeelTypeConverter().fromJson(json['is_felt'] as String),
-      (json['image'] as List<dynamic>?)
+      id: const IntegerConverter().fromJson(json['id'] as String),
+      name: json['name'] as String,
+      created: const DateTimeConverter().fromJson(json['created'] as String),
+      described: json['described'] as String,
+      modified: json['modified'] == null
+          ? false
+          : const BooleanConverter().fromJson(json['modified'] as String),
+      fake: json['fake'] == null
+          ? 0
+          : const IntegerConverter().fromJson(json['fake'] as String),
+      trust: json['trust'] == null
+          ? 0
+          : const IntegerConverter().fromJson(json['trust'] as String),
+      kudos: json['kudos'] == null
+          ? 0
+          : const IntegerConverter().fromJson(json['kudos'] as String),
+      feel: json['feel'] == null
+          ? 0
+          : const IntegerConverter().fromJson(json['feel'] as String),
+      commentMark: json['comment_mark'] == null
+          ? 0
+          : const IntegerConverter().fromJson(json['comment_mark'] as String),
+      disappointed: json['disappointed'] == null
+          ? 0
+          : const IntegerConverter().fromJson(json['disappointed'] as String),
+      isFelt: const FeelTypeConverter().fromJson(json['is_felt'] as String),
+      image: (json['image'] as List<dynamic>?)
           ?.map((e) => Image.fromJson(e as Map<String, dynamic>))
           .toList(),
-      json['video'] == null
+      video: json['video'] == null
           ? null
           : Video.fromJson(json['video'] as Map<String, dynamic>),
-      Author.fromJson(json['author'] as Map<String, dynamic>),
-      json['state'] as String,
+      author: Author.fromJson(json['author'] as Map<String, dynamic>),
+      state: json['state'] as String,
       isBlocked: json['is_blocked'] == null
           ? false
           : const BooleanConverter().fromJson(json['is_blocked'] as String),
@@ -45,16 +58,13 @@ Map<String, dynamic> _$$PostImplToJson(_$PostImpl instance) =>
       'name': instance.name,
       'created': const DateTimeConverter().toJson(instance.created),
       'described': instance.described,
-      'modified': _$JsonConverterToJson<String, bool>(
-          instance.modified, const BooleanConverter().toJson),
-      'fake': const IntegerOrNullConverter().toJson(instance.fake),
-      'trust': const IntegerOrNullConverter().toJson(instance.trust),
-      'kudos': const IntegerOrNullConverter().toJson(instance.kudos),
-      'feel': const IntegerOrNullConverter().toJson(instance.feel),
-      'comment_mark':
-          const IntegerOrNullConverter().toJson(instance.commentMark),
-      'disappointed':
-          const IntegerOrNullConverter().toJson(instance.disappointed),
+      'modified': const BooleanConverter().toJson(instance.modified),
+      'fake': const IntegerConverter().toJson(instance.fake),
+      'trust': const IntegerConverter().toJson(instance.trust),
+      'kudos': const IntegerConverter().toJson(instance.kudos),
+      'feel': const IntegerConverter().toJson(instance.feel),
+      'comment_mark': const IntegerConverter().toJson(instance.commentMark),
+      'disappointed': const IntegerConverter().toJson(instance.disappointed),
       'is_felt': const FeelTypeConverter().toJson(instance.isFelt),
       'image': instance.image?.map((e) => e.toJson()).toList(),
       'video': instance.video?.toJson(),
@@ -64,15 +74,3 @@ Map<String, dynamic> _$$PostImplToJson(_$PostImpl instance) =>
       'can_edit': const BooleanConverter().toJson(instance.canEdit),
       'banned': const IntegerConverter().toJson(instance.banned),
     };
-
-Value? _$JsonConverterFromJson<Json, Value>(
-  Object? json,
-  Value? Function(Json json) fromJson,
-) =>
-    json == null ? null : fromJson(json as Json);
-
-Json? _$JsonConverterToJson<Json, Value>(
-  Value? value,
-  Json? Function(Value value) toJson,
-) =>
-    value == null ? null : toJson(value);

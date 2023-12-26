@@ -12,8 +12,8 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       json['username'] as String,
       json['token'] as String?,
       json['avatar'] as String,
-      const IntegerConverter().fromJson(json['active'] as String),
-      const IntegerConverter().fromJson(json['coins'] as String),
+      const IntegerOrNullConverter().fromJson(json['active'] as String?),
+      const IntegerOrNullConverter().fromJson(json['coins'] as String?),
     );
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
@@ -23,6 +23,6 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'username': instance.username,
       'token': instance.token,
       'avatar': instance.avatar,
-      'active': const IntegerConverter().toJson(instance.active),
-      'coins': const IntegerConverter().toJson(instance.coins),
+      'active': const IntegerOrNullConverter().toJson(instance.active),
+      'coins': const IntegerOrNullConverter().toJson(instance.coins),
     };

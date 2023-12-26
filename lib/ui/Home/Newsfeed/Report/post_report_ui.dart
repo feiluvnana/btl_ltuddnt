@@ -1,8 +1,8 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/other_problem_ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
+import 'package:Anti_Fakebook/models/post.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Report/other_problem_ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

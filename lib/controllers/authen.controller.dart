@@ -1,10 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/extension.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/user.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/response_code.dart';
+import 'package:Anti_Fakebook/controllers/extension.dart';
+import 'package:Anti_Fakebook/controllers/notification.controller.dart';
+import 'package:Anti_Fakebook/main.dart';
+import 'package:Anti_Fakebook/models/user.dart';
+import 'package:Anti_Fakebook/services/apis/api.dart';
+import 'package:Anti_Fakebook/values/response_code.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -79,11 +81,18 @@ class AuthenController extends _$AuthenController {
   }
 
   void logout() {
-    Api().logout().then((value) {
-      secureStorage.delete(key: "posts");
-      secureStorage.write(
-          key: "user", value: jsonEncode(state.requireValue.user?.copyWith(token: null).toJson()));
+    secureStorage.delete(key: "posts");
+    secureStorage.read(key: "saveInfo").then((value) {
+      if (value == "true") {
+        secureStorage.write(
+            key: "user",
+            value: jsonEncode(state.requireValue.user?.copyWith(token: null).toJson()));
+      } else {
+        secureStorage.delete(key: "user");
+      }
     });
+    Api().logout();
+    ref.read(notificationControllerProvider.notifier).subOnMessage?.cancel();
     state = AsyncValue.data(state.requireValue
         .copyWith(user: state.requireValue.user?.copyWith(token: null), signupInfo: {}));
   }
@@ -146,6 +155,11 @@ class AuthenController extends _$AuthenController {
   }
 
   Future<void> signup({void Function()? onSuccess}) async {
+    if (state.requireValue.signupInfo["saveInfo"] == "true") {
+      secureStorage.write(key: "saveInfo", value: "true");
+    } else {
+      secureStorage.write(key: "saveInfo", value: "false");
+    }
     await Api()
         .signup(state.requireValue.signupInfo["email"]!, state.requireValue.signupInfo["password"]!)
         .then((value) {
@@ -177,6 +191,18 @@ class AuthenController extends _$AuthenController {
       } else {
         Fluttertoast.showToast(msg: "Đặt lại mật khẩu thành công.");
         onSuccess?.call();
+      }
+    });
+  }
+
+  Future<String?> checkEmail() async {
+    return Api().checkEmail(state.value!.signupInfo["email"]!).then((value) {
+      if (value == null) {
+        return "Có lỗi xảy ra. Hãy thử lại sau";
+      } else if (value["code"] != "1000") {
+        return resCode[value["code"]] ?? "Lỗi không xác định.";
+      } else {
+        return value["data"]["existed"] == "1" ? "Email đã được đăng ký" : null;
       }
     });
   }

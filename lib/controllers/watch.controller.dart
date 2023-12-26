@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/extension.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/json_converter.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/response_code.dart';
+import 'package:Anti_Fakebook/controllers/extension.dart';
+
+import 'package:Anti_Fakebook/helpers/json_converter.dart';
+import 'package:Anti_Fakebook/main.dart';
+import 'package:Anti_Fakebook/models/post.dart';
+import 'package:Anti_Fakebook/services/apis/api.dart';
+import 'package:Anti_Fakebook/values/response_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -168,7 +169,7 @@ class WatchController extends _$WatchController {
     if (post.isFelt == FeelType.none) {
       state = AsyncValue.data(state.value!.copyWith(
           videos: state.value!.videos
-              ?.map((e) => e.id == post.id ? e.copyWith(feel: (e.feel ?? 0) + 1) : e)
+              ?.map((e) => e.id == post.id ? e.copyWith(feel: e.feel + 1) : e)
               .toList()));
     }
     await Api().feel(post.id, type).then((value) {

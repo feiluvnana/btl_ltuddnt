@@ -1,12 +1,13 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/settings.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/friend.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/friend.controller.dart';
+import 'package:Anti_Fakebook/controllers/settings.controller.dart';
+import 'package:Anti_Fakebook/models/friend.dart';
+import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
+import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
+import 'package:Anti_Fakebook/widgets/afb_popup.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum SortType { normal, ascending, descending }
 
@@ -25,7 +26,7 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
   void initState() {
     super.initState();
     ctrl.addListener(() {
-      if (ctrl.offset >= 0.7 * ctrl.position.maxScrollExtent) {
+      if (ctrl.offset >= ctrl.position.maxScrollExtent - MediaQuery.sizeOf(context).height / 2) {
         ref.read(friendControllerProvider.notifier).getAllFriends();
       }
     });
@@ -61,8 +62,7 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                            "${ref.watch(friendControllerProvider).value?.allFriends?.length ?? 0} Bạn bè",
+                        Text("${ref.watch(friendControllerProvider).value?.totalAll ?? 0} Bạn bè",
                             style: themeData.textTheme.bodyMedium
                                 ?.copyWith(fontWeight: FontWeight.bold)),
                         child ?? Container()
@@ -125,20 +125,40 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
                     _ => throw UnimplementedError(),
                   });
                 }
-                return ListView.custom(
-                  controller: ctrl,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  childrenDelegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return FriendAllItem(friend: allFriends![index]);
-                      },
-                      childCount: allFriends?.length ?? 0,
-                      findChildIndexCallback: (key) {
-                        var index =
-                            allFriends?.indexWhere((e) => e.id == (key as ValueKey<int>).value);
-                        if (index == -1) return null;
-                        return index;
-                      }),
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    ref.read(friendControllerProvider.notifier).refreshAllFriends();
+                  },
+                  child: (allFriends == null)
+                      ? const Center(child: Text("Đang tải..."))
+                      : ListView.custom(
+                          controller: ctrl,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          childrenDelegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                if (index == allFriends.length) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
+                                        child: allFriends.length ==
+                                                ref.read(friendControllerProvider).value?.totalAll
+                                            ? const Text("Đã hết danh sách bạn bè.")
+                                            : const CircularProgressIndicator()),
+                                  );
+                                }
+                                return FriendAllItem(
+                                    friend: allFriends[index],
+                                    highlight: allFriends[index].id ==
+                                        ModalRoute.of(context)?.settings.arguments);
+                              },
+                              childCount: allFriends.length + 1,
+                              findChildIndexCallback: (key) {
+                                var index = allFriends
+                                    .indexWhere((e) => e.id == (key as ValueKey<int>).value);
+                                if (index == -1) return null;
+                                return index;
+                              }),
+                        ),
                 );
               }),
             )
@@ -149,84 +169,123 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
 
 class FriendAllItem extends ConsumerWidget {
   final Friend friend;
+  final bool highlight;
 
-  const FriendAllItem({super.key, required this.friend});
+  const FriendAllItem({super.key, required this.friend, this.highlight = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeData = Theme.of(context);
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: SizedBox(
-        width: MediaQuery.sizeOf(context).width - 20,
-        child: Row(
-          children: [
-            AFBCircleAvatar(imageUrl: friend.avatar, radius: 70),
-            const SizedBox(width: 10),
-            Expanded(
-                child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(friend.username, style: themeData.textTheme.titleMedium),
-                if (friend.sameFriends > 0)
-                  Text("${friend.sameFriends} bạn chung",
-                      style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w300)),
-              ],
-            )),
-            IconButton(
-                onPressed: () {
-                  context.showAFBOptionModalBottomSheet(
-                      header: Row(
-                        children: [
-                          AFBCircleAvatar(imageUrl: friend.avatar, radius: 70),
-                          const SizedBox(width: 10),
-                          Expanded(
-                              child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(friend.username, style: themeData.textTheme.titleMedium),
-                              Text(
-                                  "Là bạn bè từ tháng ${friend.created.month} năm ${friend.created.year}"),
-                            ],
-                          )),
-                        ],
-                      ),
-                      blocks: [
-                        [
-                          AFBBottomSheetListTile(
-                              onTap: () {},
-                              leading: Icons.chat_bubble,
-                              title: "Nhắn tin cho ${friend.username}"),
-                          AFBBottomSheetListTile(
+      width: MediaQuery.sizeOf(context).width - 20,
+      decoration: BoxDecoration(color: !highlight ? null : themeData.colorScheme.primaryContainer),
+      child: Row(
+        children: [
+          AFBCircleAvatar(imageUrl: friend.avatar, radius: 70),
+          const SizedBox(width: 10),
+          Expanded(
+              child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(friend.username, style: themeData.textTheme.titleMedium),
+              if (friend.sameFriends > 0)
+                Text("${friend.sameFriends} bạn chung",
+                    style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w300)),
+            ],
+          )),
+          IconButton(
+              onPressed: () {
+                context.showAFBOptionModalBottomSheet(
+                    header: Row(
+                      children: [
+                        AFBCircleAvatar(imageUrl: friend.avatar, radius: 70),
+                        const SizedBox(width: 10),
+                        Expanded(
+                            child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(friend.username, style: themeData.textTheme.titleMedium),
+                            Text(
+                                "Là bạn bè từ tháng ${friend.created.month} năm ${friend.created.year}"),
+                          ],
+                        )),
+                      ],
+                    ),
+                    blocks: [
+                      [
+                        AFBBottomSheetListTile(
                             onTap: () {
-                              Navigator.pop(context);
-                              ref
-                                  .read(settingsControllerProvider.notifier)
-                                  .setBlock(friend.id, friend.username, friend.avatar)
-                                  .whenComplete(() => ref
-                                      .read(friendControllerProvider.notifier)
-                                      .removeFriendFromAll(friend.id));
+                              Fluttertoast.showToast(msg: "Tính năng đang phát triển.");
                             },
-                            leading: Icons.block,
-                            title: "Chặn ${friend.username}",
-                            subtitle:
-                                "${friend.username} sẽ không thể nhìn thấy bạn hoặc liên hệ với bạn trên Anti Fakebook.",
-                          ),
-                          AFBBottomSheetListTile(
-                            onTap: () {},
-                            leading: Icons.group_remove,
-                            title: "Hủy kết bạn với ${friend.username}",
-                            subtitle: "Xóa ${friend.username} khỏi danh sách bạn bè.",
-                            color: themeData.colorScheme.error,
-                          ),
-                        ]
-                      ]);
-                },
-                icon: const Icon(Icons.more_horiz))
-          ],
-        ),
+                            leading: Icons.chat_bubble,
+                            title: "Nhắn tin cho ${friend.username}"),
+                        AFBBottomSheetListTile(
+                          onTap: () {
+                            context.showAFBDialog(
+                                title: Text("Chặn ${friend.username}?"),
+                                actions: [
+                                  GestureDetector(
+                                      onTap: () => Navigator.pop(context),
+                                      child: const Text("THOÁT")),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      ref
+                                          .read(settingsControllerProvider.notifier)
+                                          .setBlock(friend.id, friend.username, friend.avatar)
+                                          .whenComplete(() => ref
+                                              .read(friendControllerProvider.notifier)
+                                              .removeFriendFromAll(friend.id));
+                                    },
+                                    child: Text("CHẶN",
+                                        style: themeData.textTheme.bodyMedium
+                                            ?.copyWith(color: themeData.colorScheme.primary)),
+                                  ),
+                                ],
+                                content: Text(
+                                    "Bạn có chắc muốn chặn ${friend.username}? ${friend.username} sẽ không thể nhìn thấy bạn hoặc liên hệ với bạn trên Anti Fakebook."));
+                          },
+                          leading: Icons.block,
+                          title: "Chặn ${friend.username}",
+                          subtitle:
+                              "${friend.username} sẽ không thể nhìn thấy bạn hoặc liên hệ với bạn trên Anti Fakebook.",
+                        ),
+                        AFBBottomSheetListTile(
+                          onTap: () {
+                            context.showAFBDialog(
+                                title: Text("Hủy kết bạn với ${friend.username}?"),
+                                actions: [
+                                  GestureDetector(
+                                      onTap: () => Navigator.pop(context),
+                                      child: const Text("THOÁT")),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      ref
+                                          .read(friendControllerProvider.notifier)
+                                          .unfriend(friend.id);
+                                    },
+                                    child: Text("HỦY",
+                                        style: themeData.textTheme.bodyMedium
+                                            ?.copyWith(color: themeData.colorScheme.primary)),
+                                  ),
+                                ],
+                                content: Text(
+                                    "Bạn có chắc muốn hủy kết bạn với ${friend.username}? Nếu muốn kết bạn trở lại, bạn sẽ phải gửi lời mời kết bạn với họ."));
+                          },
+                          leading: Icons.group_remove,
+                          title: "Hủy kết bạn với ${friend.username}",
+                          subtitle: "Xóa ${friend.username} khỏi danh sách bạn bè.",
+                          color: themeData.colorScheme.error,
+                        ),
+                      ]
+                    ]);
+              },
+              icon: const Icon(Icons.more_horiz))
+        ],
       ),
     );
   }

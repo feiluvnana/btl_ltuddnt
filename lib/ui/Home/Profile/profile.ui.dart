@@ -1,21 +1,25 @@
+import 'dart:io';
 import 'dart:math';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/profile.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_item.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/newsfeed.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Profile/profile_change.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/friend.controller.dart';
+import 'package:Anti_Fakebook/controllers/profile.controller.dart';
+import 'package:Anti_Fakebook/ui/Home/Friend/friend_all.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_item.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/newsfeed.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Profile/profile_change.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/home.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
+import 'package:Anti_Fakebook/widgets/afb_image.dart';
+import 'package:Anti_Fakebook/widgets/afb_image_picker.dart';
+import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
+import 'package:Anti_Fakebook/widgets/afb_popup.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hl_image_picker_android/hl_image_picker_android.dart';
 
 class ProfileUI extends ConsumerStatefulWidget {
   const ProfileUI({super.key});
@@ -25,23 +29,67 @@ class ProfileUI extends ConsumerStatefulWidget {
 }
 
 class _ProfileUIState extends ConsumerState<ProfileUI> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  final ctrl = ScrollController();
 
   void coverImageOptions() {
     context.showAFBOptionModalBottomSheet(blocks: [
       [
-        AFBBottomSheetListTile(onTap: () {}, leading: Icons.image, title: "Xem ảnh bìa"),
-        AFBBottomSheetListTile(onTap: () {}, leading: Icons.upload, title: "Tải ảnh lên"),
+        AFBBottomSheetListTile(
+            onTap: () {
+              var userinfo =
+                  ref.watch(profileControllerProvider.select((value) => value.value?.profile));
+              context.showImageView(url: userinfo?.coverImage ?? "");
+            },
+            leading: Icons.image,
+            title: "Xem ảnh bìa"),
+        AFBBottomSheetListTile(
+            onTap: () {
+              HLImagePickerAndroid()
+                  .image(
+                      pickerOptions:
+                          const HLPickerOptions(minSelectedAssets: 1, maxSelectedAssets: 1))
+                  .then((value) {
+                if (value.isNotEmpty) {
+                  ref
+                      .read(profileControllerProvider.notifier)
+                      .setUserInfo(coverImage: File(value[0].path));
+                }
+              });
+            },
+            leading: Icons.upload,
+            title: "Tải ảnh lên"),
       ]
     ]);
   }
 
   void avatarOptions() {
     context.showAFBOptionModalBottomSheet(blocks: [
-      [AFBBottomSheetListTile(onTap: () {}, leading: Icons.image, title: "Chọn ảnh đại diện")]
+      [
+        AFBBottomSheetListTile(
+            onTap: () {
+              var userinfo =
+                  ref.watch(profileControllerProvider.select((value) => value.value?.profile));
+              context.showImageView(url: userinfo?.avatar ?? "");
+            },
+            leading: Icons.image,
+            title: "Xem ảnh đại diện"),
+        AFBBottomSheetListTile(
+            onTap: () {
+              HLImagePickerAndroid()
+                  .image(
+                      pickerOptions:
+                          const HLPickerOptions(minSelectedAssets: 1, maxSelectedAssets: 1))
+                  .then((value) {
+                if (value.isNotEmpty) {
+                  ref
+                      .read(profileControllerProvider.notifier)
+                      .setUserInfo(avatar: File(value[0].path));
+                }
+              });
+            },
+            leading: Icons.upload,
+            title: "Tải ảnh lên")
+      ]
     ]);
   }
 
@@ -101,9 +149,18 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
         var userinfo = ref.watch(profileControllerProvider.select((value) => value.value?.profile));
         final posts = ref.watch(profileControllerProvider.select((value) => value.value?.posts));
         return RefreshIndicator(
-          onRefresh: () async {},
+          onRefresh: () async {
+            ref.read(profileControllerProvider.notifier).refresh();
+          },
           child: ListView.builder(
-            itemCount: 10 + (posts?.length ?? 0),
+            controller: ctrl
+              ..addListener(() {
+                if (ctrl.offset >=
+                    ctrl.position.maxScrollExtent - MediaQuery.sizeOf(context).height / 2) {
+                  ref.read(profileControllerProvider.notifier).getPosts();
+                }
+              }),
+            itemCount: 11 + (posts?.length ?? 0),
             itemBuilder: (context, index) {
               if (index == 0) {
                 return AspectRatio(
@@ -111,10 +168,9 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
                   child: Stack(children: [
                     Stack(
                       children: [
-                        const AspectRatio(
-                          aspectRatio: 2,
-                          child: Placeholder(),
-                        ),
+                        AspectRatio(
+                            aspectRatio: 2,
+                            child: AFBNetworkImage(url: userinfo?.coverImage ?? "")),
                         Positioned(
                             bottom: 10,
                             right: 10,
@@ -141,9 +197,7 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
                                   shape: BoxShape.circle,
                                   border:
                                       Border.all(color: themeData.colorScheme.onPrimary, width: 2)),
-                              child: AFBCircleAvatar(
-                                imageUrl: userinfo?.avatar ?? "",
-                              ),
+                              child: AFBCircleAvatar(imageUrl: userinfo?.avatar ?? ""),
                             ),
                             Positioned(
                                 bottom: 0,
@@ -204,8 +258,30 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
                 return const Divider(thickness: 5);
               }
               if (index == 5) {
-                return AFBBottomSheetListTile(
-                    onTap: null, leading: Icons.home, title: userinfo?.city);
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AFBBottomSheetListTile(
+                        onTap: null,
+                        leading: Icons.home,
+                        title: userinfo?.address ?? "Không có địa chỉ..."),
+                    AFBBottomSheetListTile(
+                        onTap: null,
+                        leading: Icons.location_city,
+                        title: userinfo?.city ?? "Không có thành phố..."),
+                    AFBBottomSheetListTile(
+                        onTap: null,
+                        leading: Icons.location_on,
+                        title: userinfo?.country ?? "Không có quốc gia..."),
+                    AFBBottomSheetListTile(
+                        onTap: () {
+                          Fluttertoast.showToast(
+                              msg: "Hiện tại việc mua coins vẫn đang trong quá trình phát triển!");
+                        },
+                        leading: Icons.currency_bitcoin,
+                        title: "${userinfo?.coins.toString()}")
+                  ],
+                );
               }
               if (index == 7) {
                 return Builder(builder: (context) {
@@ -246,35 +322,42 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
                               alignment: WrapAlignment.center,
                               children: List.generate(
                                   min(allFriends?.length ?? 0, 6),
-                                  (index) => SizedBox(
+                                  (index) => Container(
+                                        padding: const EdgeInsets.all(4),
                                         width: MediaQuery.sizeOf(context).width / 3.5,
-                                        height: MediaQuery.sizeOf(context).width / 3.5,
                                         child: Column(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Expanded(
+                                            AspectRatio(
+                                                aspectRatio: 1,
                                                 child: AFBNetworkImage(
                                                     url: allFriends![index].avatar)),
                                             Text(allFriends[index].username,
-                                                style: themeData.textTheme.titleMedium)
+                                                style: themeData.textTheme.titleSmall)
                                           ],
                                         ),
                                       )),
                             ),
                           ),
                           AFBSecondaryEButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pop(context);
+                                HomeUIState.tabController.index = 1;
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) => const FriendAllUI()));
+                              },
                               child: const Center(child: Text("Xem tất cả bạn bè")))
                         ]),
                   );
                 });
               }
-              if (index == 8) {
+              if (index == 9) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Text("Bài viết", style: themeData.textTheme.titleMedium),
                 );
               }
-              if (index == 9) {
+              if (index == 10) {
                 return const CreatePostBar();
               }
               return switch (posts?.isEmpty) {
@@ -284,7 +367,7 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
                     child: CircularProgressIndicator(),
                   )),
                 false =>
-                  PostItem(key: ValueKey<int>(posts![index - 10].id), post: posts[index - 10]),
+                  PostItem(key: ValueKey<int>(posts![index - 11].id), post: posts[index - 11]),
                 true => const Center(child: Text("Không có bài viết..."))
               };
             },
@@ -292,7 +375,7 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
               var index =
                   posts?.indexWhere((element) => element.id == (key as ValueKey<int>?)?.value);
               if (index == -1 || index == null) return null;
-              return index + 10;
+              return index + 11;
             },
           ),
         );

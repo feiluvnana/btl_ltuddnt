@@ -14,7 +14,7 @@ class ThemeState with _$ThemeState {
 class ThemeController extends _$ThemeController {
   @override
   ThemeState build() {
-    return const ThemeState();
+    return const ThemeState(themeMode: ThemeMode.light);
   }
 
   void setThemeMode(ThemeMode themeMode) {

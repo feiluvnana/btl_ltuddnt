@@ -1,10 +1,10 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/change_profile_after_signup.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/authen.controller.dart';
+import 'package:Anti_Fakebook/helpers/validators.dart';
+import 'package:Anti_Fakebook/ui/Login/Signup/change_profile_after_signup.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
+import 'package:Anti_Fakebook/widgets/afb_popup.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -101,7 +101,7 @@ class _VerifyCodeUIState extends ConsumerState<VerifyCodeUI> {
                 if (widget.mode == VerifyMode.resetpassword)
                   TextFormField(
                     controller: password,
-                    validator: Validators.passwordValidator,
+                    validator: Validators.password,
                     obscureText: true,
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(15),

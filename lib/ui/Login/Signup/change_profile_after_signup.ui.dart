@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image_picker.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/authen.controller.dart';
+import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_image_picker.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hl_image_picker_android/hl_image_picker_android.dart';

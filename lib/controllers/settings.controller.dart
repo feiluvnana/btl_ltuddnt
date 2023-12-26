@@ -1,8 +1,10 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/extension.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/blockeduser.model.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/notisettings.model.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/response_code.dart';
+import 'dart:async';
+
+import 'package:Anti_Fakebook/controllers/extension.dart';
+import 'package:Anti_Fakebook/models/blockeduser.model.dart';
+import 'package:Anti_Fakebook/models/notisettings.model.dart';
+import 'package:Anti_Fakebook/services/apis/api.dart';
+import 'package:Anti_Fakebook/values/response_code.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -26,6 +28,13 @@ class SettingsController extends _$SettingsController {
   }
 
   Future<void> init() async {
+    Api().setDevToken().then((value) {
+      if (value == null) {
+        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      }
+    });
     Api().getPushSettings().then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
@@ -34,7 +43,6 @@ class SettingsController extends _$SettingsController {
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
-        Fluttertoast.showToast(msg: "Lấy thông tin cài đặt thông báo thành công.");
         state = AsyncValue.data(
             state.value!.copyWith(notiSettings: NotiSettings.fromJson(value["data"])));
       }
@@ -49,7 +57,6 @@ class SettingsController extends _$SettingsController {
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
-        Fluttertoast.showToast(msg: "Lấy thông tin chặn thông báo thành công.");
         state = AsyncValue.data(state.value!.copyWith(
             blockedUsers: (value["data"] as List).map((e) => BlockedUser.fromJson(e)).toList()));
       }

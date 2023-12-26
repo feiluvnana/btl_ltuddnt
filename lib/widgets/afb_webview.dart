@@ -1,5 +1,5 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_shimmer.dart';
+import 'package:Anti_Fakebook/widgets/afb_image.dart';
+import 'package:Anti_Fakebook/widgets/afb_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:metadata_fetch/metadata_fetch.dart';

@@ -1,6 +1,6 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Report/problem_detail_ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Report/problem_detail_ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 
 class OtherProblemUI extends StatelessWidget {

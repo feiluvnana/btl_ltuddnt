@@ -1,7 +1,7 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/json_converter.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/author.model.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/image.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/video.dart';
+import 'package:Anti_Fakebook/helpers/json_converter.dart';
+import 'package:Anti_Fakebook/models/author.model.dart';
+import 'package:Anti_Fakebook/models/image.dart';
+import 'package:Anti_Fakebook/models/video.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'post.freezed.dart';
@@ -10,43 +10,43 @@ part 'post.g.dart';
 @freezed
 class Post with _$Post {
   @JsonSerializable(explicitToJson: true)
-  const factory Post(
+  const factory Post({
     ///Id của bài viết.
-    @IntegerConverter() @JsonKey(name: "id") int id,
-    String name,
+    @IntegerConverter() @JsonKey(name: "id") required int id,
+    required String name,
 
     ///Thời điểm tạo bài viết.
-    @DateTimeConverter() DateTime created,
+    @DateTimeConverter() required DateTime created,
 
     ///Nội dung bài viết.
-    String described,
+    required String described,
 
     ///Đã chỉnh sửa chưa.
-    @BooleanConverter() bool? modified,
+    @Default(false) @BooleanConverter() bool modified,
 
     ///Số người dùng đánh giá bài viết là fake.
-    @IntegerOrNullConverter() int? fake,
+    @Default(0) @IntegerConverter() int fake,
 
     ///Số người dùng đánh giá bài viết là trust.
-    @IntegerOrNullConverter() int? trust,
+    @Default(0) @IntegerConverter() int trust,
 
     ///Số người dùng bày tỏ cảm xúc là kudos.
-    @IntegerOrNullConverter() int? kudos,
+    @Default(0) @IntegerConverter() int kudos,
 
     ///Số người dùng bày tỏ cảm xúc là kudos.
-    @IntegerOrNullConverter() int? feel,
+    @Default(0) @IntegerConverter() int feel,
 
     ///Số bình luận và mark
-    @IntegerOrNullConverter() @JsonKey(name: "comment_mark") int? commentMark,
+    @Default(0) @IntegerConverter() @JsonKey(name: "comment_mark") int commentMark,
 
     ///Số người dùng bày tỏ cảm xúc là disappointed.
-    @IntegerOrNullConverter() int? disappointed,
+    @Default(0) @IntegerConverter() int disappointed,
 
     // ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
     // @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
 
     ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
-    @FeelTypeConverter() @JsonKey(name: "is_felt") FeelType isFelt,
+    @FeelTypeConverter() @JsonKey(name: "is_felt") required FeelType isFelt,
 
     // ///Người dùng đã đánh giá cho bài viết này chưa.
     // @BooleanConverter() @JsonKey(name: "is_marked") bool isMarked,
@@ -58,13 +58,14 @@ class Post with _$Post {
     Video? video,
 
     ///Thông tin của người chủ bài viết, bao gồm cả ảnh avatar, số coins, listing: danh sách các id phiên bản cũ của bài viết.
-    Author author,
+    required Author author,
 
     // ///Danh mục của bài viết, id và tên danh mục này.
     // Category? category,
 
     ///Trạng thái của người viết bài.
-    String state, {
+    required String state,
+
     ///Kiểm tra xem người chủ bài viết có chặn người dùng không?
     @Default(false) @BooleanConverter() @JsonKey(name: "is_blocked") bool isBlocked,
 

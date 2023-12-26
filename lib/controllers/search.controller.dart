@@ -1,9 +1,9 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/extension.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/keyword.model.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/response_code.dart';
+import 'package:Anti_Fakebook/controllers/authen.controller.dart';
+import 'package:Anti_Fakebook/controllers/extension.dart';
+import 'package:Anti_Fakebook/models/keyword.model.dart';
+import 'package:Anti_Fakebook/models/post.dart';
+import 'package:Anti_Fakebook/services/apis/api.dart';
+import 'package:Anti_Fakebook/values/response_code.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -34,7 +34,6 @@ class SearchController extends _$SearchController {
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
-        Fluttertoast.showToast(msg: "Lấy bài viết thành công.");
         state = AsyncValue.data(state.requireValue
             .copyWith(keywords: (value["data"] as List).map((e) => Keyword.fromJson(e)).toList()));
       }
@@ -55,7 +54,6 @@ class SearchController extends _$SearchController {
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
-        Fluttertoast.showToast(msg: "Lấy bài viết thành công.");
         state = AsyncValue.data(state.requireValue
             .copyWith(searchResult: (value["data"] as List).map((e) => Post.fromJson(e)).toList()));
       }
@@ -68,7 +66,6 @@ class SearchController extends _$SearchController {
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
-        Fluttertoast.showToast(msg: "Lấy bài viết thành công.");
         state = AsyncValue.data(state.requireValue
             .copyWith(keywords: (value["data"] as List).map((e) => Keyword.fromJson(e)).toList()));
       }

@@ -1,9 +1,9 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/friend.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Friend/friend_all.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Friend/friend_suggested.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
+import 'package:Anti_Fakebook/controllers/friend.controller.dart';
+import 'package:Anti_Fakebook/models/friend.dart';
+import 'package:Anti_Fakebook/ui/Home/Friend/friend_all.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Friend/friend_suggested.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -56,27 +56,49 @@ class _FriendUIState extends ConsumerState<FriendRequestedUI> {
                 text: "Lời mời kết bạn  ",
                 style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
             TextSpan(
-                text: (requestedFriends?.length ?? 0).toString(),
+                text: ref
+                    .watch(friendControllerProvider
+                        .select((value) => value.value?.totalRequested ?? 0))
+                    .toString(),
                 style: themeData.textTheme.bodyLarge
                     ?.copyWith(fontWeight: FontWeight.bold, color: themeData.colorScheme.error)),
           ])),
         ),
         Expanded(
-          child: ListView.custom(
-            controller: ctrl,
-            childrenDelegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return FriendRequestedItem(
-                    key: ValueKey(requestedFriends![index].id), friend: requestedFriends[index]);
-              },
-              childCount: requestedFriends?.length ?? 0,
-              findChildIndexCallback: (key) {
-                var index = requestedFriends
-                    ?.indexWhere((element) => element.id == (key as ValueKey<int>).value);
-                if (index == -1) return null;
-                return index;
-              },
-            ),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              ref.read(friendControllerProvider.notifier).refreshRequestedFriends();
+            },
+            child: (requestedFriends == null)
+                ? const Center(child: Text("Đang tải..."))
+                : ListView.custom(
+                    controller: ctrl,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    childrenDelegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (index == requestedFriends.length) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                                child: requestedFriends.length ==
+                                        ref.read(friendControllerProvider).value?.totalRequested
+                                    ? const Text("Đã hết lời mời kết bạn.")
+                                    : const CircularProgressIndicator()),
+                          );
+                        }
+                        return FriendRequestedItem(
+                            key: ValueKey(requestedFriends[index].id),
+                            friend: requestedFriends[index]);
+                      },
+                      childCount: requestedFriends.length + 1,
+                      findChildIndexCallback: (key) {
+                        var index = requestedFriends
+                            .indexWhere((element) => element.id == (key as ValueKey<int>).value);
+                        if (index == -1) return null;
+                        return index;
+                      },
+                    ),
+                  ),
           ),
         ),
       ],
@@ -155,13 +177,18 @@ class _FriendRequestedItemState extends ConsumerState<FriendRequestedItem>
                                     });
                                     ref
                                         .read(friendControllerProvider.notifier)
-                                        .setAcceptFriend(widget.friend.id);
+                                        .setAcceptFriend(widget.friend.id, 1);
                                   },
                                   child: const Text("Chấp nhận"))),
                           const SizedBox(width: 10),
                           Expanded(
-                              child:
-                                  AFBSecondaryEButton(onPressed: () {}, child: const Text("Xóa")))
+                              child: AFBSecondaryEButton(
+                                  onPressed: () {
+                                    ref
+                                        .read(friendControllerProvider.notifier)
+                                        .setAcceptFriend(widget.friend.id, 0);
+                                  },
+                                  child: const Text("Xóa")))
                         ]
                       : [const Text("Các bạn đã là bạn bè!")],
                 )

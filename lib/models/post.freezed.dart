@@ -35,32 +35,32 @@ mixin _$Post {
 
   ///Đã chỉnh sửa chưa.
   @BooleanConverter()
-  bool? get modified => throw _privateConstructorUsedError;
+  bool get modified => throw _privateConstructorUsedError;
 
   ///Số người dùng đánh giá bài viết là fake.
-  @IntegerOrNullConverter()
-  int? get fake => throw _privateConstructorUsedError;
+  @IntegerConverter()
+  int get fake => throw _privateConstructorUsedError;
 
   ///Số người dùng đánh giá bài viết là trust.
-  @IntegerOrNullConverter()
-  int? get trust => throw _privateConstructorUsedError;
+  @IntegerConverter()
+  int get trust => throw _privateConstructorUsedError;
 
   ///Số người dùng bày tỏ cảm xúc là kudos.
-  @IntegerOrNullConverter()
-  int? get kudos => throw _privateConstructorUsedError;
+  @IntegerConverter()
+  int get kudos => throw _privateConstructorUsedError;
 
   ///Số người dùng bày tỏ cảm xúc là kudos.
-  @IntegerOrNullConverter()
-  int? get feel => throw _privateConstructorUsedError;
+  @IntegerConverter()
+  int get feel => throw _privateConstructorUsedError;
 
   ///Số bình luận và mark
-  @IntegerOrNullConverter()
+  @IntegerConverter()
   @JsonKey(name: "comment_mark")
-  int? get commentMark => throw _privateConstructorUsedError;
+  int get commentMark => throw _privateConstructorUsedError;
 
   ///Số người dùng bày tỏ cảm xúc là disappointed.
-  @IntegerOrNullConverter()
-  int? get disappointed =>
+  @IntegerConverter()
+  int get disappointed =>
       throw _privateConstructorUsedError; // ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
 // @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
   ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
@@ -111,13 +111,13 @@ abstract class $PostCopyWith<$Res> {
       String name,
       @DateTimeConverter() DateTime created,
       String described,
-      @BooleanConverter() bool? modified,
-      @IntegerOrNullConverter() int? fake,
-      @IntegerOrNullConverter() int? trust,
-      @IntegerOrNullConverter() int? kudos,
-      @IntegerOrNullConverter() int? feel,
-      @IntegerOrNullConverter() @JsonKey(name: "comment_mark") int? commentMark,
-      @IntegerOrNullConverter() int? disappointed,
+      @BooleanConverter() bool modified,
+      @IntegerConverter() int fake,
+      @IntegerConverter() int trust,
+      @IntegerConverter() int kudos,
+      @IntegerConverter() int feel,
+      @IntegerConverter() @JsonKey(name: "comment_mark") int commentMark,
+      @IntegerConverter() int disappointed,
       @FeelTypeConverter() @JsonKey(name: "is_felt") FeelType isFelt,
       List<Image>? image,
       Video? video,
@@ -148,13 +148,13 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
     Object? name = null,
     Object? created = null,
     Object? described = null,
-    Object? modified = freezed,
-    Object? fake = freezed,
-    Object? trust = freezed,
-    Object? kudos = freezed,
-    Object? feel = freezed,
-    Object? commentMark = freezed,
-    Object? disappointed = freezed,
+    Object? modified = null,
+    Object? fake = null,
+    Object? trust = null,
+    Object? kudos = null,
+    Object? feel = null,
+    Object? commentMark = null,
+    Object? disappointed = null,
     Object? isFelt = null,
     Object? image = freezed,
     Object? video = freezed,
@@ -181,34 +181,34 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
           ? _value.described
           : described // ignore: cast_nullable_to_non_nullable
               as String,
-      modified: freezed == modified
+      modified: null == modified
           ? _value.modified
           : modified // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      fake: freezed == fake
+              as bool,
+      fake: null == fake
           ? _value.fake
           : fake // ignore: cast_nullable_to_non_nullable
-              as int?,
-      trust: freezed == trust
+              as int,
+      trust: null == trust
           ? _value.trust
           : trust // ignore: cast_nullable_to_non_nullable
-              as int?,
-      kudos: freezed == kudos
+              as int,
+      kudos: null == kudos
           ? _value.kudos
           : kudos // ignore: cast_nullable_to_non_nullable
-              as int?,
-      feel: freezed == feel
+              as int,
+      feel: null == feel
           ? _value.feel
           : feel // ignore: cast_nullable_to_non_nullable
-              as int?,
-      commentMark: freezed == commentMark
+              as int,
+      commentMark: null == commentMark
           ? _value.commentMark
           : commentMark // ignore: cast_nullable_to_non_nullable
-              as int?,
-      disappointed: freezed == disappointed
+              as int,
+      disappointed: null == disappointed
           ? _value.disappointed
           : disappointed // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       isFelt: null == isFelt
           ? _value.isFelt
           : isFelt // ignore: cast_nullable_to_non_nullable
@@ -277,13 +277,13 @@ abstract class _$$PostImplCopyWith<$Res> implements $PostCopyWith<$Res> {
       String name,
       @DateTimeConverter() DateTime created,
       String described,
-      @BooleanConverter() bool? modified,
-      @IntegerOrNullConverter() int? fake,
-      @IntegerOrNullConverter() int? trust,
-      @IntegerOrNullConverter() int? kudos,
-      @IntegerOrNullConverter() int? feel,
-      @IntegerOrNullConverter() @JsonKey(name: "comment_mark") int? commentMark,
-      @IntegerOrNullConverter() int? disappointed,
+      @BooleanConverter() bool modified,
+      @IntegerConverter() int fake,
+      @IntegerConverter() int trust,
+      @IntegerConverter() int kudos,
+      @IntegerConverter() int feel,
+      @IntegerConverter() @JsonKey(name: "comment_mark") int commentMark,
+      @IntegerConverter() int disappointed,
       @FeelTypeConverter() @JsonKey(name: "is_felt") FeelType isFelt,
       List<Image>? image,
       Video? video,
@@ -313,13 +313,13 @@ class __$$PostImplCopyWithImpl<$Res>
     Object? name = null,
     Object? created = null,
     Object? described = null,
-    Object? modified = freezed,
-    Object? fake = freezed,
-    Object? trust = freezed,
-    Object? kudos = freezed,
-    Object? feel = freezed,
-    Object? commentMark = freezed,
-    Object? disappointed = freezed,
+    Object? modified = null,
+    Object? fake = null,
+    Object? trust = null,
+    Object? kudos = null,
+    Object? feel = null,
+    Object? commentMark = null,
+    Object? disappointed = null,
     Object? isFelt = null,
     Object? image = freezed,
     Object? video = freezed,
@@ -330,67 +330,67 @@ class __$$PostImplCopyWithImpl<$Res>
     Object? banned = null,
   }) {
     return _then(_$PostImpl(
-      null == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      null == name
+      name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      null == created
+      created: null == created
           ? _value.created
           : created // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      null == described
+      described: null == described
           ? _value.described
           : described // ignore: cast_nullable_to_non_nullable
               as String,
-      freezed == modified
+      modified: null == modified
           ? _value.modified
           : modified // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      freezed == fake
+              as bool,
+      fake: null == fake
           ? _value.fake
           : fake // ignore: cast_nullable_to_non_nullable
-              as int?,
-      freezed == trust
+              as int,
+      trust: null == trust
           ? _value.trust
           : trust // ignore: cast_nullable_to_non_nullable
-              as int?,
-      freezed == kudos
+              as int,
+      kudos: null == kudos
           ? _value.kudos
           : kudos // ignore: cast_nullable_to_non_nullable
-              as int?,
-      freezed == feel
+              as int,
+      feel: null == feel
           ? _value.feel
           : feel // ignore: cast_nullable_to_non_nullable
-              as int?,
-      freezed == commentMark
+              as int,
+      commentMark: null == commentMark
           ? _value.commentMark
           : commentMark // ignore: cast_nullable_to_non_nullable
-              as int?,
-      freezed == disappointed
+              as int,
+      disappointed: null == disappointed
           ? _value.disappointed
           : disappointed // ignore: cast_nullable_to_non_nullable
-              as int?,
-      null == isFelt
+              as int,
+      isFelt: null == isFelt
           ? _value.isFelt
           : isFelt // ignore: cast_nullable_to_non_nullable
               as FeelType,
-      freezed == image
+      image: freezed == image
           ? _value._image
           : image // ignore: cast_nullable_to_non_nullable
               as List<Image>?,
-      freezed == video
+      video: freezed == video
           ? _value.video
           : video // ignore: cast_nullable_to_non_nullable
               as Video?,
-      null == author
+      author: null == author
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as Author,
-      null == state
+      state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as String,
@@ -415,23 +415,23 @@ class __$$PostImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$PostImpl implements _Post {
   const _$PostImpl(
-      @IntegerConverter() @JsonKey(name: "id") this.id,
-      this.name,
-      @DateTimeConverter() this.created,
-      this.described,
-      @BooleanConverter() this.modified,
-      @IntegerOrNullConverter() this.fake,
-      @IntegerOrNullConverter() this.trust,
-      @IntegerOrNullConverter() this.kudos,
-      @IntegerOrNullConverter() this.feel,
-      @IntegerOrNullConverter() @JsonKey(name: "comment_mark") this.commentMark,
-      @IntegerOrNullConverter() this.disappointed,
-      @FeelTypeConverter() @JsonKey(name: "is_felt") this.isFelt,
+      {@IntegerConverter() @JsonKey(name: "id") required this.id,
+      required this.name,
+      @DateTimeConverter() required this.created,
+      required this.described,
+      @BooleanConverter() this.modified = false,
+      @IntegerConverter() this.fake = 0,
+      @IntegerConverter() this.trust = 0,
+      @IntegerConverter() this.kudos = 0,
+      @IntegerConverter() this.feel = 0,
+      @IntegerConverter() @JsonKey(name: "comment_mark") this.commentMark = 0,
+      @IntegerConverter() this.disappointed = 0,
+      @FeelTypeConverter() @JsonKey(name: "is_felt") required this.isFelt,
       final List<Image>? image,
       this.video,
-      this.author,
-      this.state,
-      {@BooleanConverter() @JsonKey(name: "is_blocked") this.isBlocked = false,
+      required this.author,
+      required this.state,
+      @BooleanConverter() @JsonKey(name: "is_blocked") this.isBlocked = false,
       @BooleanConverter() @JsonKey(name: "can_edit") this.canEdit = false,
       @IntegerConverter() this.banned = 0})
       : _image = image;
@@ -458,39 +458,45 @@ class _$PostImpl implements _Post {
 
   ///Đã chỉnh sửa chưa.
   @override
+  @JsonKey()
   @BooleanConverter()
-  final bool? modified;
+  final bool modified;
 
   ///Số người dùng đánh giá bài viết là fake.
   @override
-  @IntegerOrNullConverter()
-  final int? fake;
+  @JsonKey()
+  @IntegerConverter()
+  final int fake;
 
   ///Số người dùng đánh giá bài viết là trust.
   @override
-  @IntegerOrNullConverter()
-  final int? trust;
+  @JsonKey()
+  @IntegerConverter()
+  final int trust;
 
   ///Số người dùng bày tỏ cảm xúc là kudos.
   @override
-  @IntegerOrNullConverter()
-  final int? kudos;
+  @JsonKey()
+  @IntegerConverter()
+  final int kudos;
 
   ///Số người dùng bày tỏ cảm xúc là kudos.
   @override
-  @IntegerOrNullConverter()
-  final int? feel;
+  @JsonKey()
+  @IntegerConverter()
+  final int feel;
 
   ///Số bình luận và mark
   @override
-  @IntegerOrNullConverter()
+  @IntegerConverter()
   @JsonKey(name: "comment_mark")
-  final int? commentMark;
+  final int commentMark;
 
   ///Số người dùng bày tỏ cảm xúc là disappointed.
   @override
-  @IntegerOrNullConverter()
-  final int? disappointed;
+  @JsonKey()
+  @IntegerConverter()
+  final int disappointed;
 // ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
 // @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
   ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
@@ -622,25 +628,25 @@ class _$PostImpl implements _Post {
 
 abstract class _Post implements Post {
   const factory _Post(
-      @IntegerConverter() @JsonKey(name: "id") final int id,
-      final String name,
-      @DateTimeConverter() final DateTime created,
-      final String described,
-      @BooleanConverter() final bool? modified,
-      @IntegerOrNullConverter() final int? fake,
-      @IntegerOrNullConverter() final int? trust,
-      @IntegerOrNullConverter() final int? kudos,
-      @IntegerOrNullConverter() final int? feel,
-      @IntegerOrNullConverter()
-      @JsonKey(name: "comment_mark")
-      final int? commentMark,
-      @IntegerOrNullConverter() final int? disappointed,
-      @FeelTypeConverter() @JsonKey(name: "is_felt") final FeelType isFelt,
+      {@IntegerConverter() @JsonKey(name: "id") required final int id,
+      required final String name,
+      @DateTimeConverter() required final DateTime created,
+      required final String described,
+      @BooleanConverter() final bool modified,
+      @IntegerConverter() final int fake,
+      @IntegerConverter() final int trust,
+      @IntegerConverter() final int kudos,
+      @IntegerConverter() final int feel,
+      @IntegerConverter() @JsonKey(name: "comment_mark") final int commentMark,
+      @IntegerConverter() final int disappointed,
+      @FeelTypeConverter()
+      @JsonKey(name: "is_felt")
+      required final FeelType isFelt,
       final List<Image>? image,
       final Video? video,
-      final Author author,
-      final String state,
-      {@BooleanConverter() @JsonKey(name: "is_blocked") final bool isBlocked,
+      required final Author author,
+      required final String state,
+      @BooleanConverter() @JsonKey(name: "is_blocked") final bool isBlocked,
       @BooleanConverter() @JsonKey(name: "can_edit") final bool canEdit,
       @IntegerConverter() final int banned}) = _$PostImpl;
 
@@ -667,38 +673,38 @@ abstract class _Post implements Post {
 
   ///Đã chỉnh sửa chưa.
   @BooleanConverter()
-  bool? get modified;
+  bool get modified;
   @override
 
   ///Số người dùng đánh giá bài viết là fake.
-  @IntegerOrNullConverter()
-  int? get fake;
+  @IntegerConverter()
+  int get fake;
   @override
 
   ///Số người dùng đánh giá bài viết là trust.
-  @IntegerOrNullConverter()
-  int? get trust;
+  @IntegerConverter()
+  int get trust;
   @override
 
   ///Số người dùng bày tỏ cảm xúc là kudos.
-  @IntegerOrNullConverter()
-  int? get kudos;
+  @IntegerConverter()
+  int get kudos;
   @override
 
   ///Số người dùng bày tỏ cảm xúc là kudos.
-  @IntegerOrNullConverter()
-  int? get feel;
+  @IntegerConverter()
+  int get feel;
   @override
 
   ///Số bình luận và mark
-  @IntegerOrNullConverter()
+  @IntegerConverter()
   @JsonKey(name: "comment_mark")
-  int? get commentMark;
+  int get commentMark;
   @override
 
   ///Số người dùng bày tỏ cảm xúc là disappointed.
-  @IntegerOrNullConverter()
-  int? get disappointed;
+  @IntegerConverter()
+  int get disappointed;
   @override // ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.
 // @BooleanConverter() @JsonKey(name: "is_rated") bool isRated,
   ///Người dùng đã bày tỏ cảm xúc cho bài viết này chưa.

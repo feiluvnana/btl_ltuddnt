@@ -12,13 +12,16 @@ class AFBChevronRightListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    return ListTile(
+    return InkWell(
+      splashFactory: InkRipple.splashFactory,
       onTap: onTap,
-      leading: leading,
-      trailing: const Icon(Icons.chevron_right, size: 36),
-      title: title == null ? null : Text(title!, style: themeData.textTheme.titleMedium),
-      subtitle: subtitle == null ? null : Text(subtitle!),
-      contentPadding: EdgeInsets.zero,
+      child: ListTile(
+        leading: leading,
+        trailing: const Icon(Icons.chevron_right, size: 36),
+        title: title == null ? null : Text(title!, style: themeData.textTheme.titleMedium),
+        subtitle: subtitle == null ? null : Text(subtitle!),
+        contentPadding: EdgeInsets.zero,
+      ),
     );
   }
 }
@@ -64,17 +67,20 @@ class AFBBottomSheetListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    return ListTile(
+    return InkWell(
+      splashFactory: InkRipple.splashFactory,
       onTap: onTap,
-      leading: Icon(leading, size: 30),
-      title: title == null
-          ? null
-          : Text(title!, style: themeData.textTheme.titleMedium?.copyWith(color: color)),
-      textColor: color,
-      iconColor: color,
-      subtitle: subtitle == null ? null : Text(subtitle!),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-      dense: true,
+      child: ListTile(
+        leading: Icon(leading, size: 30),
+        title: title == null
+            ? null
+            : Text(title!, style: themeData.textTheme.titleMedium?.copyWith(color: color)),
+        textColor: color,
+        iconColor: color,
+        subtitle: subtitle == null ? null : Text(subtitle!),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+        dense: true,
+      ),
     );
   }
 }
@@ -89,17 +95,17 @@ class AFBMenuEButton extends StatelessWidget {
     final themeData = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      child: Material(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      child: InkWell(
+        onTap: data["action"],
+        splashFactory: InkRipple.splashFactory,
         child: ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           tileColor: themeData.colorScheme.primaryContainer,
           contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           dense: true,
           titleTextStyle: themeData.textTheme.titleMedium,
           leading: Icon(data["icon"]),
           title: Text(data["label"]),
-          onTap: data["action"],
         ),
       ),
     );

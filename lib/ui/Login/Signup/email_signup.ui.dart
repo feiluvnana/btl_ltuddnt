@@ -1,19 +1,25 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/password_signup.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/authen.controller.dart';
+import 'package:Anti_Fakebook/helpers/validators.dart';
+import 'package:Anti_Fakebook/ui/Login/Signup/password_signup.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EmailSignupUI extends ConsumerWidget {
-  EmailSignupUI({super.key});
-
-  final formKey = GlobalKey<FormState>();
+class EmailSignupUI extends ConsumerStatefulWidget {
+  const EmailSignupUI({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EmailSignupUI> createState() => _EmailSignupUIState();
+}
+
+class _EmailSignupUIState extends ConsumerState<EmailSignupUI> {
+  final formKey = GlobalKey<FormState>();
+  String? errText = null;
+
+  @override
+  Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
       appBar: AFBAppBar(
@@ -45,13 +51,14 @@ class EmailSignupUI extends ConsumerWidget {
                   child: TextFormField(
                     initialValue: email,
                     keyboardType: TextInputType.emailAddress,
-                    validator: Validators.usernameValidator,
+                    validator: Validators.email,
                     onChanged: (value) {
                       ref
                           .read(authenControllerProvider.notifier)
                           .updateSignupInfo(info: {...signupInfo ?? {}, "email": value});
                     },
                     decoration: InputDecoration(
+                        errorText: errText,
                         contentPadding: const EdgeInsets.all(15),
                         label: const Text("Email"),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
@@ -70,13 +77,25 @@ class EmailSignupUI extends ConsumerWidget {
                   recognizer: TapGestureRecognizer()..onTap = () {})
             ])),
             AFBPrimaryEButton(
-                onPressed: () {
+                onPressed: () async {
+                  setState(() {
+                    this.errText = null;
+                  });
                   if (formKey.currentState?.validate() != true) return;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const PasswordSignupUI(),
-                      ));
+                  var errText = await ref.read(authenControllerProvider.notifier).checkEmail();
+                  if (errText != null) {
+                    setState(() {
+                      this.errText = errText;
+                    });
+                    return;
+                  }
+                  if (mounted) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PasswordSignupUI(),
+                        ));
+                  }
                 },
                 child: const Text("Tiếp")),
             const Spacer(),
@@ -86,6 +105,7 @@ class EmailSignupUI extends ConsumerWidget {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+
                     ref.read(authenControllerProvider.notifier).updateSignupInfo(info: {});
                   },
                   child: Text(

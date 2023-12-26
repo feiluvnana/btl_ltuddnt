@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/profile.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image_picker.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/profile.controller.dart';
+import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
+import 'package:Anti_Fakebook/widgets/afb_image.dart';
+import 'package:Anti_Fakebook/widgets/afb_image_picker.dart';
+import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hl_image_picker_android/hl_image_picker_android.dart';
@@ -20,8 +20,15 @@ class ProfileChangeUI extends ConsumerStatefulWidget {
 class _ProfileChangeUIState extends ConsumerState<ProfileChangeUI> {
   HLPickerItem? avatar;
   HLPickerItem? coverImage;
-  final bio = TextEditingController();
+  final description = TextEditingController();
   final address = TextEditingController();
+  final city = TextEditingController();
+  final country = TextEditingController();
+  final link = TextEditingController();
+
+  bool editDescription = false;
+  bool editLocation = false;
+  bool editLink = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +38,21 @@ class _ProfileChangeUIState extends ConsumerState<ProfileChangeUI> {
         leading: IconButton(
             onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
         title: Text("Chỉnh sửa trang cá nhân", style: themeData.textTheme.titleMedium),
+        actions: [
+          TextButton(
+              onPressed: () {
+                ref.read(profileControllerProvider.notifier).setUserInfo(
+                    avatar: avatar != null ? File(avatar!.path) : null,
+                    coverImage: coverImage != null ? File(coverImage!.path) : null,
+                    description: description.text != "" ? description.text : null,
+                    address: address.text != "" ? address.text : null,
+                    city: city.text != "" ? city.text : null,
+                    country: country.text != "" ? country.text : null,
+                    link: link.text != "" ? link.text : null);
+                Navigator.pop(context);
+              },
+              child: const Text("Lưu"))
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -120,6 +142,7 @@ class _ProfileChangeUIState extends ConsumerState<ProfileChangeUI> {
                         child: Center(
                             child: coverImage != null
                                 ? Container(
+                                    width: MediaQuery.sizeOf(context).width,
                                     clipBehavior: Clip.hardEdge,
                                     decoration:
                                         BoxDecoration(borderRadius: BorderRadius.circular(10)),
@@ -141,21 +164,31 @@ class _ProfileChangeUIState extends ConsumerState<ProfileChangeUI> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Tiểu sử", style: themeData.textTheme.titleMedium),
-                        TextButton(onPressed: () {}, child: const Text("Chỉnh sửa"))
+                        TextButton(
+                            onPressed: () {
+                              if (editDescription) description.text = "";
+                              setState(() {
+                                editDescription = !editDescription;
+                              });
+                            },
+                            child: Text(editDescription ? "Hủy bỏ" : "Chỉnh sửa"))
                       ],
                     ),
-                    Builder(builder: (context) {
-                      var bioText = ref.watch(profileControllerProvider
-                          .select((value) => value.value!.profile!.description));
-                      return Center(
-                          child: bio.text.isNotEmpty
-                              ? Text(bio.text)
-                              : bioText.isNotEmpty
-                                  ? Text(bioText)
-                                  : Text("Mô tả bản thân...",
-                                      style: themeData.textTheme.bodyMedium
-                                          ?.copyWith(color: themeData.colorScheme.secondary)));
-                    })
+                    (editDescription)
+                        ? TextField(
+                            controller: description,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(), labelText: "Tiểu sử"))
+                        : Builder(builder: (context) {
+                            var descriptionText = ref.watch(profileControllerProvider
+                                .select((value) => value.value!.profile!.description));
+                            return Center(
+                                child: descriptionText.isNotEmpty
+                                    ? Text(descriptionText)
+                                    : Text("Mô tả bản thân...",
+                                        style: themeData.textTheme.bodyMedium
+                                            ?.copyWith(color: themeData.colorScheme.secondary)));
+                          })
                   ]),
             ),
             const Divider(thickness: 5),
@@ -169,16 +202,68 @@ class _ProfileChangeUIState extends ConsumerState<ProfileChangeUI> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Chi tiết", style: themeData.textTheme.titleMedium),
-                        TextButton(onPressed: () {}, child: const Text("Chỉnh sửa"))
+                        TextButton(
+                            onPressed: () {
+                              if (editLocation) {
+                                city.text = "";
+                                country.text = "";
+                                address.text = "";
+                              }
+                              setState(() {
+                                editLocation = !editLocation;
+                              });
+                            },
+                            child: Text(editLocation ? "Hủy bỏ" : "Chỉnh sửa"))
                       ],
                     ),
-                    AFBBottomSheetListTile(
-                        onTap: null,
-                        leading: Icons.home,
-                        title: address.text.isNotEmpty
-                            ? address.text
-                            : ref.watch(profileControllerProvider
-                                .select((value) => value.value!.profile!.address)))
+                    if (!editLocation) ...[
+                      Builder(builder: (context) {
+                        var addressText = ref.watch(profileControllerProvider
+                            .select((value) => value.value!.profile!.address));
+                        return AFBBottomSheetListTile(
+                            onTap: null,
+                            leading: Icons.home,
+                            title: addressText.isNotEmpty ? addressText : "Không có địa chỉ...");
+                      }),
+                      Builder(builder: (context) {
+                        var cityText = ref.watch(profileControllerProvider
+                            .select((value) => value.value!.profile!.city));
+                        return AFBBottomSheetListTile(
+                            onTap: null,
+                            leading: Icons.location_city,
+                            title: cityText.isNotEmpty ? cityText : "Không có thành phố...");
+                      }),
+                      Builder(builder: (context) {
+                        var countryText = ref.watch(profileControllerProvider
+                            .select((value) => value.value!.profile!.country));
+                        return AFBBottomSheetListTile(
+                            onTap: null,
+                            leading: Icons.location_city,
+                            title: countryText.isNotEmpty ? countryText : "Không có quốc gia...");
+                      }),
+                    ] else ...[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                            controller: address,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(), labelText: "Địa chỉ")),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                            controller: city,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(), labelText: "Thành phố")),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                            controller: country,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(), labelText: "Quốc gia")),
+                      )
+                    ]
                   ],
                 )),
             const Divider(thickness: 5),
@@ -192,9 +277,31 @@ class _ProfileChangeUIState extends ConsumerState<ProfileChangeUI> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Liên kết", style: themeData.textTheme.titleMedium),
-                        TextButton(onPressed: () {}, child: const Text("Chỉnh sửa"))
+                        TextButton(
+                            onPressed: () {
+                              if (editLink) link.text = "";
+                              setState(() {
+                                editLink = !editLink;
+                              });
+                            },
+                            child: Text(editLink ? "Hủy bỏ" : "Chỉnh sửa"))
                       ],
                     ),
+                    (editLink)
+                        ? TextField(
+                            controller: link,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(), labelText: "Liên kết"))
+                        : Builder(builder: (context) {
+                            var linkText = ref.watch(profileControllerProvider
+                                .select((value) => value.value!.profile!.link));
+                            return Center(
+                                child: linkText.isNotEmpty
+                                    ? Text(linkText)
+                                    : Text("Không có liên kết...",
+                                        style: themeData.textTheme.bodyMedium
+                                            ?.copyWith(color: themeData.colorScheme.secondary)));
+                          })
                   ],
                 ))
           ],

@@ -1,8 +1,8 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_block.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_noti.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_personal.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings_security.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/ui/Home/Menu/Settings/settings_block.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Menu/Settings/settings_noti.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Menu/Settings/settings_personal.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Menu/Settings/settings_security.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 
 class SettingsUI extends StatefulWidget {
@@ -31,6 +31,12 @@ class _SettingsUIState extends State<SettingsUI> {
       },
       "label": "Bảo mật",
       "description": "Đổi mật khẩu và thực hiện các hoạt động để tăng cường bảo mật tài khoản."
+    },
+    {
+      "icon": Icons.delete_forever,
+      "action": () {},
+      "label": "Vô hiệu hóa tài khoản",
+      "description": "Vô hiệu hóa tài khoản của bạn."
     }
   ];
 
@@ -118,8 +124,7 @@ class SettingsItem extends StatelessWidget {
               children: [
                 Text(data["label"], style: themeData.textTheme.titleMedium),
                 SizedBox(
-                    width: MediaQuery.sizeOf(context).width - 106,
-                    child: Text(data["description"], maxLines: 2))
+                    width: MediaQuery.sizeOf(context).width - 106, child: Text(data["description"]))
               ],
             ),
           ],

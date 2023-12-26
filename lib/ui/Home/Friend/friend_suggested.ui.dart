@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/friend.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/friend.controller.dart';
+import 'package:Anti_Fakebook/models/friend.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,7 +22,7 @@ class _FriendSuggestedUIState extends ConsumerState<FriendSuggestedUI> {
   void initState() {
     super.initState();
     ctrl.addListener(() {
-      if (ctrl.offset >= 0.7 * ctrl.position.maxScrollExtent) {
+      if (ctrl.offset >= ctrl.position.maxScrollExtent - MediaQuery.sizeOf(context).height / 2) {
         ref.read(friendControllerProvider.notifier).getSuggestedFriends();
       }
     });
@@ -49,22 +49,40 @@ class _FriendSuggestedUIState extends ConsumerState<FriendSuggestedUI> {
               child: Builder(builder: (context) {
                 var suggestedFriends = ref.watch(
                     friendControllerProvider.select((value) => value.value?.suggestedFriends));
-                return ListView.custom(
-                  controller: ctrl,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  childrenDelegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return FriendItem(
-                            key: ValueKey<int>(suggestedFriends![index].id),
-                            friend: suggestedFriends[index]);
-                      },
-                      childCount: suggestedFriends?.length ?? 0,
-                      findChildIndexCallback: (key) {
-                        var index = suggestedFriends
-                            ?.indexWhere((e) => e.id == (key as ValueKey<int>).value);
-                        if (index == -1) return null;
-                        return index;
-                      }),
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    ref.read(friendControllerProvider.notifier).refreshSuggestedFriends();
+                  },
+                  child: (suggestedFriends == null)
+                      ? const Center(child: Text("Đang tải..."))
+                      : ListView.custom(
+                          controller: ctrl,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          childrenDelegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                if (index == suggestedFriends.length) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
+                                        child: ref
+                                                .read(friendControllerProvider.notifier)
+                                                .lockFetchSuggestedFriend
+                                            ? const Text("Đã hết gợi ý kết bạn.")
+                                            : const CircularProgressIndicator()),
+                                  );
+                                }
+                                return FriendItem(
+                                    key: ValueKey<int>(suggestedFriends[index].id),
+                                    friend: suggestedFriends[index]);
+                              },
+                              childCount: suggestedFriends.length + 1,
+                              findChildIndexCallback: (key) {
+                                var index = suggestedFriends
+                                    .indexWhere((e) => e.id == (key as ValueKey<int>).value);
+                                if (index == -1) return null;
+                                return index;
+                              }),
+                        ),
                 );
               }),
             )

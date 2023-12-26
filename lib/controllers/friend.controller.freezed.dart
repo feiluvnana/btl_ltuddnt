@@ -19,6 +19,8 @@ mixin _$FriendState {
   List<Friend>? get suggestedFriends => throw _privateConstructorUsedError;
   List<Friend>? get requestedFriends => throw _privateConstructorUsedError;
   List<Friend>? get allFriends => throw _privateConstructorUsedError;
+  int get totalAll => throw _privateConstructorUsedError;
+  int get totalRequested => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $FriendStateCopyWith<FriendState> get copyWith =>
@@ -34,7 +36,9 @@ abstract class $FriendStateCopyWith<$Res> {
   $Res call(
       {List<Friend>? suggestedFriends,
       List<Friend>? requestedFriends,
-      List<Friend>? allFriends});
+      List<Friend>? allFriends,
+      int totalAll,
+      int totalRequested});
 }
 
 /// @nodoc
@@ -53,6 +57,8 @@ class _$FriendStateCopyWithImpl<$Res, $Val extends FriendState>
     Object? suggestedFriends = freezed,
     Object? requestedFriends = freezed,
     Object? allFriends = freezed,
+    Object? totalAll = null,
+    Object? totalRequested = null,
   }) {
     return _then(_value.copyWith(
       suggestedFriends: freezed == suggestedFriends
@@ -67,6 +73,14 @@ class _$FriendStateCopyWithImpl<$Res, $Val extends FriendState>
           ? _value.allFriends
           : allFriends // ignore: cast_nullable_to_non_nullable
               as List<Friend>?,
+      totalAll: null == totalAll
+          ? _value.totalAll
+          : totalAll // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalRequested: null == totalRequested
+          ? _value.totalRequested
+          : totalRequested // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -82,7 +96,9 @@ abstract class _$$FriendStateImplCopyWith<$Res>
   $Res call(
       {List<Friend>? suggestedFriends,
       List<Friend>? requestedFriends,
-      List<Friend>? allFriends});
+      List<Friend>? allFriends,
+      int totalAll,
+      int totalRequested});
 }
 
 /// @nodoc
@@ -99,6 +115,8 @@ class __$$FriendStateImplCopyWithImpl<$Res>
     Object? suggestedFriends = freezed,
     Object? requestedFriends = freezed,
     Object? allFriends = freezed,
+    Object? totalAll = null,
+    Object? totalRequested = null,
   }) {
     return _then(_$FriendStateImpl(
       suggestedFriends: freezed == suggestedFriends
@@ -113,6 +131,14 @@ class __$$FriendStateImplCopyWithImpl<$Res>
           ? _value._allFriends
           : allFriends // ignore: cast_nullable_to_non_nullable
               as List<Friend>?,
+      totalAll: null == totalAll
+          ? _value.totalAll
+          : totalAll // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalRequested: null == totalRequested
+          ? _value.totalRequested
+          : totalRequested // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -123,7 +149,9 @@ class _$FriendStateImpl implements _FriendState {
   const _$FriendStateImpl(
       {final List<Friend>? suggestedFriends,
       final List<Friend>? requestedFriends,
-      final List<Friend>? allFriends})
+      final List<Friend>? allFriends,
+      this.totalAll = 0,
+      this.totalRequested = 0})
       : _suggestedFriends = suggestedFriends,
         _requestedFriends = requestedFriends,
         _allFriends = allFriends;
@@ -161,8 +189,15 @@ class _$FriendStateImpl implements _FriendState {
   }
 
   @override
+  @JsonKey()
+  final int totalAll;
+  @override
+  @JsonKey()
+  final int totalRequested;
+
+  @override
   String toString() {
-    return 'FriendState(suggestedFriends: $suggestedFriends, requestedFriends: $requestedFriends, allFriends: $allFriends)';
+    return 'FriendState(suggestedFriends: $suggestedFriends, requestedFriends: $requestedFriends, allFriends: $allFriends, totalAll: $totalAll, totalRequested: $totalRequested)';
   }
 
   @override
@@ -175,7 +210,11 @@ class _$FriendStateImpl implements _FriendState {
             const DeepCollectionEquality()
                 .equals(other._requestedFriends, _requestedFriends) &&
             const DeepCollectionEquality()
-                .equals(other._allFriends, _allFriends));
+                .equals(other._allFriends, _allFriends) &&
+            (identical(other.totalAll, totalAll) ||
+                other.totalAll == totalAll) &&
+            (identical(other.totalRequested, totalRequested) ||
+                other.totalRequested == totalRequested));
   }
 
   @override
@@ -183,7 +222,9 @@ class _$FriendStateImpl implements _FriendState {
       runtimeType,
       const DeepCollectionEquality().hash(_suggestedFriends),
       const DeepCollectionEquality().hash(_requestedFriends),
-      const DeepCollectionEquality().hash(_allFriends));
+      const DeepCollectionEquality().hash(_allFriends),
+      totalAll,
+      totalRequested);
 
   @JsonKey(ignore: true)
   @override
@@ -196,7 +237,9 @@ abstract class _FriendState implements FriendState {
   const factory _FriendState(
       {final List<Friend>? suggestedFriends,
       final List<Friend>? requestedFriends,
-      final List<Friend>? allFriends}) = _$FriendStateImpl;
+      final List<Friend>? allFriends,
+      final int totalAll,
+      final int totalRequested}) = _$FriendStateImpl;
 
   @override
   List<Friend>? get suggestedFriends;
@@ -204,6 +247,10 @@ abstract class _FriendState implements FriendState {
   List<Friend>? get requestedFriends;
   @override
   List<Friend>? get allFriends;
+  @override
+  int get totalAll;
+  @override
+  int get totalRequested;
   @override
   @JsonKey(ignore: true)
   _$$FriendStateImplCopyWith<_$FriendStateImpl> get copyWith =>

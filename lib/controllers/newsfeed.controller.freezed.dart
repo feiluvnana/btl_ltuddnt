@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$NewsfeedState {
   List<Post>? get posts => throw _privateConstructorUsedError;
+  Map<String, double> get postingProgress => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $NewsfeedStateCopyWith<NewsfeedState> get copyWith =>
@@ -29,7 +30,7 @@ abstract class $NewsfeedStateCopyWith<$Res> {
           NewsfeedState value, $Res Function(NewsfeedState) then) =
       _$NewsfeedStateCopyWithImpl<$Res, NewsfeedState>;
   @useResult
-  $Res call({List<Post>? posts});
+  $Res call({List<Post>? posts, Map<String, double> postingProgress});
 }
 
 /// @nodoc
@@ -46,12 +47,17 @@ class _$NewsfeedStateCopyWithImpl<$Res, $Val extends NewsfeedState>
   @override
   $Res call({
     Object? posts = freezed,
+    Object? postingProgress = null,
   }) {
     return _then(_value.copyWith(
       posts: freezed == posts
           ? _value.posts
           : posts // ignore: cast_nullable_to_non_nullable
               as List<Post>?,
+      postingProgress: null == postingProgress
+          ? _value.postingProgress
+          : postingProgress // ignore: cast_nullable_to_non_nullable
+              as Map<String, double>,
     ) as $Val);
   }
 }
@@ -64,7 +70,7 @@ abstract class _$$NewsfeedStateImplCopyWith<$Res>
       __$$NewsfeedStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Post>? posts});
+  $Res call({List<Post>? posts, Map<String, double> postingProgress});
 }
 
 /// @nodoc
@@ -79,12 +85,17 @@ class __$$NewsfeedStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? posts = freezed,
+    Object? postingProgress = null,
   }) {
     return _then(_$NewsfeedStateImpl(
       posts: freezed == posts
           ? _value._posts
           : posts // ignore: cast_nullable_to_non_nullable
               as List<Post>?,
+      postingProgress: null == postingProgress
+          ? _value._postingProgress
+          : postingProgress // ignore: cast_nullable_to_non_nullable
+              as Map<String, double>,
     ));
   }
 }
@@ -94,7 +105,11 @@ class __$$NewsfeedStateImplCopyWithImpl<$Res>
 class _$NewsfeedStateImpl
     with DiagnosticableTreeMixin
     implements _NewsfeedState {
-  const _$NewsfeedStateImpl({final List<Post>? posts}) : _posts = posts;
+  const _$NewsfeedStateImpl(
+      {final List<Post>? posts,
+      final Map<String, double> postingProgress = const {}})
+      : _posts = posts,
+        _postingProgress = postingProgress;
 
   final List<Post>? _posts;
   @override
@@ -106,9 +121,18 @@ class _$NewsfeedStateImpl
     return EqualUnmodifiableListView(value);
   }
 
+  final Map<String, double> _postingProgress;
+  @override
+  @JsonKey()
+  Map<String, double> get postingProgress {
+    if (_postingProgress is EqualUnmodifiableMapView) return _postingProgress;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_postingProgress);
+  }
+
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'NewsfeedState(posts: $posts)';
+    return 'NewsfeedState(posts: $posts, postingProgress: $postingProgress)';
   }
 
   @override
@@ -116,7 +140,8 @@ class _$NewsfeedStateImpl
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'NewsfeedState'))
-      ..add(DiagnosticsProperty('posts', posts));
+      ..add(DiagnosticsProperty('posts', posts))
+      ..add(DiagnosticsProperty('postingProgress', postingProgress));
   }
 
   @override
@@ -124,12 +149,16 @@ class _$NewsfeedStateImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$NewsfeedStateImpl &&
-            const DeepCollectionEquality().equals(other._posts, _posts));
+            const DeepCollectionEquality().equals(other._posts, _posts) &&
+            const DeepCollectionEquality()
+                .equals(other._postingProgress, _postingProgress));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_posts));
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_posts),
+      const DeepCollectionEquality().hash(_postingProgress));
 
   @JsonKey(ignore: true)
   @override
@@ -139,10 +168,14 @@ class _$NewsfeedStateImpl
 }
 
 abstract class _NewsfeedState implements NewsfeedState {
-  const factory _NewsfeedState({final List<Post>? posts}) = _$NewsfeedStateImpl;
+  const factory _NewsfeedState(
+      {final List<Post>? posts,
+      final Map<String, double> postingProgress}) = _$NewsfeedStateImpl;
 
   @override
   List<Post>? get posts;
+  @override
+  Map<String, double> get postingProgress;
   @override
   @JsonKey(ignore: true)
   _$$NewsfeedStateImplCopyWith<_$NewsfeedStateImpl> get copyWith =>

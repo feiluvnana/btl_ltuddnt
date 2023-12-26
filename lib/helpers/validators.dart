@@ -1,6 +1,6 @@
 class Validators {
   ///Xác thực tài khoản.
-  static String? usernameValidator(String? username) {
+  static String? email(String? username) {
     if (username?.isEmpty != false) return "Không để trống tài khoản";
     if (!RegExp(r"[a-z0-9]+@[a-z]+\.[a-z]{2,3}").hasMatch(username!)) {
       return "Tài khoản không đúng định dạng";
@@ -9,7 +9,7 @@ class Validators {
   }
 
   ///Xác thực mật khẩu.
-  static String? passwordValidator(String? password) {
+  static String? password(String? password) {
     if (password?.isEmpty != false) return "Không để trống mật khẩu";
     if (!RegExp(r"^[A-Za-z0-9]{6,10}$").hasMatch(password!)) {
       return "Mật khẩu không đúng định dạng";

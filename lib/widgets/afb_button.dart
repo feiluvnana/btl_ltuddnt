@@ -12,6 +12,8 @@ class AFBDangerEButton extends StatelessWidget {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
             elevation: 0,
+            splashFactory: InkRipple.splashFactory,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
             foregroundColor: themeData.colorScheme.onPrimary,
             backgroundColor: themeData.colorScheme.error),
         onPressed: onPressed,
@@ -30,9 +32,12 @@ class AFBPrimaryEButton extends StatelessWidget {
     final themeData = Theme.of(context);
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            elevation: 0,
-            foregroundColor: themeData.colorScheme.onPrimary,
-            backgroundColor: themeData.colorScheme.primary),
+          elevation: 0,
+          splashFactory: InkRipple.splashFactory,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+          foregroundColor: themeData.colorScheme.onPrimary,
+          backgroundColor: themeData.colorScheme.primary,
+        ),
         onPressed: onPressed,
         child: child);
   }
@@ -51,6 +56,8 @@ class AFBSecondaryEButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
           elevation: 0,
+          splashFactory: InkRipple.splashFactory,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           foregroundColor: themeData.colorScheme.onBackground,
           backgroundColor: themeData.colorScheme.onInverseSurface),
       child: child,

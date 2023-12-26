@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/extension.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/friend.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/services/apis/api.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/values/response_code.dart';
+import 'package:Anti_Fakebook/controllers/extension.dart';
+import 'package:Anti_Fakebook/main.dart';
+import 'package:Anti_Fakebook/models/friend.dart';
+import 'package:Anti_Fakebook/services/apis/api.dart';
+import 'package:Anti_Fakebook/values/response_code.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,11 +17,14 @@ class FriendState with _$FriendState {
   const factory FriendState(
       {List<Friend>? suggestedFriends,
       List<Friend>? requestedFriends,
-      List<Friend>? allFriends}) = _FriendState;
+      List<Friend>? allFriends,
+      @Default(0) int totalAll,
+      @Default(0) int totalRequested}) = _FriendState;
 }
 
 @Riverpod(keepAlive: true)
 class FriendController extends _$FriendController {
+  bool lockFetchSuggestedFriend = false;
   bool canFetchSuggestedFriend = true;
   bool canFetchRequestedFriend = true;
   bool canFetchAllFriend = true;
@@ -37,8 +40,27 @@ class FriendController extends _$FriendController {
     getAllFriends();
   }
 
+  void refreshRequestedFriends() {
+    state = AsyncValue.data(state.value!.copyWith(requestedFriends: null, totalRequested: 0));
+    canFetchRequestedFriend = true;
+    getRequestedFriends();
+  }
+
+  void refreshSuggestedFriends() {
+    state = AsyncValue.data(state.value!.copyWith(suggestedFriends: null));
+    canFetchSuggestedFriend = true;
+    lockFetchSuggestedFriend = false;
+    getSuggestedFriends();
+  }
+
+  void refreshAllFriends() {
+    state = AsyncValue.data(state.value!.copyWith(allFriends: null, totalAll: 0));
+    canFetchAllFriend = true;
+    getAllFriends();
+  }
+
   Future<void> getSuggestedFriends() async {
-    if (!canFetchSuggestedFriend) return;
+    if (!canFetchSuggestedFriend || lockFetchSuggestedFriend) return;
     canFetchSuggestedFriend = false;
     await Api().getSuggestedFriends(state.requireValue.suggestedFriends?.length ?? 0).then((value) {
       if (value == null) {
@@ -48,10 +70,8 @@ class FriendController extends _$FriendController {
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
-        Fluttertoast.showToast(msg: "Lấy gợi ý kết bạn thành công.");
         if (value["data"].length < 15) {
-          print("lock ${value["data"].length}");
-          canFetchSuggestedFriend = true;
+          lockFetchSuggestedFriend = true;
         }
         state = AsyncValue.data(state.requireValue.copyWith(suggestedFriends: [
           ...state.value?.suggestedFriends ?? [],
@@ -73,17 +93,15 @@ class FriendController extends _$FriendController {
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
-        Fluttertoast.showToast(msg: "Lấy gợi ý kết bạn thành công.");
         if (int.parse(value["data"]["total"]) <=
             ((state.requireValue.requestedFriends?.length ?? 0) +
                 value["data"]["requests"].length)) {
-          print("lock ");
           canFetchRequestedFriend = true;
         }
         state = AsyncValue.data(state.requireValue.copyWith(requestedFriends: [
           ...state.value?.requestedFriends ?? [],
           ...(value["data"]["requests"] as List).map((e) => Friend.fromJson(e))
-        ]));
+        ], totalRequested: int.parse(value["data"]["total"])));
       }
     });
     canFetchRequestedFriend = !canFetchRequestedFriend;
@@ -106,19 +124,34 @@ class FriendController extends _$FriendController {
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
       } else {
-        Fluttertoast.showToast(msg: "Lấy gợi ý kết bạn thành công.");
         if (int.parse(value["data"]["total"]) <=
             ((state.requireValue.allFriends?.length ?? 0) + value["data"]["friends"].length)) {
-          print("lock ");
           canFetchAllFriend = true;
         }
         state = AsyncValue.data(state.requireValue.copyWith(allFriends: [
           ...state.value?.allFriends ?? [],
           ...(value["data"]["friends"] as List).map((e) => Friend.fromJson(e))
-        ]));
+        ], totalAll: int.parse(value["data"]["total"])));
       }
     });
     canFetchAllFriend = !canFetchAllFriend;
+  }
+
+  Future<void> unfriend(int userId) async {
+    await Api().unfriend(userId).then((value) {
+      if (value == null) {
+        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      } else if (value["code"] != "1000") {
+        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+      } else {
+        state = AsyncValue.data(state.value!.copyWith(
+            allFriends:
+                state.value?.suggestedFriends?.where((element) => element.id != userId).toList(),
+            totalAll: state.value!.totalAll - 1));
+      }
+    });
   }
 
   Future<void> setRequestFriend(int userId) async {
@@ -139,27 +172,47 @@ class FriendController extends _$FriendController {
     });
   }
 
-  Future<void> setAcceptFriend(int userId) async {
-    await Api().setAcceptFriend(userId).then((value) {
+  Future<void> setAcceptFriend(int userId, int isAccept) async {
+    if (isAccept == 0) {
+      state = AsyncValue.data(state.value!.copyWith(
+          requestedFriends:
+              state.value?.requestedFriends?.where((element) => element.id != userId).toList(),
+          totalRequested: state.value!.totalRequested - 1));
+    }
+    await Api().setAcceptFriend(userId, isAccept).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
         Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
-      } else {
+      } else if (isAccept == 1) {
+        var friend = state.value!.requestedFriends!.firstWhere((element) => element.id == userId);
         state = AsyncValue.data(state.value!.copyWith(
-          requestedFriends:
-              state.value?.requestedFriends?.where((element) => element.id != userId).toList(),
-        ));
-        Fluttertoast.showToast(msg: "Đồng ý lời mời kết bạn thành công.");
+            requestedFriends:
+                state.value?.requestedFriends?.where((element) => element.id != userId).toList(),
+            allFriends: [friend, ...state.value?.allFriends ?? []]));
       }
     });
   }
 
   void removeFriendFromAll(int id) {
     state = AsyncValue.data(state.value!.copyWith(
-        allFriends: state.value!.allFriends!.where((element) => element.id != id).toList()));
+        allFriends: state.value!.allFriends!.where((element) => element.id != id).toList(),
+        totalAll: state.value!.totalAll - 1));
+  }
+
+  Future<List<Friend>> getUserFriends(int userId) {
+    return Api().getUserFriends(0, userId, 6).then((value) {
+      if (value == null) {
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      } else if (value["code"] != "1000") {
+      } else {
+        return (value["data"]["friends"] as List).map((e) => Friend.fromJson(e)).toList();
+      }
+      return [];
+    });
   }
 
   void reset() {

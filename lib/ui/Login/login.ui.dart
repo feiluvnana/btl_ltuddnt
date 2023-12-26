@@ -1,13 +1,14 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/main.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/change_profile_after_signup.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/verify_code.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/authen.controller.dart';
+import 'package:Anti_Fakebook/controllers/profile.controller.dart';
+import 'package:Anti_Fakebook/helpers/validators.dart';
+import 'package:Anti_Fakebook/main.dart';
+import 'package:Anti_Fakebook/ui/Login/Signup/change_profile_after_signup.ui.dart';
+import 'package:Anti_Fakebook/ui/Login/verify_code.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
+import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
+import 'package:Anti_Fakebook/widgets/afb_popup.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,9 +76,9 @@ class _LoginUIState extends ConsumerState<LoginUI> {
             padding: const EdgeInsets.all(10),
             child: Builder(
               builder: (context) {
-                final user =
-                    ref.watch(authenControllerProvider.select((value) => value.value?.user));
-                return (user != null)
+                final profile =
+                    ref.watch(profileControllerProvider.select((value) => value.value?.profile));
+                return (profile != null)
                     ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                         const FlutterLogo(size: 110),
                         const SizedBox(height: 30),
@@ -86,8 +87,8 @@ class _LoginUIState extends ConsumerState<LoginUI> {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) => const LoginPasswordUI()));
                           },
-                          leading: AFBCircleAvatar(imageUrl: user.avatar, radius: 60),
-                          title: Text(user.username, style: themeData.textTheme.titleMedium),
+                          leading: AFBCircleAvatar(imageUrl: profile.avatar, radius: 60),
+                          title: Text(profile.username, style: themeData.textTheme.titleMedium),
                           trailing: PopupMenuButton(
                               itemBuilder: (context) => <PopupMenuEntry>[
                                     PopupMenuItem(
@@ -101,11 +102,16 @@ class _LoginUIState extends ConsumerState<LoginUI> {
                         ),
                         const SizedBox(height: 30),
                         AFBBottomSheetListTile(
-                            onTap: () {},
+                            onTap: () {
+                              ref.read(authenControllerProvider.notifier).deleteAccount();
+                            },
                             leading: Icons.add,
                             title: "Đăng nhập bằng tài khoản khác"),
                         AFBBottomSheetListTile(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, "/signup", (route) => false);
+                            },
                             leading: Icons.app_registration,
                             title: "Đăng ký tài khoản Anti Fakebook")
                       ])
@@ -132,7 +138,7 @@ class _LoginUIState extends ConsumerState<LoginUI> {
                             const Spacer(),
                             TextFormField(
                               controller: email,
-                              validator: Validators.usernameValidator,
+                              validator: Validators.email,
                               onChanged: (value) => setState(() {}),
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.all(15),
@@ -144,7 +150,7 @@ class _LoginUIState extends ConsumerState<LoginUI> {
                             TextFormField(
                               controller: password,
                               obscureText: isHidden,
-                              validator: Validators.passwordValidator,
+                              validator: Validators.password,
                               onChanged: (value) => setState(() {}),
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.all(15),
@@ -274,20 +280,21 @@ class _LoginPasswordUIState extends ConsumerState<LoginPasswordUI> {
         padding: const EdgeInsets.all(10),
         child: Builder(
           builder: (context) {
-            final user = ref.watch(authenControllerProvider.select((value) => value.value?.user));
+            final profile =
+                ref.watch(profileControllerProvider.select((value) => value.value?.profile));
             return Form(
               key: formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AFBCircleAvatar(imageUrl: user?.avatar ?? "", radius: 72),
+                  AFBCircleAvatar(imageUrl: profile?.avatar ?? "", radius: 72),
                   const SizedBox(height: 15),
-                  Text(user!.username, style: themeData.textTheme.titleLarge),
+                  Text(profile!.username, style: themeData.textTheme.titleLarge),
                   const SizedBox(height: 15),
                   TextFormField(
                     obscureText: isHidden,
                     controller: password,
-                    validator: Validators.passwordValidator,
+                    validator: Validators.password,
                     onChanged: (value) => setState(() {}),
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(15),
@@ -318,7 +325,10 @@ class _LoginPasswordUIState extends ConsumerState<LoginPasswordUI> {
                                 });
                                 await ref
                                     .read(authenControllerProvider.notifier)
-                                    .login(email: user.email!, password: password.text)
+                                    .login(
+                                        email:
+                                            ref.read(authenControllerProvider).value!.user!.email!,
+                                        password: password.text)
                                     .then((value) => router(value));
                                 setState(() => isLocked = false);
                               }

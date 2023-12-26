@@ -1,5 +1,5 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/watch.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_item.ui.dart';
+import 'package:Anti_Fakebook/controllers/watch.controller.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_item.ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -41,6 +41,7 @@ class _WatchUIState extends ConsumerState<WatchUI> {
                   if (index == -1) return null;
                   return index;
                 },
+                addAutomaticKeepAlives: false,
                 controller: ctrl,
                 itemBuilder: (context, index) =>
                     PostItem(key: ValueKey<int>(videos![index].id), post: videos[index]),

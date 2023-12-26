@@ -1,12 +1,11 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
+import 'package:Anti_Fakebook/helpers/text_formater.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AFBExpandableText extends StatefulWidget {
-  final Post post;
+  final String text;
 
-  const AFBExpandableText({super.key, required this.post});
+  const AFBExpandableText({super.key, required this.text});
 
   @override
   State<AFBExpandableText> createState() => _AFBExpandableTextState();
@@ -32,7 +31,7 @@ class _AFBExpandableTextState extends State<AFBExpandableText> {
                   offset: popupOffset,
                   child: ElevatedButton(
                     onPressed: () {
-                      Clipboard.setData(ClipboardData(text: widget.post.described))
+                      Clipboard.setData(ClipboardData(text: widget.text))
                           .whenComplete(() => Navigator.maybePop(context));
                     },
                     child: const Text("Sao chép"),
@@ -44,7 +43,7 @@ class _AFBExpandableTextState extends State<AFBExpandableText> {
           maxLines: isExpanded ? null : 5,
           textAlign: TextAlign.left,
           textDirection: TextDirection.ltr,
-          text: formatPostDescribed(widget.post.described, themeData),
+          text: formatPostDescribed(widget.text, themeData),
         );
         tp.layout(maxWidth: size.maxWidth);
         var exceeded = tp.didExceedMaxLines;
@@ -55,7 +54,7 @@ class _AFBExpandableTextState extends State<AFBExpandableText> {
             }),
             child: Text.rich(
               TextSpan(children: [
-                formatPostDescribed(widget.post.described.substring(0, 150), themeData),
+                formatPostDescribed(widget.text.substring(0, 150), themeData),
                 TextSpan(
                     text: "...Xem thêm",
                     style: themeData.textTheme.bodyMedium?.copyWith(
@@ -72,7 +71,7 @@ class _AFBExpandableTextState extends State<AFBExpandableText> {
             }),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
               Text.rich(
-                formatPostDescribed(widget.post.described, themeData),
+                formatPostDescribed(widget.text, themeData),
                 maxLines: 10000000,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -84,9 +83,14 @@ class _AFBExpandableTextState extends State<AFBExpandableText> {
             ]),
           );
         } else {
-          return Text.rich(
-            formatPostDescribed(widget.post.described, themeData),
-            overflow: TextOverflow.ellipsis,
+          return InkWell(
+            onTap: () => setState(() {
+              isExpanded = !isExpanded;
+            }),
+            child: Text.rich(
+              formatPostDescribed(widget.text, themeData),
+              overflow: TextOverflow.ellipsis,
+            ),
           );
         }
       }),

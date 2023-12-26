@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/user.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/ForgetPassword/forget_password.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/signup.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/login.ui.dart';
+import 'package:Anti_Fakebook/controllers/theme.controller.dart';
+import 'package:Anti_Fakebook/models/user.dart';
+import 'package:Anti_Fakebook/ui/Home/Menu/Settings/settings.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/home.ui.dart';
+import 'package:Anti_Fakebook/ui/Login/ForgetPassword/forget_password.ui.dart';
+import 'package:Anti_Fakebook/ui/Login/Signup/signup.ui.dart';
+import 'package:Anti_Fakebook/ui/Login/login.ui.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -24,6 +26,7 @@ const afbAppRetain = MethodChannel("afb_app_retain");
 
 void main() async {
   var widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   if (Platform.isAndroid) {
     Future.wait<dynamic>([
@@ -35,7 +38,6 @@ void main() async {
       if (value[1] == true && value[2] == true) {
         AndroidServiceWorkerController serviceWorkerController =
             AndroidServiceWorkerController.instance();
-
         serviceWorkerController.setServiceWorkerClient(AndroidServiceWorkerClient(
           shouldInterceptRequest: (request) async {
             return null;
@@ -112,10 +114,7 @@ class AFB extends StatelessWidget {
                               titleLarge: Typography.blackMountainView.titleLarge
                                   ?.copyWith(fontWeight: FontWeight.w500))
                           .apply(fontFamilyFallback: ["Roboto", "NotoColorEmoji"]),
-                      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-                      elevatedButtonTheme: ElevatedButtonThemeData(
-                          style:
-                              ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))))),
+                      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
                   darkTheme: ThemeData(
                       brightness: Brightness.dark,
                       chipTheme: ChipThemeData(
@@ -135,11 +134,9 @@ class AFB extends StatelessWidget {
                               titleLarge: Typography.whiteMountainView.titleLarge
                                   ?.copyWith(fontWeight: FontWeight.w500))
                           .apply(fontFamilyFallback: ["Roboto", "NotoColorEmoji"]),
-                      colorScheme:
-                          ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
-                      elevatedButtonTheme: ElevatedButtonThemeData(
-                          style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))))),
-                  themeMode: ThemeMode.dark,
+                      colorScheme: ColorScheme.fromSeed(
+                          seedColor: Colors.blue, brightness: Brightness.dark)),
+                  themeMode: ref.watch(themeControllerProvider).themeMode,
                   initialRoute: initialRoute,
                   routes: {
                     "/login": (context) => const LoginUI(),

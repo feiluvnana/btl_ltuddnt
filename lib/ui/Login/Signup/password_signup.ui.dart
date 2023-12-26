@@ -1,8 +1,8 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/validators.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Login/Signup/agreement_signup.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/authen.controller.dart';
+import 'package:Anti_Fakebook/helpers/validators.dart';
+import 'package:Anti_Fakebook/ui/Login/Signup/save_info_signup.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,7 +37,7 @@ class _PasswordSignupUIState extends ConsumerState<PasswordSignupUI> {
             Text("Tạo mật khẩu",
                 style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
             const Text(
-                "Tạo mật khẩu gồm <wait_for_description>. Bạn nên chọn mật khẩu thật khó đoán."),
+                "Tạo mật khẩu gồm 6 tới 10 ký tự, chỉ sử dụng chữ cái hoặc số. Bạn nên chọn mật khẩu thật khó đoán."),
             const SizedBox(height: 10),
             Builder(
               builder: (context) {
@@ -49,7 +49,7 @@ class _PasswordSignupUIState extends ConsumerState<PasswordSignupUI> {
                   key: formKey,
                   child: TextFormField(
                     initialValue: password,
-                    validator: Validators.passwordValidator,
+                    validator: Validators.password,
                     obscureText: isHidden,
                     onChanged: (value) {
                       ref
@@ -79,7 +79,7 @@ class _PasswordSignupUIState extends ConsumerState<PasswordSignupUI> {
                 onPressed: () {
                   if (formKey.currentState?.validate() != true) return;
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => const AgreementSignupUI()));
+                      context, MaterialPageRoute(builder: (_) => const SaveInfoSignupUI()));
                 },
                 child: const Text("Tiếp")),
             const Spacer(),

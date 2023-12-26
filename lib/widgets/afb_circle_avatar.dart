@@ -1,4 +1,4 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
+import 'package:Anti_Fakebook/widgets/afb_image.dart';
 import 'package:flutter/material.dart';
 
 class AFBCircleAvatar extends StatelessWidget {

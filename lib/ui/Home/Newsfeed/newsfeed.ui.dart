@@ -1,8 +1,8 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_create_modify.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_item.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
+import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
+import 'package:Anti_Fakebook/controllers/profile.controller.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_create.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_item.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,7 +20,8 @@ class _NewsfeedUIState extends ConsumerState<NewsfeedUI> with AutomaticKeepAlive
   void initState() {
     super.initState();
     NewsfeedUI.ctrl.addListener(() {
-      if (NewsfeedUI.ctrl.offset >= 0.7 * NewsfeedUI.ctrl.position.maxScrollExtent) {
+      if (NewsfeedUI.ctrl.offset >=
+          NewsfeedUI.ctrl.position.maxScrollExtent - MediaQuery.sizeOf(context).height / 2) {
         ref.read(newsfeedControllerProvider.notifier).getPosts();
       }
     });
@@ -53,6 +54,7 @@ class _NewsfeedUIState extends ConsumerState<NewsfeedUI> with AutomaticKeepAlive
                   if (index == -1) return null;
                   return index;
                 },
+                addAutomaticKeepAlives: false,
                 controller: NewsfeedUI.ctrl,
                 itemBuilder: (context, index) => index == 0
                     ? const CreatePostBar()
@@ -81,30 +83,51 @@ class CreatePostBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: AFBCircleAvatar(
-                imageUrl: ref
-                        .watch(authenControllerProvider.select((value) => value.value?.user))
-                        ?.avatar ??
-                    "")),
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const PostCreateModifyUI()));
-            },
-            child: Container(
-              padding: const EdgeInsets.only(left: 15, top: 8, bottom: 8),
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all()),
-              child: const Text("Bạn đang nghĩ gì?"),
+        Row(
+          children: [
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AFBCircleAvatar(
+                    imageUrl: ref
+                            .watch(
+                                profileControllerProvider.select((value) => value.value?.profile))
+                            ?.avatar ??
+                        "")),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => const PostCreateUI()));
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(left: 15, top: 8, bottom: 8),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all()),
+                  child: const Text("Bạn đang nghĩ gì?"),
+                ),
+              ),
             ),
-          ),
+            const SizedBox(width: 10)
+          ],
         ),
-        const SizedBox(width: 10)
+        ...List.generate(
+            ref
+                    .watch(
+                        newsfeedControllerProvider.select((value) => value.value?.postingProgress))
+                    ?.length ??
+                0, (index) {
+          var data = ref
+              .watch(newsfeedControllerProvider.select((value) => value.value?.postingProgress))
+              ?.entries
+              .elementAt(index);
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [Text(data!.key), LinearProgressIndicator(value: data.value)],
+          );
+        })
       ],
     );
   }

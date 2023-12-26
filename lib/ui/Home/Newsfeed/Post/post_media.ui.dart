@@ -1,12 +1,12 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/helpers/text_formater.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_detail_media.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_popup.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_shimmer.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/helpers/text_formater.dart';
+import 'package:Anti_Fakebook/models/post.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_detail_media.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
+import 'package:Anti_Fakebook/widgets/afb_image.dart';
+import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
+import 'package:Anti_Fakebook/widgets/afb_popup.dart';
+import 'package:Anti_Fakebook/widgets/afb_shimmer.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 
 class PostMediaUI extends StatefulWidget {
@@ -76,7 +76,7 @@ class _PostMediaUIState extends State<PostMediaUI> {
                         child: GestureDetector(
                           onTap: () {},
                           child: Text(
-                            formatCreatedTime(widget.post.created),
+                            formatPostCreatedTime(widget.post.created),
                             style: themeData.textTheme.bodySmall
                                 ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey),
                           ),

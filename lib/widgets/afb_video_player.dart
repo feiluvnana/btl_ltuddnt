@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:math';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/overlay.controller.dart';
+import 'package:Anti_Fakebook/controllers/overlay.controller.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -20,25 +20,28 @@ class AFBVideoPlayer extends ConsumerStatefulWidget {
 }
 
 class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
+  static final cacheManager = CacheManager(Config("afb", stalePeriod: const Duration(minutes: 1)));
   ChewieController? ctrl;
   Stream<FileResponse>? stream;
   StreamSubscription? sub;
   VideoPlayerController? vctrl;
-  Timer? _dispose;
   File? file;
   bool isInDefault = true;
+  Timer? remove;
 
-  @override
-  void initState() {
-    super.initState();
-    stream =
-        DefaultCacheManager().getFileStream(widget.url, withProgress: true).asBroadcastStream();
-    sub = stream?.listen((event) async {
-      if (event is FileInfo) {
-        sub?.cancel();
-        file = event.file;
-        start().then((value) => setState(() {}));
-      }
+  void getFile() {
+    setState(() {
+      stream = cacheManager.getFileStream(widget.url, withProgress: true).asBroadcastStream();
+      sub = stream?.listen((event) async {
+        if (event is FileInfo) {
+          sub?.cancel();
+          sub = null;
+          file = event.file;
+          start().then((value) {
+            if (mounted) setState(() {});
+          });
+        }
+      });
     });
   }
 
@@ -88,26 +91,14 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
     return VisibilityDetector(
       onVisibilityChanged: (VisibilityInfo info) {
         if (!isInDefault || ref.read(overlayControllerProvider).entry != null) return;
+        if (info.visibleFraction > 0 && file == null && sub == null) {
+          getFile();
+        }
         if (info.visibleFraction < 0.8) {
           vctrl?.pause().then((value) => setState(() {}));
         }
         if (info.visibleFraction > 0.85) {
-          _dispose?.cancel();
-          _dispose == null;
           vctrl?.play().then((value) => setState(() {}));
-        }
-        if (info.visibleFraction == 0 && vctrl != null && ctrl != null) {
-          _dispose = Timer(const Duration(seconds: 10), () {
-            if (!context.mounted) return;
-            deactivate();
-            end();
-            setState(() {});
-          });
-        } else if (vctrl == null && ctrl == null) {
-          activate();
-          start().then((value) => setState(() {}));
-          _dispose?.cancel();
-          _dispose == null;
         }
       },
       key: ObjectKey(widget.url),
@@ -117,7 +108,12 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
             if (snapshot.hasError) {
               return const Text("vid err");
             } else if (!snapshot.hasData || snapshot.data is DownloadProgress) {
-              return const Text("vid loading");
+              return Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.sizeOf(context).width,
+                  height: MediaQuery.sizeOf(context).width,
+                  child: CircularProgressIndicator(
+                      value: (snapshot.data as DownloadProgress?)?.progress));
             } else {
               return SizedBox(
                   width: MediaQuery.sizeOf(context).width,
@@ -165,6 +161,10 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
   }
 
   Future<void> start() async {
+    if (file == null) {
+      getFile();
+      return;
+    }
     vctrl = VideoPlayerController.file(file!);
     await vctrl!.initialize();
     await vctrl!.setVolume(0);

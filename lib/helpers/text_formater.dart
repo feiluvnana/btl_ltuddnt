@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:intl/intl.dart';
 
-String formatCreatedTime(DateTime date) {
+String formatPostCreatedTime(DateTime date) {
   Duration diff = DateTime.now().difference(date);
   if (diff.inSeconds <= 60) return "Vừa xong";
   if (diff.inHours < 1) return "${diff.inMinutes} phút trước";
@@ -13,18 +13,37 @@ String formatCreatedTime(DateTime date) {
   return "${(diff.inDays ~/ 365)} năm trước";
 }
 
+String formatNotiCreatedTime(DateTime date) {
+  Duration diff = DateTime.now().difference(date);
+  if (diff.inSeconds <= 60) return "Vừa xong";
+  if (diff.inHours < 1) return "${diff.inMinutes} phút trước";
+  if (diff.inDays < 1) return "${diff.inHours} giờ trước";
+  if (diff.inDays < 7) {
+    return "${numberToWeekday(date.weekday)} lúc ${DateFormat("HH:mm").format(date)}";
+  }
+  if (diff.inDays < 365) {
+    return "${DateFormat("dd/MM").format(date)} lúc ${DateFormat("HH:mm").format(date)}";
+  }
+  return "${DateFormat("dd/MM/yyyy").format(date)} lúc ${DateFormat("HH:mm").format(date)}";
+}
+
 String? getFirstLink(String text) {
   RegExpMatch? match =
-      RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+', caseSensitive: false)
+      RegExp(r'^(https?|ftp):\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$', caseSensitive: false)
           .firstMatch(text);
   return match == null ? null : text.substring(match.start, match.end);
+}
+
+String numberToWeekday(int weekday) {
+  if (weekday == 7) return "CN";
+  return "T.${weekday + 1}";
 }
 
 TextSpan formatPostDescribed(String described, ThemeData themeData) {
   List<int> indexes = [];
   List<int> links = [];
   List<int> hashtags = [];
-  RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+', caseSensitive: false)
+  RegExp(r'^(https?|ftp):\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$', caseSensitive: false)
       .allMatches(described)
       .forEach((e) {
     indexes.add(e.start);

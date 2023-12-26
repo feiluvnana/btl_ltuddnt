@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/post.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_image.dart';
+import 'package:Anti_Fakebook/models/post.dart';
+import 'package:Anti_Fakebook/widgets/afb_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hl_image_picker_android/hl_image_picker_android.dart';
 

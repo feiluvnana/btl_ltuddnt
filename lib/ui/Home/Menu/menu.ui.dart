@@ -1,13 +1,13 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/authen.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/profile.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/Settings/settings.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Profile/profile.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/home.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_button.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_circle_avatar.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_listtile.dart';
+import 'package:Anti_Fakebook/controllers/authen.controller.dart';
+import 'package:Anti_Fakebook/controllers/friend.controller.dart';
+import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
+import 'package:Anti_Fakebook/controllers/profile.controller.dart';
+import 'package:Anti_Fakebook/ui/Home/Menu/Settings/settings.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Profile/profile.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/home.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_button.dart';
+import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
+import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -149,7 +149,7 @@ class MenuProfile extends ConsumerWidget {
           const SizedBox(width: 10),
           AFBCircleAvatar(
               imageUrl: ref
-                      .watch(authenControllerProvider.select((value) => value.value?.user))
+                      .watch(profileControllerProvider.select((value) => value.value?.profile))
                       ?.avatar ??
                   ""),
           const SizedBox(width: 10),

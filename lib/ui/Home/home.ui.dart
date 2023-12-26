@@ -1,16 +1,17 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/friend.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/newsfeed.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/search.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/settings.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/profile.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/theme.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/watch.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Friend/friend_requested.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Menu/menu.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/newsfeed.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Search/search.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Watch/watch.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/friend.controller.dart';
+import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
+import 'package:Anti_Fakebook/controllers/notification.controller.dart';
+import 'package:Anti_Fakebook/controllers/search.controller.dart';
+import 'package:Anti_Fakebook/controllers/settings.controller.dart';
+import 'package:Anti_Fakebook/controllers/profile.controller.dart';
+import 'package:Anti_Fakebook/controllers/watch.controller.dart';
+import 'package:Anti_Fakebook/ui/Home/Friend/friend_requested.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Menu/menu.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/newsfeed.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Noti/noti.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Search/search.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Watch/watch.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,20 +24,23 @@ class HomeUI extends ConsumerStatefulWidget {
 
 class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
   static late TabController tabController;
+  static late PageController pageController;
 
   @override
   void initState() {
     tabController = TabController(length: 5, vsync: this)
       ..addListener(() {
-        setState(() {});
+        pageController.jumpToPage(tabController.index);
       });
+    pageController = PageController();
     ref
       ..read(newsfeedControllerProvider.notifier).init()
       ..read(settingsControllerProvider.notifier).init()
       ..read(profileControllerProvider.notifier).init()
       ..read(friendControllerProvider.notifier).init()
       ..read(searchControllerProvider.notifier).init()
-      ..read(watchControllerProvider.notifier).init();
+      ..read(watchControllerProvider.notifier).init()
+      ..read(notificationControllerProvider.notifier).init();
     super.initState();
   }
 
@@ -84,9 +88,6 @@ class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
                           NewsfeedUI.ctrl.jumpTo(0);
                         }
                       }
-                      ref
-                          .read(themeControllerProvider.notifier)
-                          .setThemeMode(index == 2 ? ThemeMode.dark : ThemeMode.light);
                     },
                     tabs: [
                       Icon(
@@ -103,11 +104,35 @@ class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
                             : Icons.subscriptions,
                         size: themeData.textTheme.headlineLarge?.fontSize,
                       ),
-                      Icon(
-                        tabController.index != 3
-                            ? Icons.notifications_outlined
-                            : Icons.notifications,
-                        size: themeData.textTheme.headlineLarge?.fontSize,
+                      Stack(
+                        children: [
+                          Icon(
+                            tabController.index != 3
+                                ? Icons.notifications_outlined
+                                : Icons.notifications,
+                            size: themeData.textTheme.headlineLarge?.fontSize,
+                          ),
+                          if (ref.watch(notificationControllerProvider).value?.badge != null &&
+                              ref.watch(notificationControllerProvider).value?.badge != 0)
+                            Positioned(
+                                top: 0,
+                                right: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  alignment: Alignment.center,
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle, color: themeData.colorScheme.error),
+                                  child: Text(
+                                      ref
+                                          .watch(notificationControllerProvider)
+                                          .value!
+                                          .badge
+                                          .toString(),
+                                      style: themeData.textTheme.labelSmall
+                                          ?.copyWith(color: Colors.white, fontSize: 8)),
+                                ))
+                        ],
                       ),
                       Icon(
                         tabController.index != 4 ? Icons.menu_outlined : Icons.menu,
@@ -117,13 +142,10 @@ class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
               ],
             ),
           ),
-          body: TabBarView(controller: tabController, children: const [
-            NewsfeedUI(),
-            FriendRequestedUI(),
-            WatchUI(),
-            Text("Noti"),
-            MenuUI()
-          ])),
+          body: PageView(
+              controller: pageController,
+              onPageChanged: (value) => tabController..index = value,
+              children: const [NewsfeedUI(), FriendRequestedUI(), WatchUI(), NotiUI(), MenuUI()])),
     );
   }
 }

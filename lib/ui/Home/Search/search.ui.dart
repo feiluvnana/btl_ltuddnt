@@ -1,7 +1,7 @@
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/controllers/search.controller.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/models/keyword.model.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/ui/Home/Newsfeed/Post/post_item.ui.dart';
-import 'package:btl_lap_trinh_ung_dung_da_nen_tang/widgets/afb_appbar.dart';
+import 'package:Anti_Fakebook/controllers/search.controller.dart';
+import 'package:Anti_Fakebook/models/keyword.model.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_item.ui.dart';
+import 'package:Anti_Fakebook/widgets/afb_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
