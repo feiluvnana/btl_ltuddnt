@@ -2,6 +2,7 @@ import 'package:Anti_Fakebook/controllers/friend.controller.dart';
 import 'package:Anti_Fakebook/models/friend.dart';
 import 'package:Anti_Fakebook/ui/Home/Friend/friend_all.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Friend/friend_suggested.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Search/search.ui.dart';
 import 'package:Anti_Fakebook/widgets/afb_button.dart';
 import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,12 @@ class _FriendUIState extends ConsumerState<FriendRequestedUI> {
               ref.read(friendControllerProvider.notifier).refreshRequestedFriends();
             },
             child: (requestedFriends == null)
-                ? const Center(child: Text("Đang tải..."))
+                ? SizedBox(
+                    height: MediaQuery.sizeOf(context).height,
+                    child: const SingleChildScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        child: Center(child: Text("Đang tải..."))),
+                  )
                 : ListView.custom(
                     controller: ctrl,
                     physics: const AlwaysScrollableScrollPhysics(),
@@ -119,7 +125,9 @@ class FriendRequestedHeader extends StatelessWidget {
             style: themeData.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
         const Spacer(),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchUI()));
+          },
           child: Container(
             padding: const EdgeInsets.all(8),
             margin: const EdgeInsets.all(10),

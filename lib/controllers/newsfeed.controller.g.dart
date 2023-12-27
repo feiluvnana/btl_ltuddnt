@@ -7,7 +7,7 @@ part of 'newsfeed.controller.dart';
 // **************************************************************************
 
 String _$newsfeedControllerHash() =>
-    r'b5e8c0bc0cd453fbc40ffc7d5a9f1606f2e8253d';
+    r'db2a8e1136546b0a8223fa9d3a26795d1b9c997e';
 
 /// See also [NewsfeedController].
 @ProviderFor(NewsfeedController)

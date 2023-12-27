@@ -1,6 +1,8 @@
 import 'package:Anti_Fakebook/controllers/friend.controller.dart';
 import 'package:Anti_Fakebook/controllers/settings.controller.dart';
 import 'package:Anti_Fakebook/models/friend.dart';
+import 'package:Anti_Fakebook/ui/Home/Profile/profile_query.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Search/search.ui.dart';
 import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
 import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
 import 'package:Anti_Fakebook/widgets/afb_popup.dart';
@@ -42,7 +44,9 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
               onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
           actions: [
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchUI()));
+              },
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
@@ -130,7 +134,12 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
                     ref.read(friendControllerProvider.notifier).refreshAllFriends();
                   },
                   child: (allFriends == null)
-                      ? const Center(child: Text("Đang tải..."))
+                      ? SizedBox(
+                          height: MediaQuery.sizeOf(context).height,
+                          child: const SingleChildScrollView(
+                              physics: AlwaysScrollableScrollPhysics(),
+                              child: Center(child: Text("Đang tải..."))),
+                        )
                       : ListView.custom(
                           controller: ctrl,
                           physics: const AlwaysScrollableScrollPhysics(),
@@ -169,123 +178,130 @@ class _FriendSuggestedUIState extends ConsumerState<FriendAllUI> {
 
 class FriendAllItem extends ConsumerWidget {
   final Friend friend;
-  final bool highlight;
+  final bool highlight, noOptions;
 
-  const FriendAllItem({super.key, required this.friend, this.highlight = false});
+  const FriendAllItem(
+      {super.key, required this.friend, this.highlight = false, this.noOptions = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeData = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      width: MediaQuery.sizeOf(context).width - 20,
-      decoration: BoxDecoration(color: !highlight ? null : themeData.colorScheme.primaryContainer),
-      child: Row(
-        children: [
-          AFBCircleAvatar(imageUrl: friend.avatar, radius: 70),
-          const SizedBox(width: 10),
-          Expanded(
-              child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(friend.username, style: themeData.textTheme.titleMedium),
-              if (friend.sameFriends > 0)
-                Text("${friend.sameFriends} bạn chung",
-                    style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w300)),
-            ],
-          )),
-          IconButton(
-              onPressed: () {
-                context.showAFBOptionModalBottomSheet(
-                    header: Row(
-                      children: [
-                        AFBCircleAvatar(imageUrl: friend.avatar, radius: 70),
-                        const SizedBox(width: 10),
-                        Expanded(
-                            child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ProfileQueryUI(userId: friend.id))),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        width: MediaQuery.sizeOf(context).width - 20,
+        decoration:
+            BoxDecoration(color: !highlight ? null : themeData.colorScheme.primaryContainer),
+        child: Row(
+          children: [
+            AFBCircleAvatar(imageUrl: friend.avatar, radius: 70),
+            const SizedBox(width: 10),
+            Expanded(
+                child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(friend.username, style: themeData.textTheme.titleMedium),
+                if (friend.sameFriends > 0)
+                  Text("${friend.sameFriends} bạn chung",
+                      style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w300)),
+              ],
+            )),
+            if (!noOptions)
+              IconButton(
+                  onPressed: () {
+                    context.showAFBOptionModalBottomSheet(
+                        header: Row(
                           children: [
-                            Text(friend.username, style: themeData.textTheme.titleMedium),
-                            Text(
-                                "Là bạn bè từ tháng ${friend.created.month} năm ${friend.created.year}"),
+                            AFBCircleAvatar(imageUrl: friend.avatar, radius: 70),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(friend.username, style: themeData.textTheme.titleMedium),
+                                Text(
+                                    "Là bạn bè từ tháng ${friend.created.month} năm ${friend.created.year}"),
+                              ],
+                            )),
                           ],
-                        )),
-                      ],
-                    ),
-                    blocks: [
-                      [
-                        AFBBottomSheetListTile(
-                            onTap: () {
-                              Fluttertoast.showToast(msg: "Tính năng đang phát triển.");
-                            },
-                            leading: Icons.chat_bubble,
-                            title: "Nhắn tin cho ${friend.username}"),
-                        AFBBottomSheetListTile(
-                          onTap: () {
-                            context.showAFBDialog(
-                                title: Text("Chặn ${friend.username}?"),
-                                actions: [
-                                  GestureDetector(
-                                      onTap: () => Navigator.pop(context),
-                                      child: const Text("THOÁT")),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      ref
-                                          .read(settingsControllerProvider.notifier)
-                                          .setBlock(friend.id, friend.username, friend.avatar)
-                                          .whenComplete(() => ref
+                        ),
+                        blocks: [
+                          [
+                            AFBBottomSheetListTile(
+                                onTap: () {
+                                  Fluttertoast.showToast(msg: "Tính năng đang phát triển.");
+                                },
+                                leading: Icons.chat_bubble,
+                                title: "Nhắn tin cho ${friend.username}"),
+                            AFBBottomSheetListTile(
+                              onTap: () {
+                                context.showAFBDialog(
+                                    title: Text("Chặn ${friend.username}?"),
+                                    actions: [
+                                      GestureDetector(
+                                          onTap: () => Navigator.pop(context),
+                                          child: const Text("THOÁT")),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          ref
+                                              .read(settingsControllerProvider.notifier)
+                                              .setBlock(friend.id, friend.username, friend.avatar)
+                                              .whenComplete(() => ref
+                                                  .read(friendControllerProvider.notifier)
+                                                  .removeFriendFromAll(friend.id));
+                                        },
+                                        child: Text("CHẶN",
+                                            style: themeData.textTheme.bodyMedium
+                                                ?.copyWith(color: themeData.colorScheme.primary)),
+                                      ),
+                                    ],
+                                    content: Text(
+                                        "Bạn có chắc muốn chặn ${friend.username}? ${friend.username} sẽ không thể nhìn thấy bạn hoặc liên hệ với bạn trên Anti Fakebook."));
+                              },
+                              leading: Icons.block,
+                              title: "Chặn ${friend.username}",
+                              subtitle:
+                                  "${friend.username} sẽ không thể nhìn thấy bạn hoặc liên hệ với bạn trên Anti Fakebook.",
+                            ),
+                            AFBBottomSheetListTile(
+                              onTap: () {
+                                context.showAFBDialog(
+                                    title: Text("Hủy kết bạn với ${friend.username}?"),
+                                    actions: [
+                                      GestureDetector(
+                                          onTap: () => Navigator.pop(context),
+                                          child: const Text("THOÁT")),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          ref
                                               .read(friendControllerProvider.notifier)
-                                              .removeFriendFromAll(friend.id));
-                                    },
-                                    child: Text("CHẶN",
-                                        style: themeData.textTheme.bodyMedium
-                                            ?.copyWith(color: themeData.colorScheme.primary)),
-                                  ),
-                                ],
-                                content: Text(
-                                    "Bạn có chắc muốn chặn ${friend.username}? ${friend.username} sẽ không thể nhìn thấy bạn hoặc liên hệ với bạn trên Anti Fakebook."));
-                          },
-                          leading: Icons.block,
-                          title: "Chặn ${friend.username}",
-                          subtitle:
-                              "${friend.username} sẽ không thể nhìn thấy bạn hoặc liên hệ với bạn trên Anti Fakebook.",
-                        ),
-                        AFBBottomSheetListTile(
-                          onTap: () {
-                            context.showAFBDialog(
-                                title: Text("Hủy kết bạn với ${friend.username}?"),
-                                actions: [
-                                  GestureDetector(
-                                      onTap: () => Navigator.pop(context),
-                                      child: const Text("THOÁT")),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      ref
-                                          .read(friendControllerProvider.notifier)
-                                          .unfriend(friend.id);
-                                    },
-                                    child: Text("HỦY",
-                                        style: themeData.textTheme.bodyMedium
-                                            ?.copyWith(color: themeData.colorScheme.primary)),
-                                  ),
-                                ],
-                                content: Text(
-                                    "Bạn có chắc muốn hủy kết bạn với ${friend.username}? Nếu muốn kết bạn trở lại, bạn sẽ phải gửi lời mời kết bạn với họ."));
-                          },
-                          leading: Icons.group_remove,
-                          title: "Hủy kết bạn với ${friend.username}",
-                          subtitle: "Xóa ${friend.username} khỏi danh sách bạn bè.",
-                          color: themeData.colorScheme.error,
-                        ),
-                      ]
-                    ]);
-              },
-              icon: const Icon(Icons.more_horiz))
-        ],
+                                              .unfriend(friend.id);
+                                        },
+                                        child: Text("HỦY",
+                                            style: themeData.textTheme.bodyMedium
+                                                ?.copyWith(color: themeData.colorScheme.primary)),
+                                      ),
+                                    ],
+                                    content: Text(
+                                        "Bạn có chắc muốn hủy kết bạn với ${friend.username}? Nếu muốn kết bạn trở lại, bạn sẽ phải gửi lời mời kết bạn với họ."));
+                              },
+                              leading: Icons.group_remove,
+                              title: "Hủy kết bạn với ${friend.username}",
+                              subtitle: "Xóa ${friend.username} khỏi danh sách bạn bè.",
+                              color: themeData.colorScheme.error,
+                            ),
+                          ]
+                        ]);
+                  },
+                  icon: const Icon(Icons.more_horiz))
+          ],
+        ),
       ),
     );
   }

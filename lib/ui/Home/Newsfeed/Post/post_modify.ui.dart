@@ -168,15 +168,20 @@ class _PostCreateUpdateUIState extends ConsumerState<PostModifyUI> {
                   imageSort = newImage?.isNotEmpty == true || imageDel?.isNotEmpty == true
                       ? null
                       : [...newIndexOfInitialImage?.map((e) => e + 1) ?? []];
-                  ref.read(newsfeedControllerProvider.notifier).editPost(
-                      id: widget.post.id,
-                      described: ctrl.text,
-                      video: video,
-                      image: newImage?.map<File>((e) => File(e.path)).toList(),
-                      imageDel: imageDel,
-                      imageSort: imageSort,
-                      status: "Not Hyped");
-
+                  ref
+                      .read(newsfeedControllerProvider.notifier)
+                      .editPost(
+                          id: widget.post.id,
+                          described: ctrl.text,
+                          video: video,
+                          image: newImage?.map<File>((e) => File(e.path)).toList(),
+                          imageDel: imageDel,
+                          imageSort: imageSort,
+                          status: "Not Hyped")
+                      .then((value) {
+                    if (value == null) return;
+                    ref.read(profileControllerProvider.notifier).editPost(value);
+                  });
                   Navigator.pop(context);
                 },
                 child: const Text("CHỈNH SỬA"))

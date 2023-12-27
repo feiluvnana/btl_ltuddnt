@@ -10,6 +10,7 @@ import 'package:Anti_Fakebook/models/mark.dart';
 import 'package:Anti_Fakebook/models/post.dart';
 import 'package:Anti_Fakebook/services/apis/api.dart';
 import 'package:Anti_Fakebook/values/response_code.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -57,7 +58,8 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         lastId = int.parse(value["data"]["last_id"]);
         secureStorage.write(key: "posts", value: jsonEncode(value["data"]["post"]));
@@ -68,10 +70,10 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
   }
 
   @override
-  Future<void> addPost({List<File>? image, File? video, String? described, String? status}) async {
+  Future<int?> addPost({List<File>? image, File? video, String? described, String? status}) async {
     String key = "add-${md5.convert(List.generate(5, (index) => Random().nextInt(382002)))}";
     Fluttertoast.showToast(msg: "Bài viết đang được tải lên. Hãy đợi trong giây lát.");
-    await Api()
+    return await Api()
         .addPost(
             image: image,
             video: video,
@@ -87,7 +89,8 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         var post = await getPost(int.parse(value["data"]["id"]));
         var tempPosts = state.value?.posts?.toList();
@@ -97,12 +100,14 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
         state = AsyncValue.data(state.value!
             .copyWith(posts: [...post, ...(tempPosts ?? [])], postingProgress: tempProgress));
         Fluttertoast.showToast(msg: "Đăng bài viết thành công.");
+        return int.parse(value["data"]["id"]);
       }
+      return null;
     });
   }
 
   @override
-  Future<void> editPost(
+  Future<int?> editPost(
       {required int id,
       List<File>? image,
       File? video,
@@ -111,7 +116,7 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
       List<int>? imageDel,
       List<int>? imageSort}) async {
     Fluttertoast.showToast(msg: "Bài viết đang được tải lên. Hãy đợi trong giây lát.");
-    await Api()
+    return await Api()
         .editPost(
             image: image,
             video: video,
@@ -126,7 +131,8 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         var post = await getPost(int.parse(value["data"]["id"]));
         var temp = state.value?.posts?.toList();
@@ -136,7 +142,9 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
           state = AsyncValue.data(state.value!.copyWith(posts: temp));
           Fluttertoast.showToast(msg: "Sửa bài viết thành công.");
         }
+        return int.parse(value["data"]["id"]);
       }
+      return null;
     });
   }
 
@@ -152,7 +160,8 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else if (value["data"]["post"].isNotEmpty) {
         if (value["data"]["new_items"].toString() == "0") {
           canFetch = true;
@@ -176,7 +185,8 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Báo cáo bài viết thành công.");
       }
@@ -190,7 +200,8 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Xóa bài viết thành công.");
         state = AsyncValue.data(state.requireValue.copyWith(
@@ -214,7 +225,8 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       }
     });
   }
@@ -226,9 +238,38 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         return ((value["data"]) as List).map<Mark>((e) => Mark.fromJson(e)).toList();
+      }
+      return [];
+    });
+  }
+
+  Future<List<Mark>> setMarkComment(int id, String content, {int? type, int? markId}) async {
+    return Api()
+        .setMarkComment(id: id, content: content, markId: markId, type: type)
+        .then((value) async {
+      if (value == null) {
+        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      } else if (value["code"] != "1000") {
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
+      } else {
+        Fluttertoast.showToast(msg: "Đã mark/bình luận thành công");
+        var post = await getPost(id);
+        var temp = state.value?.posts?.toList();
+        var index = temp?.indexWhere((element) => element.id == id);
+        if (index != -1 && index != null) {
+          temp?.replaceRange(index, index + 1, post);
+          state = AsyncValue.data(state.value!.copyWith(posts: temp));
+        }
+        if (markId != null) {
+          return (value["data"] as List).map((e) => Mark.fromJson(e)).toList();
+        }
       }
       return [];
     });
@@ -243,7 +284,8 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
         ref.reset();
         return [];
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
         return [];
       }
       return [Post.fromJson(value["data"])];

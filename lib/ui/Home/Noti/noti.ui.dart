@@ -3,9 +3,9 @@ import 'package:Anti_Fakebook/helpers/text_formater.dart';
 import 'package:Anti_Fakebook/models/notification.model.dart';
 import 'package:Anti_Fakebook/ui/Home/Friend/friend_all.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_query.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Search/search.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/home.ui.dart';
 import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
-import 'package:Anti_Fakebook/widgets/afb_popup.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,7 +29,12 @@ class _NotiUIState extends ConsumerState<NotiUI> {
           ref.read(notificationControllerProvider.notifier).refreshNotification();
         },
         child: (notifications == null)
-            ? const Center(child: Text("Đang tải..."))
+            ? SizedBox(
+                height: MediaQuery.sizeOf(context).height,
+                child: const SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Center(child: Text("Đang tải..."))),
+              )
             : ListView.builder(
                 controller: ctrl
                   ..addListener(() {
@@ -47,7 +52,10 @@ class _NotiUIState extends ConsumerState<NotiUI> {
                                   ?.copyWith(fontWeight: FontWeight.bold)),
                           const Spacer(),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) => const SearchUI()));
+                            },
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(10),
@@ -87,29 +95,34 @@ class NotificationTile extends StatelessWidget {
     return InkWell(
       splashFactory: InkRipple.splashFactory,
       onTap: () {
-        context
-            .showAFBDialog(
-                title: const Text(""), actions: [], content: Text(notification.toJson().toString()))
-            .then((value) {
-          if (notification.group == 1) {
-            switch (notification.type) {
-              case 1:
-                HomeUIState.pageController.jumpToPage(1);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const FriendAllUI(),
-                        settings: RouteSettings(arguments: notification.objectId)));
-              case 2:
-                HomeUIState.pageController.jumpToPage(1);
-              case 3:
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PostQueryUI(postId: notification.objectId)));
-            }
+        // context
+        //     .showAFBDialog(
+        //         title: const Text(""), actions: [], content: Text(notification.toJson().toString()))
+        //     .then((value) {
+        if (notification.group == 1) {
+          switch (notification.type) {
+            case 1:
+              HomeUIState.pageController.jumpToPage(1);
+            case 2:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const FriendAllUI(),
+                      settings: RouteSettings(arguments: notification.objectId)));
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PostQueryUI(postId: notification.objectId)));
           }
-        });
+        }
+        // });
       },
       child: ListTile(
         tileColor: notification.read ? null : themeData.colorScheme.primaryContainer,
@@ -121,8 +134,7 @@ class NotificationTile extends StatelessWidget {
                     text: notification.user.username,
                     style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
                 TextSpan(
-                    text: " đã chấp nhận lời mời kết bạn từ bạn.",
-                    style: themeData.textTheme.bodySmall),
+                    text: " đã gửi lời mời kết bạn tới bạn.", style: themeData.textTheme.bodySmall),
               ]),
               maxLines: 3,
               overflow: TextOverflow.ellipsis),
@@ -132,7 +144,8 @@ class NotificationTile extends StatelessWidget {
                     text: notification.user.username,
                     style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
                 TextSpan(
-                    text: " đã gửi lời mời kết bạn tới bạn.", style: themeData.textTheme.bodySmall),
+                    text: " đã chấp nhận lời mời kết bạn từ bạn.",
+                    style: themeData.textTheme.bodySmall),
               ]),
               maxLines: 3,
               overflow: TextOverflow.ellipsis),
@@ -147,6 +160,51 @@ class NotificationTile extends StatelessWidget {
               ]),
               maxLines: 3,
               overflow: TextOverflow.ellipsis),
+          4 => Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                    text: notification.user.username,
+                    style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: " đã sửa một bài viết mới: ${notification.post?["described"]}",
+                    style: themeData.textTheme.bodySmall),
+              ]),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis),
+          5 => Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                    text: notification.user.username,
+                    style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text:
+                        " đã ${notification.feel?["type"].toString() == "1" ? "kudos" : "disappointed"} một bài viết: ${notification.post?["described"]}",
+                    style: themeData.textTheme.bodySmall),
+              ]),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis),
+          6 => Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                    text: notification.user.username,
+                    style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: " đã mark một bài viết: ${notification.mark?["mark_content"]}",
+                    style: themeData.textTheme.bodySmall),
+              ]),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis),
+          7 => Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                    text: notification.user.username,
+                    style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: " đã bình luận một mark: ${notification.mark?["mark_content"]}",
+                    style: themeData.textTheme.bodySmall),
+              ]),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis),
           8 => Text.rich(
               TextSpan(children: [
                 TextSpan(
@@ -154,6 +212,17 @@ class NotificationTile extends StatelessWidget {
                     style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
                 TextSpan(
                     text: " đã đăng một video mới: ${notification.post?["described"]}",
+                    style: themeData.textTheme.bodySmall),
+              ]),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis),
+          9 => Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                    text: notification.user.username,
+                    style: themeData.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: " đã bình luận một bài viết: ${notification.mark?["mark_content"]}",
                     style: themeData.textTheme.bodySmall),
               ]),
               maxLines: 3,

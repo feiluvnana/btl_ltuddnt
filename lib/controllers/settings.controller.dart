@@ -41,7 +41,8 @@ class SettingsController extends _$SettingsController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         state = AsyncValue.data(
             state.value!.copyWith(notiSettings: NotiSettings.fromJson(value["data"])));
@@ -55,7 +56,8 @@ class SettingsController extends _$SettingsController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         state = AsyncValue.data(state.value!.copyWith(
             blockedUsers: (value["data"] as List).map((e) => BlockedUser.fromJson(e)).toList()));
@@ -73,7 +75,8 @@ class SettingsController extends _$SettingsController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Sửa thông tin cài đặt thông báo thành công.");
       }
@@ -89,9 +92,28 @@ class SettingsController extends _$SettingsController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Chặn người dùng thành công.");
+      }
+    });
+  }
+
+  Future<void> unblock(int userId) async {
+    state = AsyncValue.data(state.value!.copyWith(
+        blockedUsers:
+            state.value?.blockedUsers?.where((element) => element.id != userId).toList()));
+    Api().unblock(userId).then((value) {
+      if (value == null) {
+        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      } else if (value["code"] != "1000") {
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
+      } else {
+        Fluttertoast.showToast(msg: "Bỏ chặn người dùng thành công.");
       }
     });
   }

@@ -58,7 +58,10 @@ class _NewsfeedUIState extends ConsumerState<NewsfeedUI> with AutomaticKeepAlive
                 controller: NewsfeedUI.ctrl,
                 itemBuilder: (context, index) => index == 0
                     ? const CreatePostBar()
-                    : PostItem(key: ValueKey<int>(posts![index - 1].id), post: posts[index - 1]),
+                    : PostItem(
+                        key: ValueKey<int>(posts![index - 1].id),
+                        type: PostType.feed,
+                        post: posts[index - 1]),
                 itemCount: (posts?.length ?? 0) + 1),
             true => const Column(
                 children: [

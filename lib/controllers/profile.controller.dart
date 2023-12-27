@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:Anti_Fakebook/controllers/extension.dart';
-import 'package:Anti_Fakebook/controllers/interface.dart';
+import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
+import 'package:Anti_Fakebook/helpers/json_converter.dart';
 import 'package:Anti_Fakebook/models/post.dart';
 import 'package:Anti_Fakebook/models/profile.model.dart';
 import 'package:Anti_Fakebook/services/apis/api.dart';
@@ -19,7 +20,7 @@ class ProfileState with _$ProfileState {
 }
 
 @Riverpod(keepAlive: true)
-class ProfileController extends _$ProfileController implements PostAddable, PostEditable {
+class ProfileController extends _$ProfileController {
   bool canFetch = true;
   int lastId = 0;
 
@@ -43,7 +44,8 @@ class ProfileController extends _$ProfileController implements PostAddable, Post
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         userId = Profile.fromJson(value["data"]).id;
         state =
@@ -58,7 +60,8 @@ class ProfileController extends _$ProfileController implements PostAddable, Post
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         lastId = int.parse(value["data"]["last_id"]);
         state = AsyncValue.data(state.requireValue.copyWith(
@@ -80,9 +83,10 @@ class ProfileController extends _$ProfileController implements PostAddable, Post
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else if (value["data"]["post"].isNotEmpty) {
-        if (value["data"]["new_items"].toString() == "0") {
+        if (value["data"]["post"].isEmpty) {
           canFetch = true;
         }
         lastId = int.parse(value["data"]["last_id"]);
@@ -99,12 +103,13 @@ class ProfileController extends _$ProfileController implements PostAddable, Post
     return Api().getUserInfo(userId).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
-        return null;
       } else if (value["code"] == "9998") {
         ref.reset();
+      } else if (value["code"] == "3001") {
+        Fluttertoast.showToast(msg: "Người dùng này đã bị chặn.");
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
-        return null;
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         return Profile.fromJson(value["data"]);
       }
@@ -142,7 +147,8 @@ class ProfileController extends _$ProfileController implements PostAddable, Post
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
         return;
       } else {
         state = AsyncValue.data(state.value!.copyWith.profile!.call(
@@ -159,27 +165,6 @@ class ProfileController extends _$ProfileController implements PostAddable, Post
     state = const AsyncValue.data(ProfileState());
   }
 
-  @override
-  Future<void> addPost({List<File>? image, File? video, String? described, String? status}) async {
-    Fluttertoast.showToast(msg: "Bài viết đang được tải lên. Hãy đợi trong giây lát.");
-    await Api()
-        .addPost(image: image, video: video, described: described, status: status)
-        .then((value) async {
-      if (value == null) {
-        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
-      } else if (value["code"] == "9998") {
-        ref.reset();
-      } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
-      } else {
-        var post = await getPost(int.parse(value["data"]["id"]));
-        var tempPosts = state.value?.posts?.toList();
-        state = AsyncValue.data(state.value!.copyWith(posts: [...post, ...(tempPosts ?? [])]));
-        Fluttertoast.showToast(msg: "Đăng bài viết thành công.");
-      }
-    });
-  }
-
   Future<List<Post>> getPost(int id) {
     return Api().getPost(id).then((value) {
       if (value == null) {
@@ -189,49 +174,46 @@ class ProfileController extends _$ProfileController implements PostAddable, Post
         ref.reset();
         return [];
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
         return [];
       }
       return [Post.fromJson(value["data"])];
     });
   }
 
-  @override
-  Future<void> editPost(
-      {required int id,
-      List<File>? image,
-      File? video,
-      String? described,
-      String? status,
-      List<int>? imageDel,
-      List<int>? imageSort}) async {
-    Fluttertoast.showToast(msg: "Bài viết đang được tải lên. Hãy đợi trong giây lát.");
-    await Api()
-        .editPost(
-            image: image,
-            video: video,
-            described: described,
-            status: status,
-            id: id,
-            imageDel: imageDel,
-            imageSort: imageSort)
-        .then((value) async {
-      if (value == null) {
-        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
-      } else if (value["code"] == "9998") {
-        ref.reset();
-      } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
-      } else {
-        var post = await getPost(int.parse(value["data"]["id"]));
-        var temp = state.value?.posts?.toList();
-        var index = temp?.indexWhere((element) => element.id == id);
-        if (index != -1 && index != null) {
-          temp?.replaceRange(index, index + 1, post);
-          state = AsyncValue.data(state.value!.copyWith(posts: temp));
-          Fluttertoast.showToast(msg: "Sửa bài viết thành công.");
-        }
-      }
-    });
+  void deletePost({required int id}) {
+    state = AsyncValue.data(state.requireValue
+        .copyWith(posts: state.requireValue.posts?.where((element) => element.id != id).toList()));
+  }
+
+  void addPost(int id) {
+    var post =
+        ref.read(newsfeedControllerProvider).value!.posts!.where((element) => element.id == id);
+    if (post.first.author.id != state.value!.profile!.id) return;
+    var tempPosts = state.value?.posts?.toList();
+    state = AsyncValue.data(state.value!.copyWith(posts: [...post, ...(tempPosts ?? [])]));
+  }
+
+  void editPost(int id) {
+    var post =
+        ref.read(newsfeedControllerProvider).value!.posts!.where((element) => element.id == id);
+    var temp = state.value?.posts?.toList();
+    var index = temp?.indexWhere((element) => element.id == id);
+    if (index != -1 && index != null) {
+      temp?.replaceRange(index, index + 1, post);
+      state = AsyncValue.data(state.value!.copyWith(posts: temp));
+    }
+  }
+
+  void feelPost({required Post post, required int type}) {
+    state = AsyncValue.data(state.value!.copyWith(
+        posts: state.value!.posts
+            ?.map((e) => e.id == post.id
+                ? e.copyWith(
+                    isFelt: type == 0 ? FeelType.dissapointed : FeelType.kudos,
+                    feel: (e.isFelt != FeelType.none) ? e.feel : e.feel + 1)
+                : e)
+            .toList()));
   }
 }

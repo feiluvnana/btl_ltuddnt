@@ -68,7 +68,8 @@ class FriendController extends _$FriendController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         if (value["data"].length < 15) {
           lockFetchSuggestedFriend = true;
@@ -91,7 +92,8 @@ class FriendController extends _$FriendController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         if (int.parse(value["data"]["total"]) <=
             ((state.requireValue.requestedFriends?.length ?? 0) +
@@ -122,7 +124,8 @@ class FriendController extends _$FriendController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         if (int.parse(value["data"]["total"]) <=
             ((state.requireValue.allFriends?.length ?? 0) + value["data"]["friends"].length)) {
@@ -144,7 +147,8 @@ class FriendController extends _$FriendController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         state = AsyncValue.data(state.value!.copyWith(
             allFriends:
@@ -161,7 +165,8 @@ class FriendController extends _$FriendController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         state = AsyncValue.data(state.value!.copyWith(
           suggestedFriends:
@@ -185,7 +190,8 @@ class FriendController extends _$FriendController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else if (isAccept == 1) {
         var friend = state.value!.requestedFriends!.firstWhere((element) => element.id == userId);
         state = AsyncValue.data(state.value!.copyWith(

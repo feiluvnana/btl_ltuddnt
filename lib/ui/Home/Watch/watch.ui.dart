@@ -17,7 +17,7 @@ class _WatchUIState extends ConsumerState<WatchUI> {
   void initState() {
     super.initState();
     ctrl.addListener(() {
-      if (ctrl.offset >= 0.7 * ctrl.position.maxScrollExtent) {
+      if (ctrl.offset >= ctrl.position.maxScrollExtent - MediaQuery.sizeOf(context).height / 2) {
         ref.read(watchControllerProvider.notifier).getVideos();
       }
     });
@@ -31,7 +31,7 @@ class _WatchUIState extends ConsumerState<WatchUI> {
       },
       child: Builder(
         builder: (context) {
-          final videos = ref.watch(watchControllerProvider.select((value) => value.value?.videos));
+          final videos = ref.watch(watchControllerProvider.select((value) => value.value?.posts));
           return switch (videos?.isEmpty) {
             null => const Center(
                 child: Padding(padding: EdgeInsets.all(8.0), child: CircularProgressIndicator())),
@@ -43,8 +43,10 @@ class _WatchUIState extends ConsumerState<WatchUI> {
                 },
                 addAutomaticKeepAlives: false,
                 controller: ctrl,
-                itemBuilder: (context, index) =>
-                    PostItem(key: ValueKey<int>(videos![index].id), post: videos[index]),
+                itemBuilder: (context, index) => PostItem(
+                    key: ValueKey<int>(videos![index].id),
+                    type: PostType.watch,
+                    post: videos[index]),
                 itemCount: videos?.length ?? 0),
             true => const Center(child: Text("Không có bài viết..."))
           };

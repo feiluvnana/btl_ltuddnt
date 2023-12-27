@@ -1,3 +1,5 @@
+import 'package:Anti_Fakebook/main.dart';
+import 'package:Anti_Fakebook/ui/Home/Search/search.ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -95,7 +97,12 @@ TextSpan formatPostDescribed(String described, ThemeData themeData) {
     } else if (f.values.first == "hash") {
       spans.add(TextSpan(
           text: f.keys.first,
-          recognizer: TapGestureRecognizer()..onTap = () {},
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              navigatorKey.currentState?.push(MaterialPageRoute(
+                  builder: (context) => const SearchUI(),
+                  settings: RouteSettings(arguments: f.keys.first)));
+            },
           style: themeData.textTheme.bodyMedium?.copyWith(color: themeData.colorScheme.primary)));
     } else {
       spans.add(TextSpan(text: f.keys.first));

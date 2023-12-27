@@ -48,7 +48,9 @@ class _SettingsBlockUIState extends ConsumerState<SettingsBlockUI> {
                       )
                     : Center(
                         child: Text("Nếu bạn thấy tôi thì hẳn bạn là người rất tốt bụng.",
-                            textAlign: TextAlign.center, style: themeData.textTheme.bodyLarge));
+                            textAlign: TextAlign.center,
+                            style: themeData.textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.bold)));
               }))
             ],
           ),
@@ -73,7 +75,11 @@ class SettingsBlockItem extends ConsumerWidget {
             AFBCircleAvatar(imageUrl: blockedUser.avatar, radius: 50),
             const SizedBox(width: 10),
             Expanded(child: Text(blockedUser.name, style: themeData.textTheme.titleMedium)),
-            TextButton(onPressed: () {}, child: const Text("Bỏ chặn"))
+            TextButton(
+                onPressed: () {
+                  ref.read(settingsControllerProvider.notifier).unblock(blockedUser.id);
+                },
+                child: const Text("Bỏ chặn"))
           ],
         ),
       ),

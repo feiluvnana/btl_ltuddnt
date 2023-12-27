@@ -341,8 +341,6 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
                           ),
                           AFBSecondaryEButton(
                               onPressed: () {
-                                Navigator.pop(context);
-                                HomeUIState.tabController.index = 1;
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) => const FriendAllUI()));
                               },
@@ -366,8 +364,10 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
                     padding: EdgeInsets.all(8.0),
                     child: CircularProgressIndicator(),
                   )),
-                false =>
-                  PostItem(key: ValueKey<int>(posts![index - 11].id), post: posts[index - 11]),
+                false => PostItem(
+                    key: ValueKey<int>(posts![index - 11].id),
+                    type: PostType.profile,
+                    post: posts[index - 11]),
                 true => const Center(child: Text("Không có bài viết..."))
               };
             },

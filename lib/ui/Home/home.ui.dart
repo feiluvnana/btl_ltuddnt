@@ -31,6 +31,7 @@ class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
     tabController = TabController(length: 5, vsync: this)
       ..addListener(() {
         pageController.jumpToPage(tabController.index);
+        setState(() {});
       });
     pageController = PageController();
     ref
@@ -123,14 +124,13 @@ class HomeUIState extends ConsumerState<HomeUI> with TickerProviderStateMixin {
                                   clipBehavior: Clip.hardEdge,
                                   decoration: BoxDecoration(
                                       shape: BoxShape.circle, color: themeData.colorScheme.error),
-                                  child: Text(
-                                      ref
-                                          .watch(notificationControllerProvider)
-                                          .value!
-                                          .badge
-                                          .toString(),
-                                      style: themeData.textTheme.labelSmall
-                                          ?.copyWith(color: Colors.white, fontSize: 8)),
+                                  child: Builder(builder: (context) {
+                                    var badge =
+                                        ref.watch(notificationControllerProvider).value!.badge;
+                                    return Text(badge > 99 ? "99+" : badge.toString(),
+                                        style: themeData.textTheme.labelSmall
+                                            ?.copyWith(color: Colors.white, fontSize: 8));
+                                  }),
                                 ))
                         ],
                       ),

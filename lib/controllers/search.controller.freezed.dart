@@ -16,7 +16,6 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SearchState {
-  List<Post>? get searchResult => throw _privateConstructorUsedError;
   List<Keyword>? get keywords => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -30,7 +29,7 @@ abstract class $SearchStateCopyWith<$Res> {
           SearchState value, $Res Function(SearchState) then) =
       _$SearchStateCopyWithImpl<$Res, SearchState>;
   @useResult
-  $Res call({List<Post>? searchResult, List<Keyword>? keywords});
+  $Res call({List<Keyword>? keywords});
 }
 
 /// @nodoc
@@ -46,14 +45,9 @@ class _$SearchStateCopyWithImpl<$Res, $Val extends SearchState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? searchResult = freezed,
     Object? keywords = freezed,
   }) {
     return _then(_value.copyWith(
-      searchResult: freezed == searchResult
-          ? _value.searchResult
-          : searchResult // ignore: cast_nullable_to_non_nullable
-              as List<Post>?,
       keywords: freezed == keywords
           ? _value.keywords
           : keywords // ignore: cast_nullable_to_non_nullable
@@ -70,7 +64,7 @@ abstract class _$$SearchStateImplCopyWith<$Res>
       __$$SearchStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Post>? searchResult, List<Keyword>? keywords});
+  $Res call({List<Keyword>? keywords});
 }
 
 /// @nodoc
@@ -84,14 +78,9 @@ class __$$SearchStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? searchResult = freezed,
     Object? keywords = freezed,
   }) {
     return _then(_$SearchStateImpl(
-      searchResult: freezed == searchResult
-          ? _value._searchResult
-          : searchResult // ignore: cast_nullable_to_non_nullable
-              as List<Post>?,
       keywords: freezed == keywords
           ? _value._keywords
           : keywords // ignore: cast_nullable_to_non_nullable
@@ -103,20 +92,8 @@ class __$$SearchStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SearchStateImpl implements _SearchState {
-  const _$SearchStateImpl(
-      {final List<Post>? searchResult, final List<Keyword>? keywords})
-      : _searchResult = searchResult,
-        _keywords = keywords;
-
-  final List<Post>? _searchResult;
-  @override
-  List<Post>? get searchResult {
-    final value = _searchResult;
-    if (value == null) return null;
-    if (_searchResult is EqualUnmodifiableListView) return _searchResult;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
+  const _$SearchStateImpl({final List<Keyword>? keywords})
+      : _keywords = keywords;
 
   final List<Keyword>? _keywords;
   @override
@@ -130,7 +107,7 @@ class _$SearchStateImpl implements _SearchState {
 
   @override
   String toString() {
-    return 'SearchState(searchResult: $searchResult, keywords: $keywords)';
+    return 'SearchState(keywords: $keywords)';
   }
 
   @override
@@ -138,16 +115,12 @@ class _$SearchStateImpl implements _SearchState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SearchStateImpl &&
-            const DeepCollectionEquality()
-                .equals(other._searchResult, _searchResult) &&
             const DeepCollectionEquality().equals(other._keywords, _keywords));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_searchResult),
-      const DeepCollectionEquality().hash(_keywords));
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_keywords));
 
   @JsonKey(ignore: true)
   @override
@@ -157,12 +130,9 @@ class _$SearchStateImpl implements _SearchState {
 }
 
 abstract class _SearchState implements SearchState {
-  const factory _SearchState(
-      {final List<Post>? searchResult,
-      final List<Keyword>? keywords}) = _$SearchStateImpl;
+  const factory _SearchState({final List<Keyword>? keywords}) =
+      _$SearchStateImpl;
 
-  @override
-  List<Post>? get searchResult;
   @override
   List<Keyword>? get keywords;
   @override

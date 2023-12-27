@@ -76,9 +76,9 @@ class _LoginUIState extends ConsumerState<LoginUI> {
             padding: const EdgeInsets.all(10),
             child: Builder(
               builder: (context) {
-                final profile =
-                    ref.watch(profileControllerProvider.select((value) => value.value?.profile));
-                return (profile != null)
+                final user =
+                    ref.watch(authenControllerProvider.select((value) => value.value?.user));
+                return (user != null)
                     ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                         const FlutterLogo(size: 110),
                         const SizedBox(height: 30),
@@ -87,8 +87,8 @@ class _LoginUIState extends ConsumerState<LoginUI> {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) => const LoginPasswordUI()));
                           },
-                          leading: AFBCircleAvatar(imageUrl: profile.avatar, radius: 60),
-                          title: Text(profile.username, style: themeData.textTheme.titleMedium),
+                          leading: AFBCircleAvatar(imageUrl: user.avatar, radius: 60),
+                          title: Text(user.username, style: themeData.textTheme.titleMedium),
                           trailing: PopupMenuButton(
                               itemBuilder: (context) => <PopupMenuEntry>[
                                     PopupMenuItem(

@@ -54,7 +54,12 @@ class _FriendSuggestedUIState extends ConsumerState<FriendSuggestedUI> {
                     ref.read(friendControllerProvider.notifier).refreshSuggestedFriends();
                   },
                   child: (suggestedFriends == null)
-                      ? const Center(child: Text("Đang tải..."))
+                      ? SizedBox(
+                          height: MediaQuery.sizeOf(context).height,
+                          child: const SingleChildScrollView(
+                              physics: AlwaysScrollableScrollPhysics(),
+                              child: Center(child: Text("Đang tải..."))),
+                        )
                       : ListView.custom(
                           controller: ctrl,
                           physics: const AlwaysScrollableScrollPhysics(),

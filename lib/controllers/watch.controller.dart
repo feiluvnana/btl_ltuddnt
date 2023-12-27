@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:Anti_Fakebook/controllers/extension.dart';
-
+import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
 import 'package:Anti_Fakebook/helpers/json_converter.dart';
 import 'package:Anti_Fakebook/main.dart';
 import 'package:Anti_Fakebook/models/post.dart';
@@ -18,7 +17,7 @@ part 'watch.controller.g.dart';
 
 @freezed
 class WatchState with _$WatchState {
-  const factory WatchState({List<Post>? videos}) = _WatchState;
+  const factory WatchState({List<Post>? posts}) = _WatchState;
 }
 
 @Riverpod(keepAlive: true)
@@ -34,7 +33,7 @@ class WatchController extends _$WatchController {
   void refresh() {
     canFetch = true;
     lastId = 0;
-    state = AsyncValue.data(state.requireValue.copyWith(videos: null));
+    state = AsyncValue.data(state.requireValue.copyWith(posts: null));
     init();
   }
 
@@ -47,60 +46,14 @@ class WatchController extends _$WatchController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         lastId = int.parse(value["data"]["last_id"]);
         Fluttertoast.showToast(msg: "Lấy bài viết thành công.");
-        secureStorage.write(key: "videos", value: jsonEncode(value["data"]["post"]));
+        secureStorage.write(key: "posts", value: jsonEncode(value["data"]["post"]));
         state = AsyncValue.data(state.requireValue.copyWith(
-            videos: (value["data"]["post"] as List).map((e) => Post.fromJson(e)).toList()));
-      }
-    });
-  }
-
-  Future<void> editVideo(
-      {required int id,
-      List<File>? image,
-      File? video,
-      String? described,
-      String? status,
-      List<int>? imageDel,
-      List<int>? imageSort}) async {
-    Fluttertoast.showToast(msg: "Bài viết đang được tải lên. Hãy đợi trong giây lát.");
-    await Api()
-        .editPost(
-            image: image,
-            video: video,
-            described: described,
-            status: status,
-            id: id,
-            imageDel: imageDel,
-            imageSort: imageSort)
-        .then((value) async {
-      if (value == null) {
-        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
-      } else if (value["code"] == "9998") {
-        ref.reset();
-      } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
-      } else {
-        await Api().getPost(int.parse(value["data"]["id"])).then((value) {
-          if (value == null) {
-            Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
-          } else if (value["code"] == "9998") {
-            ref.reset();
-          } else if (value["code"] != "1000") {
-            Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
-          } else {
-            var temp = state.value?.videos?.toList();
-            var index = temp?.indexWhere((element) => element.id == id);
-            if (index != -1 && index != null) {
-              temp?.replaceRange(index, index + 1, [Post.fromJson(value["data"])]);
-              state = AsyncValue.data(state.value!.copyWith(videos: temp));
-              Fluttertoast.showToast(msg: "Sửa bài viết thành công.");
-            }
-          }
-        });
+            posts: (value["data"]["post"] as List).map((e) => Post.fromJson(e)).toList()));
       }
     });
   }
@@ -117,7 +70,8 @@ class WatchController extends _$WatchController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else if (value["data"]["post"].isNotEmpty) {
         Fluttertoast.showToast(msg: "Lấy bài viết thành công.");
         if (value["data"]["new_items"].toString() == "0") {
@@ -125,8 +79,8 @@ class WatchController extends _$WatchController {
           debugPrint("locked fetch ${value["data"]["post"].length}");
         }
         lastId = int.parse(value["data"]["last_id"]);
-        state = AsyncValue.data(state.value!.copyWith(videos: [
-          ...state.value?.videos ?? [],
+        state = AsyncValue.data(state.value!.copyWith(posts: [
+          ...state.value?.posts ?? [],
           ...(value["data"]["post"] as List).map((e) => Post.fromJson(e))
         ]));
       }
@@ -134,56 +88,38 @@ class WatchController extends _$WatchController {
     canFetch = !canFetch;
   }
 
-  Future<void> reportVideo(
-      {required int id, required String subject, required String detail}) async {
-    await Api().reportPost(id, subject, detail).then((value) {
-      if (value == null) {
-        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
-      } else if (value["code"] == "9998") {
-        ref.reset();
-      } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
-      } else {
-        Fluttertoast.showToast(msg: "Báo cáo bài viết thành công.");
-      }
-    });
+  void deletePost({required int id}) {
+    state = AsyncValue.data(state.requireValue
+        .copyWith(posts: state.requireValue.posts?.where((element) => element.id != id).toList()));
   }
 
-  Future<void> deleteVideo({required int id}) async {
-    await Api().deletePost(id).then((value) {
-      if (value == null) {
-        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
-      } else if (value["code"] == "9998") {
-        ref.reset();
-      } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
-      } else {
-        Fluttertoast.showToast(msg: "Xóa bài viết thành công.");
-        state = AsyncValue.data(state.requireValue.copyWith(
-            videos: state.requireValue.videos?.where((element) => element.id != id).toList()));
-      }
-    });
+  void addPost(int id) {
+    var post =
+        ref.read(newsfeedControllerProvider).value!.posts!.where((element) => element.id == id);
+    if (post.first.video == null) return;
+    var tempPosts = state.value?.posts?.toList();
+    state = AsyncValue.data(state.value!.copyWith(posts: [...post, ...(tempPosts ?? [])]));
   }
 
-  Future<void> feelVideo({required Post post, required int type}) async {
-    if (post.isFelt == FeelType.none) {
-      state = AsyncValue.data(state.value!.copyWith(
-          videos: state.value!.videos
-              ?.map((e) => e.id == post.id ? e.copyWith(feel: e.feel + 1) : e)
-              .toList()));
+  void editPost(int id) {
+    var post =
+        ref.read(newsfeedControllerProvider).value!.posts!.where((element) => element.id == id);
+    var temp = state.value?.posts?.toList();
+    var index = temp?.indexWhere((element) => element.id == id);
+    if (index != -1 && index != null) {
+      temp?.replaceRange(index, index + 1, post);
+      state = AsyncValue.data(state.value!.copyWith(posts: temp));
     }
-    await Api().feel(post.id, type).then((value) {
-      if (value == null) {
-        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
-      } else if (value["code"] == "9998") {
-        ref.reset();
-      } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
-      }
-    });
   }
 
-  void reset() {
-    state = const AsyncValue.data(WatchState());
+  void feelPost({required Post post, required int type}) {
+    state = AsyncValue.data(state.value!.copyWith(
+        posts: state.value!.posts
+            ?.map((e) => e.id == post.id
+                ? e.copyWith(
+                    isFelt: type == 0 ? FeelType.dissapointed : FeelType.kudos,
+                    feel: (e.isFelt != FeelType.none) ? e.feel : e.feel + 1)
+                : e)
+            .toList()));
   }
 }

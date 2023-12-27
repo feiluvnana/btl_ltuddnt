@@ -4,6 +4,7 @@ import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
 import 'package:Anti_Fakebook/controllers/profile.controller.dart';
 import 'package:Anti_Fakebook/ui/Home/Menu/Settings/settings.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Profile/profile.ui.dart';
+import 'package:Anti_Fakebook/ui/Home/Search/search.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/home.ui.dart';
 import 'package:Anti_Fakebook/widgets/afb_button.dart';
 import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
@@ -60,7 +61,9 @@ class MenuHeader extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchUI()));
+          },
           child: Container(
             padding: const EdgeInsets.all(8),
             margin: const EdgeInsets.all(10),

@@ -168,6 +168,10 @@ class Api {
     return ApiRoot.post("/delete_post", jsonEncode({"id": id.toString()}));
   }
 
+  Future<Map<String, dynamic>?> unblock(int id) async {
+    return ApiRoot.post("/unblock", jsonEncode({"user_id": id.toString()}));
+  }
+
   Future<Map<String, dynamic>?> getSuggestedFriends(int index) async {
     return ApiRoot.post("/get_suggested_friends", jsonEncode({"index": index, "count": 15}));
   }
@@ -202,6 +206,20 @@ class Api {
     return ApiRoot.post("/unfriend", jsonEncode({"user_id": userId}));
   }
 
+  Future<Map<String, dynamic>?> setMarkComment(
+      {required int id, required String content, int? markId, int? type}) {
+    return ApiRoot.post(
+        "/set_mark_comment",
+        jsonEncode({
+          "id": id,
+          "content": content,
+          "index": "0",
+          "count": "10",
+          if (markId != null) "mark_id": markId,
+          if (type != null) "type": type
+        }));
+  }
+
   Future<Map<String, dynamic>?> getRequestedFriends(int index) async {
     return ApiRoot.post("/get_requested_friends", jsonEncode({"index": index, "count": 15}));
   }
@@ -227,6 +245,12 @@ class Api {
       {required String keyword, required int userId, required int index}) async {
     return ApiRoot.post("/search",
         jsonEncode({"keyword": keyword, "user_id": userId, "index": index, "count": 15}));
+  }
+
+  Future<Map<String, dynamic>?> searchUser(
+      {required String keyword, required int userId, required int index}) async {
+    return ApiRoot.post(
+        "/search_user", jsonEncode({"keyword": keyword, "index": index, "count": 15}));
   }
 
   Future<Map<String, dynamic>?> getSavedSearch() async {

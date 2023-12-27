@@ -102,9 +102,7 @@ class __$$NewsfeedStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$NewsfeedStateImpl
-    with DiagnosticableTreeMixin
-    implements _NewsfeedState {
+class _$NewsfeedStateImpl implements _NewsfeedState {
   const _$NewsfeedStateImpl(
       {final List<Post>? posts,
       final Map<String, double> postingProgress = const {}})
@@ -131,17 +129,8 @@ class _$NewsfeedStateImpl
   }
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'NewsfeedState(posts: $posts, postingProgress: $postingProgress)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'NewsfeedState'))
-      ..add(DiagnosticsProperty('posts', posts))
-      ..add(DiagnosticsProperty('postingProgress', postingProgress));
   }
 
   @override

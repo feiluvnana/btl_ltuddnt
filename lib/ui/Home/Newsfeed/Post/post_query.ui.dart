@@ -1,6 +1,7 @@
 import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
 import 'package:Anti_Fakebook/helpers/text_formater.dart';
 import 'package:Anti_Fakebook/models/post.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/mark.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_detail_media.ui.dart';
 import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
 import 'package:Anti_Fakebook/widgets/afb_expandable_text.dart';
@@ -47,7 +48,8 @@ class _PostQueryUIState extends ConsumerState<PostQueryUI> {
                   onPressed: () => Navigator.maybePop(context), icon: const Icon(Icons.arrow_back)),
             ),
             body: (snapshot.data == [])
-                ? const Center(child: Text("Bài viết không tồn tại."))
+                ? const Center(
+                    child: Text("Người dùng không tồn tại hoặc bạn không thể xem người dùng này."))
                 : SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,12 +106,6 @@ class _PostQueryUIState extends ConsumerState<PostQueryUI> {
                                             leading: Icons.save,
                                             title: "Lưu bài viết"),
                                         AFBBottomSheetListTile(
-                                            onTap: () {}, leading: Icons.delete, title: "Xóa"),
-                                        AFBBottomSheetListTile(
-                                            onTap: () {},
-                                            leading: Icons.edit,
-                                            title: "Chỉnh sửa bài viết"),
-                                        AFBBottomSheetListTile(
                                             onTap: () {},
                                             leading: Icons.link,
                                             title: "Sao chép liên kết"),
@@ -132,13 +128,28 @@ class _PostQueryUIState extends ConsumerState<PostQueryUI> {
                               enabled: snapshot.data == null,
                               child: Row(
                                 children: [
-                                  Text("${snapshot.data?.first.feel} lượt feel",
+                                  Text(
+                                      "${snapshot.data?.first.kudos} lượt kudos\n${snapshot.data?.first.disappointed} lượt dissapointed",
                                       style: themeData.textTheme.bodySmall?.copyWith(
                                           fontWeight: FontWeight.w300, color: Colors.grey)),
                                   const Spacer(),
-                                  Text(" ${snapshot.data?.first.commentMark} bình luận",
-                                      style: themeData.textTheme.bodySmall?.copyWith(
-                                          fontWeight: FontWeight.w300, color: Colors.grey)),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8)),
+                                          isScrollControlled: false,
+                                          scrollControlDisabledMaxHeightRatio: 0.9,
+                                          context: context,
+                                          builder: (context) {
+                                            return MarkUI(postId: snapshot.data!.first.id);
+                                          });
+                                    },
+                                    child: Text(
+                                        "${snapshot.data?.first.trust} mark trust\n${snapshot.data?.first.fake} mark fake",
+                                        style: themeData.textTheme.bodySmall?.copyWith(
+                                            fontWeight: FontWeight.w300, color: Colors.grey)),
+                                  ),
                                 ],
                               )),
                         ),

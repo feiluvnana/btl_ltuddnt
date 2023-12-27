@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
 import 'package:Anti_Fakebook/controllers/profile.controller.dart';
+import 'package:Anti_Fakebook/controllers/watch.controller.dart';
 import 'package:Anti_Fakebook/helpers/emoji.dart';
 import 'package:Anti_Fakebook/models/video.dart';
 import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_status.ui.dart';
@@ -172,12 +173,19 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateUI> {
           actions: [
             TextButton(
                 onPressed: () {
-                  ref.read(newsfeedControllerProvider.notifier).addPost(
-                      described: ctrl.text,
-                      status: status,
-                      image: image?.map((e) => File(e.path)).toList(),
-                      video: video is HLPickerItem ? File((video as HLPickerItem).path) : null);
-
+                  ref
+                      .read(newsfeedControllerProvider.notifier)
+                      .addPost(
+                          described: ctrl.text,
+                          status: status,
+                          image: image?.map((e) => File(e.path)).toList(),
+                          video: video is HLPickerItem ? File((video as HLPickerItem).path) : null)
+                      .then((value) {
+                    if (value == null) return;
+                    ref
+                      ..read(profileControllerProvider.notifier).addPost(value)
+                      ..read(watchControllerProvider.notifier).addPost(value);
+                  });
                   Navigator.pop(context);
                 },
                 child: const Text("ĐĂNG"))

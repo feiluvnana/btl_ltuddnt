@@ -46,15 +46,16 @@ class NotificationController extends _$NotificationController {
       HomeUIState.tabController.index = 3;
     });
     subOnMessage = FirebaseMessaging.onMessage.listen((event) {
-      Notification noti = Notification.fromJson(jsonDecode(event.data["json"]));
-      var index = state.value?.notifications?.indexOf(noti);
+      Notification notification = Notification.fromJson(jsonDecode(event.data["json"]));
+      var index = state.value?.notifications?.indexOf(notification);
       if (index == -1) {
         state = AsyncValue.data(state.value!.copyWith(
-            notifications: [noti, ...state.value!.notifications!], badge: state.value!.badge + 1));
+            notifications: [notification, ...state.value!.notifications!],
+            badge: state.value!.badge + 1));
       } else if (index != 0) {
         state = AsyncValue.data(state.value!.copyWith(
             notifications: state.value!.notifications!
-                .map((e) => e.notificationId == noti.notificationId ? noti : e)
+                .map((e) => e.notificationId == notification.notificationId ? notification : e)
                 .toList()));
       }
     });
@@ -77,7 +78,8 @@ class NotificationController extends _$NotificationController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         if (value["data"].length < 15) {
           lockFetchNotifications = true;

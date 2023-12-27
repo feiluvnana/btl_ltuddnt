@@ -63,7 +63,8 @@ class AuthenController extends _$AuthenController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Đổi mật khẩu thành công.");
         await secureStorage.read(key: "user").then((user) async {
@@ -81,6 +82,8 @@ class AuthenController extends _$AuthenController {
   }
 
   void logout() {
+    state = AsyncValue.data(state.requireValue
+        .copyWith(user: state.requireValue.user?.copyWith(token: null), signupInfo: {}));
     secureStorage.delete(key: "posts");
     secureStorage.read(key: "saveInfo").then((value) {
       if (value == "true") {
@@ -93,8 +96,6 @@ class AuthenController extends _$AuthenController {
     });
     Api().logout();
     ref.read(notificationControllerProvider.notifier).subOnMessage?.cancel();
-    state = AsyncValue.data(state.requireValue
-        .copyWith(user: state.requireValue.user?.copyWith(token: null), signupInfo: {}));
   }
 
   Future<void> getVerifyCode({String? email, void Function()? onSuccess}) async {
@@ -104,7 +105,8 @@ class AuthenController extends _$AuthenController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Đã gửi mã xác nhận thành công");
         onSuccess?.call();
@@ -124,7 +126,8 @@ class AuthenController extends _$AuthenController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Xác nhận thành công");
         state = AsyncValue.data(state.requireValue.copyWith(
@@ -142,7 +145,8 @@ class AuthenController extends _$AuthenController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Đã cập nhật thông tin thành công");
         state = AsyncValue.data(state.requireValue.copyWith(
@@ -168,7 +172,8 @@ class AuthenController extends _$AuthenController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Đăng ký thành công");
         onSuccess?.call();
@@ -187,7 +192,8 @@ class AuthenController extends _$AuthenController {
       } else if (value["code"] == "9998") {
         ref.reset();
       } else if (value["code"] != "1000") {
-        Fluttertoast.showToast(msg: resCode[value["code"]] ?? "Lỗi không xác định.");
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         Fluttertoast.showToast(msg: "Đặt lại mật khẩu thành công.");
         onSuccess?.call();
@@ -200,7 +206,7 @@ class AuthenController extends _$AuthenController {
       if (value == null) {
         return "Có lỗi xảy ra. Hãy thử lại sau";
       } else if (value["code"] != "1000") {
-        return resCode[value["code"]] ?? "Lỗi không xác định.";
+        return resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.";
       } else {
         return value["data"]["existed"] == "1" ? "Email đã được đăng ký" : null;
       }

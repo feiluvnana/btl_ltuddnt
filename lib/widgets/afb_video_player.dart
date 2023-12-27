@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:math';
 import 'package:Anti_Fakebook/controllers/overlay.controller.dart';
+import 'package:Anti_Fakebook/controllers/theme.controller.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -20,7 +21,8 @@ class AFBVideoPlayer extends ConsumerStatefulWidget {
 }
 
 class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
-  static final cacheManager = CacheManager(Config("afb", stalePeriod: const Duration(minutes: 1)));
+  static final cacheManager =
+      CacheManager(Config("afb", stalePeriod: const Duration(seconds: 30), maxNrOfCacheObjects: 5));
   ChewieController? ctrl;
   Stream<FileResponse>? stream;
   StreamSubscription? sub;
@@ -35,10 +37,11 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
       sub = stream?.listen((event) async {
         if (event is FileInfo) {
           sub?.cancel();
-          sub = null;
           file = event.file;
           start().then((value) {
-            if (mounted) setState(() {});
+            if (!mounted) return;
+            vctrl?.play();
+            setState(() {});
           });
         }
       });
@@ -46,9 +49,11 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
   }
 
   void toFullScreen() {
+    ref.read(themeControllerProvider.notifier).setThemeMode(ThemeMode.dark);
     Navigator.push(context, MaterialPageRoute(builder: (_) {
       return PopScope(
         onPopInvoked: (didPop) {
+          ref.read(themeControllerProvider.notifier).setThemeMode(ThemeMode.light);
           ref.read(overlayControllerProvider.notifier).insert(OverlayEntry(builder: (context) {
             return Align(
               alignment: Alignment.topLeft,
@@ -88,17 +93,19 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return VisibilityDetector(
       onVisibilityChanged: (VisibilityInfo info) {
+        if (!mounted) return;
         if (!isInDefault || ref.read(overlayControllerProvider).entry != null) return;
-        if (info.visibleFraction > 0 && file == null && sub == null) {
+        if (info.visibleFraction == 1) {
           getFile();
         }
         if (info.visibleFraction < 0.8) {
-          vctrl?.pause().then((value) => setState(() {}));
+          vctrl?.pause();
         }
         if (info.visibleFraction > 0.85) {
-          vctrl?.play().then((value) => setState(() {}));
+          vctrl?.play();
         }
       },
       key: ObjectKey(widget.url),
@@ -106,18 +113,24 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
           stream: stream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const Text("vid err");
+              return Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.sizeOf(context).width,
+                  height: MediaQuery.sizeOf(context).width + 40,
+                  child: const Text("Có lỗi xảy ra! Hãy thử lại sau!"));
             } else if (!snapshot.hasData || snapshot.data is DownloadProgress) {
               return Container(
                   alignment: Alignment.center,
                   width: MediaQuery.sizeOf(context).width,
-                  height: MediaQuery.sizeOf(context).width,
+                  height: MediaQuery.sizeOf(context).width + 40,
+                  decoration: BoxDecoration(color: themeData.colorScheme.inverseSurface),
                   child: CircularProgressIndicator(
-                      value: (snapshot.data as DownloadProgress?)?.progress));
+                      value: (snapshot.data as DownloadProgress?)?.progress,
+                      color: themeData.colorScheme.surface));
             } else {
               return SizedBox(
                   width: MediaQuery.sizeOf(context).width,
-                  height: MediaQuery.sizeOf(context).width,
+                  height: MediaQuery.sizeOf(context).width + 40,
                   child: ctrl != null
                       ? GestureDetector(
                           onDoubleTap: () {

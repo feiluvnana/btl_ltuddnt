@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
 import 'package:Anti_Fakebook/controllers/profile.controller.dart';
+import 'package:Anti_Fakebook/controllers/watch.controller.dart';
 import 'package:Anti_Fakebook/data/data.dart';
 import 'package:Anti_Fakebook/helpers/emoji.dart';
 import 'package:Anti_Fakebook/helpers/json_converter.dart';
+import 'package:Anti_Fakebook/helpers/mark.dart';
 import 'package:Anti_Fakebook/helpers/text_formater.dart';
 import 'package:Anti_Fakebook/models/post.dart';
 import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/mark.ui.dart';
@@ -23,10 +27,13 @@ import 'package:Anti_Fakebook/widgets/afb_webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+enum PostType { feed, watch, profile, search }
+
 class PostItem extends ConsumerStatefulWidget {
   final Post post;
+  final PostType type;
 
-  const PostItem({super.key, required this.post});
+  const PostItem({super.key, required this.post, required this.type});
 
   @override
   ConsumerState<PostItem> createState() => _PostItemState();
@@ -119,7 +126,9 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                       [
                         AFBBottomSheetListTile(
                             onTap: () {}, leading: Icons.save, title: "Lưu bài viết"),
-                        if (profile?.id == widget.post.author.id)
+                        if (profile?.id == widget.post.author.id &&
+                            widget.type != PostType.watch &&
+                            widget.type != PostType.search)
                           AFBBottomSheetListTile(
                               onTap: () {
                                 context.showAFBDialog<bool>(
@@ -131,8 +140,13 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                                     GestureDetector(
                                       onTap: () {
                                         ref
-                                            .read(newsfeedControllerProvider.notifier)
-                                            .deletePost(id: widget.post.id);
+                                          ..read(newsfeedControllerProvider.notifier)
+                                              .deletePost(id: widget.post.id)
+                                          ..read(profileControllerProvider.notifier)
+                                              .deletePost(id: widget.post.id)
+                                          ..read(watchControllerProvider.notifier)
+                                              .deletePost(id: widget.post.id);
+
                                         Navigator.maybePop(context);
                                         Navigator.maybePop(context);
                                       },
@@ -156,7 +170,9 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                               },
                               leading: Icons.delete,
                               title: "Xóa bài viết"),
-                        if (profile?.id == widget.post.author.id)
+                        if (profile?.id == widget.post.author.id &&
+                            widget.type != PostType.watch &&
+                            widget.type != PostType.search)
                           AFBBottomSheetListTile(
                               onTap: () {
                                 Navigator.pop(context);
@@ -233,11 +249,13 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             children: [
-              Text(" ${widget.post.feel} lượt feel",
+              Text(
+                  " ${max(widget.post.feel, widget.post.kudos + widget.post.disappointed)} lượt feel",
                   style: themeData.textTheme.bodySmall
                       ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
               const Spacer(),
-              Text(" ${(widget.post.commentMark)} bình luận",
+              Text(
+                  " ${max(widget.post.commentMark, widget.post.trust + widget.post.fake)} mark/bình luận",
                   style: themeData.textTheme.bodySmall
                       ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
             ],
@@ -252,8 +270,9 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
               GestureDetector(
                 onTap: () {
                   ref
-                      .read(newsfeedControllerProvider.notifier)
-                      .feelPost(post: widget.post, type: 1);
+                    ..read(newsfeedControllerProvider.notifier).feelPost(post: widget.post, type: 1)
+                    ..read(profileControllerProvider.notifier).feelPost(post: widget.post, type: 1)
+                    ..read(watchControllerProvider.notifier).feelPost(post: widget.post, type: 1);
                 },
                 child: RichText(
                     text: TextSpan(
@@ -276,8 +295,9 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
               GestureDetector(
                 onTap: () {
                   ref
-                      .read(newsfeedControllerProvider.notifier)
-                      .feelPost(post: widget.post, type: 0);
+                    ..read(newsfeedControllerProvider.notifier).feelPost(post: widget.post, type: 0)
+                    ..read(profileControllerProvider.notifier).feelPost(post: widget.post, type: 0)
+                    ..read(watchControllerProvider.notifier).feelPost(post: widget.post, type: 0);
                 },
                 child: RichText(
                     text: TextSpan(children: [
@@ -312,7 +332,7 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
                       WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
                           child: Icon(Icons.chat_bubble, color: Colors.grey)),
-                      TextSpan(text: " Bình luận")
+                      TextSpan(text: " Mark")
                     ],
                         style: themeData.textTheme.bodySmall
                             ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey))),
@@ -322,30 +342,7 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: AFBCircleAvatar(imageUrl: widget.post.author.avatar),
-              ),
-              Expanded(
-                  child: TextField(
-                inputFormatters: const [EmojiInputFormatter()],
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                autofocus: false,
-                decoration: InputDecoration(
-                    border:
-                        OutlineInputBorder(borderRadius: BorderRadius.circular(20), gapPadding: 0),
-                    hintText: "Viết bình luận...",
-                    contentPadding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
-                    suffixIcon: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.send),
-                    )),
-              ))
-            ],
-          ),
+          child: MarkTextField(postId: widget.post.id),
         ),
       ],
     );
@@ -353,4 +350,57 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class MarkTextField extends ConsumerStatefulWidget {
+  const MarkTextField({super.key, required this.postId});
+
+  final int postId;
+
+  @override
+  ConsumerState<MarkTextField> createState() => _MarkTextFieldState();
+}
+
+class _MarkTextFieldState extends ConsumerState<MarkTextField> {
+  final ctrl = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: AFBCircleAvatar(
+              imageUrl: ref.watch(profileControllerProvider).value?.profile?.avatar ?? ""),
+        ),
+        Expanded(
+            child: TextField(
+          inputFormatters: const [EmojiInputFormatter()],
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          autofocus: false,
+          controller: ctrl
+            ..addListener(() {
+              setState(() {});
+            }),
+          decoration: InputDecoration(
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(20), gapPadding: 0),
+              hintText: "[T/F]<Nội dung mark>",
+              contentPadding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
+              suffixIcon: IconButton(
+                onPressed: !validateMarkSyntax(ctrl.text)
+                    ? null
+                    : () {
+                        ref.read(newsfeedControllerProvider.notifier).setMarkComment(
+                            widget.postId, ctrl.text.substring(3),
+                            type: getTypeFromMarkSyntax(ctrl.text));
+                        ctrl.text = "";
+                      },
+                icon: Icon(Icons.send,
+                    color: !validateMarkSyntax(ctrl.text) ? null : themeData.colorScheme.primary),
+              )),
+        ))
+      ],
+    );
+  }
 }

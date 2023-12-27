@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$WatchState {
-  List<Post>? get videos => throw _privateConstructorUsedError;
+  List<Post>? get posts => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $WatchStateCopyWith<WatchState> get copyWith =>
@@ -29,7 +29,7 @@ abstract class $WatchStateCopyWith<$Res> {
           WatchState value, $Res Function(WatchState) then) =
       _$WatchStateCopyWithImpl<$Res, WatchState>;
   @useResult
-  $Res call({List<Post>? videos});
+  $Res call({List<Post>? posts});
 }
 
 /// @nodoc
@@ -45,12 +45,12 @@ class _$WatchStateCopyWithImpl<$Res, $Val extends WatchState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? videos = freezed,
+    Object? posts = freezed,
   }) {
     return _then(_value.copyWith(
-      videos: freezed == videos
-          ? _value.videos
-          : videos // ignore: cast_nullable_to_non_nullable
+      posts: freezed == posts
+          ? _value.posts
+          : posts // ignore: cast_nullable_to_non_nullable
               as List<Post>?,
     ) as $Val);
   }
@@ -64,7 +64,7 @@ abstract class _$$WatchStateImplCopyWith<$Res>
       __$$WatchStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Post>? videos});
+  $Res call({List<Post>? posts});
 }
 
 /// @nodoc
@@ -78,12 +78,12 @@ class __$$WatchStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? videos = freezed,
+    Object? posts = freezed,
   }) {
     return _then(_$WatchStateImpl(
-      videos: freezed == videos
-          ? _value._videos
-          : videos // ignore: cast_nullable_to_non_nullable
+      posts: freezed == posts
+          ? _value._posts
+          : posts // ignore: cast_nullable_to_non_nullable
               as List<Post>?,
     ));
   }
@@ -92,21 +92,21 @@ class __$$WatchStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$WatchStateImpl with DiagnosticableTreeMixin implements _WatchState {
-  const _$WatchStateImpl({final List<Post>? videos}) : _videos = videos;
+  const _$WatchStateImpl({final List<Post>? posts}) : _posts = posts;
 
-  final List<Post>? _videos;
+  final List<Post>? _posts;
   @override
-  List<Post>? get videos {
-    final value = _videos;
+  List<Post>? get posts {
+    final value = _posts;
     if (value == null) return null;
-    if (_videos is EqualUnmodifiableListView) return _videos;
+    if (_posts is EqualUnmodifiableListView) return _posts;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'WatchState(videos: $videos)';
+    return 'WatchState(posts: $posts)';
   }
 
   @override
@@ -114,7 +114,7 @@ class _$WatchStateImpl with DiagnosticableTreeMixin implements _WatchState {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'WatchState'))
-      ..add(DiagnosticsProperty('videos', videos));
+      ..add(DiagnosticsProperty('posts', posts));
   }
 
   @override
@@ -122,12 +122,12 @@ class _$WatchStateImpl with DiagnosticableTreeMixin implements _WatchState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$WatchStateImpl &&
-            const DeepCollectionEquality().equals(other._videos, _videos));
+            const DeepCollectionEquality().equals(other._posts, _posts));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_videos));
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_posts));
 
   @JsonKey(ignore: true)
   @override
@@ -137,10 +137,10 @@ class _$WatchStateImpl with DiagnosticableTreeMixin implements _WatchState {
 }
 
 abstract class _WatchState implements WatchState {
-  const factory _WatchState({final List<Post>? videos}) = _$WatchStateImpl;
+  const factory _WatchState({final List<Post>? posts}) = _$WatchStateImpl;
 
   @override
-  List<Post>? get videos;
+  List<Post>? get posts;
   @override
   @JsonKey(ignore: true)
   _$$WatchStateImplCopyWith<_$WatchStateImpl> get copyWith =>
