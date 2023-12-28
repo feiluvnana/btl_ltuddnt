@@ -9,6 +9,7 @@ import 'package:Anti_Fakebook/helpers/json_converter.dart';
 import 'package:Anti_Fakebook/helpers/mark.dart';
 import 'package:Anti_Fakebook/helpers/text_formater.dart';
 import 'package:Anti_Fakebook/models/post.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/feel.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/mark.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_detail_media.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_media.ui.dart';
@@ -249,15 +250,35 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             children: [
-              Text(
-                  " ${max(widget.post.feel, widget.post.kudos + widget.post.disappointed)} lượt feel",
-                  style: themeData.textTheme.bodySmall
-                      ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      isScrollControlled: false,
+                      scrollControlDisabledMaxHeightRatio: 0.9,
+                      context: context,
+                      builder: (context) {
+                        return FeelUI(postId: widget.post.id);
+                      });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: const BoxDecoration(),
+                  child: Text(
+                      " ${max(widget.post.feel, widget.post.kudos + widget.post.disappointed)} lượt feel",
+                      style: themeData.textTheme.bodySmall
+                          ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
+                ),
+              ),
               const Spacer(),
-              Text(
-                  " ${max(widget.post.commentMark, widget.post.trust + widget.post.fake)} mark/bình luận",
-                  style: themeData.textTheme.bodySmall
-                      ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: const BoxDecoration(),
+                child: Text(
+                    " ${max(widget.post.commentMark, widget.post.trust + widget.post.fake)} mark/bình luận",
+                    style: themeData.textTheme.bodySmall
+                        ?.copyWith(fontWeight: FontWeight.w300, color: Colors.grey)),
+              ),
             ],
           ),
         ),
@@ -269,10 +290,19 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
             children: [
               GestureDetector(
                 onTap: () {
-                  ref
-                    ..read(newsfeedControllerProvider.notifier).feelPost(post: widget.post, type: 1)
-                    ..read(profileControllerProvider.notifier).feelPost(post: widget.post, type: 1)
-                    ..read(watchControllerProvider.notifier).feelPost(post: widget.post, type: 1);
+                  if (widget.post.isFelt == FeelType.kudos) {
+                    ref
+                      ..read(newsfeedControllerProvider.notifier).unfeelPost(post: widget.post)
+                      ..read(profileControllerProvider.notifier).unfeelPost(post: widget.post)
+                      ..read(watchControllerProvider.notifier).unfeelPost(post: widget.post);
+                  } else {
+                    ref
+                      ..read(newsfeedControllerProvider.notifier)
+                          .feelPost(post: widget.post, type: 1)
+                      ..read(profileControllerProvider.notifier)
+                          .feelPost(post: widget.post, type: 1)
+                      ..read(watchControllerProvider.notifier).feelPost(post: widget.post, type: 1);
+                  }
                 },
                 child: RichText(
                     text: TextSpan(
@@ -294,10 +324,19 @@ class _PostItemState extends ConsumerState<PostItem> with AutomaticKeepAliveClie
               ),
               GestureDetector(
                 onTap: () {
-                  ref
-                    ..read(newsfeedControllerProvider.notifier).feelPost(post: widget.post, type: 0)
-                    ..read(profileControllerProvider.notifier).feelPost(post: widget.post, type: 0)
-                    ..read(watchControllerProvider.notifier).feelPost(post: widget.post, type: 0);
+                  if (widget.post.isFelt == FeelType.dissapointed) {
+                    ref
+                      ..read(newsfeedControllerProvider.notifier).unfeelPost(post: widget.post)
+                      ..read(profileControllerProvider.notifier).unfeelPost(post: widget.post)
+                      ..read(watchControllerProvider.notifier).unfeelPost(post: widget.post);
+                  } else {
+                    ref
+                      ..read(newsfeedControllerProvider.notifier)
+                          .feelPost(post: widget.post, type: 0)
+                      ..read(profileControllerProvider.notifier)
+                          .feelPost(post: widget.post, type: 0)
+                      ..read(watchControllerProvider.notifier).feelPost(post: widget.post, type: 0);
+                  }
                 },
                 child: RichText(
                     text: TextSpan(children: [

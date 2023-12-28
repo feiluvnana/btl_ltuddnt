@@ -6,7 +6,7 @@ part of 'watch.controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$watchControllerHash() => r'be32f5404c83506cd1d7ba90b915ffa1efc4e984';
+String _$watchControllerHash() => r'290c3ac906f53d1e59ef9165542cda6dfcfe0c70';
 
 /// See also [WatchController].
 @ProviderFor(WatchController)

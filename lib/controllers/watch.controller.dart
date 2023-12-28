@@ -112,6 +112,13 @@ class WatchController extends _$WatchController {
     }
   }
 
+  void unfeelPost({required Post post}) {
+    state = AsyncValue.data(state.value!.copyWith(
+        posts: state.value!.posts
+            ?.map((e) => e.id == post.id ? e.copyWith(isFelt: FeelType.none, feel: e.feel - 1) : e)
+            .toList()));
+  }
+
   void feelPost({required Post post, required int type}) {
     state = AsyncValue.data(state.value!.copyWith(
         posts: state.value!.posts

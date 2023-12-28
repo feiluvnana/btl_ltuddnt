@@ -6,6 +6,7 @@ import 'package:Anti_Fakebook/controllers/extension.dart';
 import 'package:Anti_Fakebook/controllers/interface.dart';
 import 'package:Anti_Fakebook/helpers/json_converter.dart';
 import 'package:Anti_Fakebook/main.dart';
+import 'package:Anti_Fakebook/models/feel.model.dart';
 import 'package:Anti_Fakebook/models/mark.dart';
 import 'package:Anti_Fakebook/models/post.dart';
 import 'package:Anti_Fakebook/services/apis/api.dart';
@@ -231,8 +232,25 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
     });
   }
 
+  Future<void> unfeelPost({required Post post}) async {
+    state = AsyncValue.data(state.value!.copyWith(
+        posts: state.value!.posts
+            ?.map((e) => e.id == post.id ? e.copyWith(isFelt: FeelType.none, feel: e.feel - 1) : e)
+            .toList()));
+    await Api().unfeel(post.id).then((value) {
+      if (value == null) {
+        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      } else if (value["code"] != "1000") {
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
+      }
+    });
+  }
+
   Future<List<Mark>?> getMarkComment(int id, int index) {
-    return Api().getMarkComment(id, index, 10).then((value) {
+    return Api().getMarkComment(id, index, 15).then((value) {
       if (value == null) {
         Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
       } else if (value["code"] == "9998") {
@@ -242,6 +260,24 @@ class NewsfeedController extends _$NewsfeedController implements PostEditable, P
             msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
       } else {
         return ((value["data"]) as List).map<Mark>((e) => Mark.fromJson(e)).toList();
+      }
+      return [];
+    });
+  }
+
+  Future<List<(int, Feel)>?> getListFeels(int id, int index) {
+    return Api().getListFeels(id, index, 15).then((value) {
+      if (value == null) {
+        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      } else if (value["code"] != "1000") {
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
+      } else {
+        return ((value["data"]) as List)
+            .map<(int, Feel)>((e) => (int.parse(e["id"]), Feel.fromJson(e["feel"])))
+            .toList();
       }
       return [];
     });

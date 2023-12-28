@@ -1,6 +1,7 @@
 import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
 import 'package:Anti_Fakebook/helpers/text_formater.dart';
 import 'package:Anti_Fakebook/models/post.dart';
+import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/feel.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/mark.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Newsfeed/Post/post_detail_media.ui.dart';
 import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
@@ -128,10 +129,23 @@ class _PostQueryUIState extends ConsumerState<PostQueryUI> {
                               enabled: snapshot.data == null,
                               child: Row(
                                 children: [
-                                  Text(
-                                      "${snapshot.data?.first.kudos} lượt kudos\n${snapshot.data?.first.disappointed} lượt dissapointed",
-                                      style: themeData.textTheme.bodySmall?.copyWith(
-                                          fontWeight: FontWeight.w300, color: Colors.grey)),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8)),
+                                          isScrollControlled: false,
+                                          scrollControlDisabledMaxHeightRatio: 0.9,
+                                          context: context,
+                                          builder: (context) {
+                                            return FeelUI(postId: snapshot.data!.first.id);
+                                          });
+                                    },
+                                    child: Text(
+                                        "${snapshot.data?.first.kudos} lượt kudos\n${snapshot.data?.first.disappointed} lượt dissapointed",
+                                        style: themeData.textTheme.bodySmall?.copyWith(
+                                            fontWeight: FontWeight.w300, color: Colors.grey)),
+                                  ),
                                   const Spacer(),
                                   GestureDetector(
                                     onTap: () {

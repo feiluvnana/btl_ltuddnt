@@ -10,10 +10,9 @@ extension Extension on HLImagePickerAndroid {
     HLCropOptions? cropOptions,
     LocalizedImagePicker? localized,
   }) async {
-    var usedPermission =
-        ((await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32)
-            ? Permission.storage
-            : Permission.photos;
+    var usedPermission = ((await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32)
+        ? Permission.storage
+        : Permission.photos;
     var status = await usedPermission.status.then((value) async {
       if (value == PermissionStatus.permanentlyDenied) {
         await openAppSettings();
@@ -26,10 +25,14 @@ extension Extension on HLImagePickerAndroid {
     return status == PermissionStatus.granted
         ? openPicker(
             selectedIds: selectedIds,
-            pickerOptions: pickerOptions?.copyWith(mediaType: MediaType.image),
+            pickerOptions: pickerOptions?.copyWith(
+                mediaType: MediaType.image, maxFileSize: 1024 * 2, enablePreview: true),
             cropping: cropping,
             cropOptions: cropOptions,
-            localized: localized,
+            localized: localized ??
+                const LocalizedImagePicker(
+                    maxSelectedAssetsErrorText: "Chỉ được chọn tối đa 4 ảnh.",
+                    maxFileSizeErrorText: "Ảnh được chọn vượt quá dung lượng cho phép"),
           )
         : Future.value([]);
   }
@@ -41,10 +44,9 @@ extension Extension on HLImagePickerAndroid {
     HLCropOptions? cropOptions,
     LocalizedImagePicker? localized,
   }) async {
-    var usedPermission =
-        ((await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32)
-            ? Permission.storage
-            : Permission.photos;
+    var usedPermission = ((await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32)
+        ? Permission.storage
+        : Permission.photos;
     var status = await usedPermission.status.then((value) async {
       if (value == PermissionStatus.permanentlyDenied) {
         await openAppSettings();
@@ -57,10 +59,14 @@ extension Extension on HLImagePickerAndroid {
     return status == PermissionStatus.granted
         ? openPicker(
             selectedIds: selectedIds,
-            pickerOptions: pickerOptions?.copyWith(mediaType: MediaType.video),
+            pickerOptions: pickerOptions?.copyWith(
+                mediaType: MediaType.video, maxFileSize: 1024 * 5, enablePreview: true),
             cropping: cropping,
             cropOptions: cropOptions,
-            localized: localized,
+            localized: localized ??
+                const LocalizedImagePicker(
+                    maxSelectedAssetsErrorText: "Chỉ được chọn tối đa 1 video.",
+                    maxFileSizeErrorText: "Video được chọn vượt quá dung lượng cho phép."),
           )
         : Future.value([]);
   }
@@ -97,14 +103,11 @@ extension Helper on HLPickerOptions {
         minFileSize: minFileSize ?? this.minFileSize,
         enablePreview: enablePreview ?? this.enablePreview,
         convertHeicToJPG: convertHeicToJPG ?? this.convertHeicToJPG,
-        convertLivePhotosToJPG:
-            convertLivePhotosToJPG ?? this.convertLivePhotosToJPG,
+        convertLivePhotosToJPG: convertLivePhotosToJPG ?? this.convertLivePhotosToJPG,
         recordVideoMaxSecond: recordVideoMaxSecond ?? this.recordVideoMaxSecond,
         isExportThumbnail: isExportThumbnail ?? this.isExportThumbnail,
-        thumbnailCompressQuality:
-            thumbnailCompressQuality ?? this.thumbnailCompressQuality,
-        thumbnailCompressFormat:
-            thumbnailCompressFormat ?? this.thumbnailCompressFormat,
+        thumbnailCompressQuality: thumbnailCompressQuality ?? this.thumbnailCompressQuality,
+        thumbnailCompressFormat: thumbnailCompressFormat ?? this.thumbnailCompressFormat,
         maxDuration: maxDuration ?? this.maxDuration,
         minDuration: minDuration ?? this.minDuration,
         numberOfColumn: numberOfColumn ?? this.numberOfColumn,

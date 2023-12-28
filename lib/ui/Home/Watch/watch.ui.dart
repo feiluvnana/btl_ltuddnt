@@ -41,7 +41,7 @@ class _WatchUIState extends ConsumerState<WatchUI> {
                   if (index == -1) return null;
                   return index;
                 },
-                addAutomaticKeepAlives: false,
+                addAutomaticKeepAlives: true,
                 controller: ctrl,
                 itemBuilder: (context, index) => PostItem(
                     key: ValueKey<int>(videos![index].id),

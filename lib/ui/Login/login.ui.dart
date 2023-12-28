@@ -1,5 +1,4 @@
 import 'package:Anti_Fakebook/controllers/authen.controller.dart';
-import 'package:Anti_Fakebook/controllers/profile.controller.dart';
 import 'package:Anti_Fakebook/helpers/validators.dart';
 import 'package:Anti_Fakebook/main.dart';
 import 'package:Anti_Fakebook/ui/Login/Signup/change_profile_after_signup.ui.dart';
@@ -280,16 +279,15 @@ class _LoginPasswordUIState extends ConsumerState<LoginPasswordUI> {
         padding: const EdgeInsets.all(10),
         child: Builder(
           builder: (context) {
-            final profile =
-                ref.watch(profileControllerProvider.select((value) => value.value?.profile));
+            final user = ref.watch(authenControllerProvider.select((value) => value.value?.user));
             return Form(
               key: formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AFBCircleAvatar(imageUrl: profile?.avatar ?? "", radius: 72),
+                  AFBCircleAvatar(imageUrl: user?.avatar ?? "", radius: 72),
                   const SizedBox(height: 15),
-                  Text(profile!.username, style: themeData.textTheme.titleLarge),
+                  Text(user!.username, style: themeData.textTheme.titleLarge),
                   const SizedBox(height: 15),
                   TextFormField(
                     obscureText: isHidden,

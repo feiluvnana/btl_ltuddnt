@@ -54,7 +54,6 @@ class _NewsfeedUIState extends ConsumerState<NewsfeedUI> with AutomaticKeepAlive
                   if (index == -1) return null;
                   return index;
                 },
-                addAutomaticKeepAlives: false,
                 controller: NewsfeedUI.ctrl,
                 itemBuilder: (context, index) => index == 0
                     ? const CreatePostBar()
@@ -127,8 +126,12 @@ class CreatePostBar extends ConsumerWidget {
               ?.entries
               .elementAt(index);
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: [Text(data!.key), LinearProgressIndicator(value: data.value)],
+            children: [
+              const Text("Bài viết đang được đăng tải..."),
+              LinearProgressIndicator(value: data!.value)
+            ],
           );
         })
       ],

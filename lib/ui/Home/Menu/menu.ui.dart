@@ -1,7 +1,11 @@
 import 'package:Anti_Fakebook/controllers/authen.controller.dart';
 import 'package:Anti_Fakebook/controllers/friend.controller.dart';
 import 'package:Anti_Fakebook/controllers/newsfeed.controller.dart';
+import 'package:Anti_Fakebook/controllers/notification.controller.dart';
 import 'package:Anti_Fakebook/controllers/profile.controller.dart';
+import 'package:Anti_Fakebook/controllers/search.controller.dart';
+import 'package:Anti_Fakebook/controllers/settings.controller.dart';
+import 'package:Anti_Fakebook/main.dart';
 import 'package:Anti_Fakebook/ui/Home/Menu/Settings/settings.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Profile/profile.ui.dart';
 import 'package:Anti_Fakebook/ui/Home/Search/search.ui.dart';
@@ -9,6 +13,7 @@ import 'package:Anti_Fakebook/ui/Home/home.ui.dart';
 import 'package:Anti_Fakebook/widgets/afb_button.dart';
 import 'package:Anti_Fakebook/widgets/afb_circle_avatar.dart';
 import 'package:Anti_Fakebook/widgets/afb_listtile.dart';
+import 'package:Anti_Fakebook/widgets/afb_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -181,12 +186,33 @@ class MenuLogoutButton extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: AFBDangerEButton(
         onPressed: () {
-          ref
-            ..read(authenControllerProvider.notifier).logout()
-            ..read(newsfeedControllerProvider.notifier).reset()
-            ..read(friendControllerProvider.notifier).reset();
-          Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
-          ref.read(authenControllerProvider.notifier).updateSignupInfo(info: {});
+          context
+              .showAFBDialog(
+                  title: const Text("Bạn có chắc muốn đăng xuất?"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context, null), child: const Text("Hủy")),
+                    TextButton(
+                        onPressed: () => Navigator.pop(context, true), child: const Text("Lưu")),
+                    TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text("Lúc khác"))
+                  ],
+                  content: const Text(
+                      "Bạn chuẩn bị đăng xuất, bạn có muốn lưu thông tin đăng nhập không?"))
+              .then((value) async {
+            if (value == null) return;
+            await secureStorage.write(key: "saveInfo", value: value ? "true" : "false");
+            ref
+              ..read(notificationControllerProvider.notifier).subOnMessage?.cancel()
+              ..read(friendControllerProvider.notifier).reset()
+              ..read(newsfeedControllerProvider.notifier).reset()
+              ..read(authenControllerProvider.notifier).logout()
+              ..read(profileControllerProvider.notifier).reset()
+              ..read(searchControllerProvider.notifier).reset()
+              ..read(settingsControllerProvider.notifier).reset();
+            Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+          });
         },
         child:
             const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("Đăng xuất")]),

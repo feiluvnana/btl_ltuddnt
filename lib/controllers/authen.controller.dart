@@ -82,15 +82,17 @@ class AuthenController extends _$AuthenController {
   }
 
   void logout() {
-    state = AsyncValue.data(state.requireValue
-        .copyWith(user: state.requireValue.user?.copyWith(token: null), signupInfo: {}));
     secureStorage.delete(key: "posts");
     secureStorage.read(key: "saveInfo").then((value) {
+      if (value == null) return;
       if (value == "true") {
+        state = AsyncValue.data(
+            state.value!.copyWith(user: state.value?.user?.copyWith(token: null), signupInfo: {}));
         secureStorage.write(
             key: "user",
             value: jsonEncode(state.requireValue.user?.copyWith(token: null).toJson()));
       } else {
+        state = const AsyncValue.data(AuthenState());
         secureStorage.delete(key: "user");
       }
     });
@@ -115,7 +117,7 @@ class AuthenController extends _$AuthenController {
   }
 
   void updateSignupInfo({required Map<String, String> info}) {
-    state = AsyncValue.data(state.requireValue.copyWith(signupInfo: info));
+    state = AsyncValue.data(state.value!.copyWith(signupInfo: info));
   }
 
   Future<void> checkVerifyCode(

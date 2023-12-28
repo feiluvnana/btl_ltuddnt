@@ -172,8 +172,8 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateUI> {
               icon: const Icon(Icons.arrow_back)),
           actions: [
             TextButton(
-                onPressed: () {
-                  ref
+                onPressed: () async {
+                  await ref
                       .read(newsfeedControllerProvider.notifier)
                       .addPost(
                           described: ctrl.text,

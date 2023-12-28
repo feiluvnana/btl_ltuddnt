@@ -180,6 +180,14 @@ class Api {
     return ApiRoot.post("/feel", jsonEncode({"id": id, "type": type}));
   }
 
+  Future<Map<String, dynamic>?> unfeel(int id) async {
+    return ApiRoot.post("/delete_feel", jsonEncode({"id": id}));
+  }
+
+  Future<Map<String, dynamic>?> getListFeels(int id, int index, int count) {
+    return ApiRoot.post("/get_list_feels", jsonEncode({"id": id, "index": index, "count": count}));
+  }
+
   Future<Map<String, dynamic>?> getMarkComment(int id, int index, int count) {
     return ApiRoot.post(
         "/get_mark_comment", jsonEncode({"id": id, "index": index, "count": count}));

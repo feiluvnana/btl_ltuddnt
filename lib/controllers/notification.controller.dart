@@ -46,6 +46,7 @@ class NotificationController extends _$NotificationController {
       HomeUIState.tabController.index = 3;
     });
     subOnMessage = FirebaseMessaging.onMessage.listen((event) {
+      if (event.data["json"] == null) return;
       Notification notification = Notification.fromJson(jsonDecode(event.data["json"]));
       var index = state.value?.notifications?.indexOf(notification);
       if (index == -1) {

@@ -20,7 +20,8 @@ class AFBVideoPlayer extends ConsumerStatefulWidget {
   ConsumerState<AFBVideoPlayer> createState() => _AFBVideoPlayerState();
 }
 
-class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
+class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer>
+    with AutomaticKeepAliveClientMixin {
   static final cacheManager =
       CacheManager(Config("afb", stalePeriod: const Duration(seconds: 30), maxNrOfCacheObjects: 5));
   ChewieController? ctrl;
@@ -49,6 +50,7 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
   }
 
   void toFullScreen() {
+    if (!mounted) return;
     ref.read(themeControllerProvider.notifier).setThemeMode(ThemeMode.dark);
     Navigator.push(context, MaterialPageRoute(builder: (_) {
       return PopScope(
@@ -60,6 +62,7 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
               child: FloatDraggableWidget(
                   ctrl: vctrl!,
                   onDismiss: () {
+                    VisibilityDetectorController.instance.notifyNow();
                     setState(() {
                       isInDefault = true;
                       ctrl?.pause();
@@ -93,6 +96,7 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final themeData = Theme.of(context);
     return VisibilityDetector(
       onVisibilityChanged: (VisibilityInfo info) {
@@ -106,6 +110,13 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
         }
         if (info.visibleFraction > 0.85) {
           vctrl?.play();
+        }
+        if (info.visibleFraction == 0) {
+          remove = Timer(const Duration(seconds: 5), () {
+            dispose();
+          });
+        } else {
+          remove?.cancel();
         }
       },
       key: ObjectKey(widget.url),
@@ -187,7 +198,8 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
   void end() {
     ctrl?.dispose();
     vctrl?.dispose();
-    ctrl = vctrl = null;
+    remove?.cancel();
+    ctrl = vctrl = file = remove = null;
   }
 
   @override
@@ -195,6 +207,9 @@ class _AFBVideoPlayerState extends ConsumerState<AFBVideoPlayer> {
     end();
     super.dispose();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class FloatDraggableWidget extends ConsumerStatefulWidget {
