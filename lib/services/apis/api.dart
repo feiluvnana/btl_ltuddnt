@@ -145,6 +145,10 @@ class Api {
         }));
   }
 
+  Future<Map<String, dynamic>?> buyCoin() async {
+    return ApiRoot.post("/buy_coins", jsonEncode({"code": "string", "coins": "3000"}));
+  }
+
   Future<Map<String, dynamic>?> changePassword(String password, String newPassword) async {
     return ApiRoot.post(
         "/change_password", jsonEncode({"password": password, "new_password": newPassword}));

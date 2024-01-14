@@ -22,5 +22,6 @@ const Map<String, String> resCode = {
   "1012": "Bài đăng bị giới hạn ở một số quốc gia",
   "9991": "Tài khoản hoặc mật khẩu không chính xác",
   "9990": "Mật khẩu không chính xác",
-  "5001": "Lỗi cơ sở dữ liệu"
+  "5001": "Lỗi cơ sở dữ liệu",
+  "2001": "Tài khoản không đủ xu"
 };

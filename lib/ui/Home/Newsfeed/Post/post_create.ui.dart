@@ -54,7 +54,7 @@ class _PostCreateUpdateUIState extends ConsumerState<PostCreateUI> {
                 pickerOptions: const HLPickerOptions(maxSelectedAssets: 1))
             .then((value) {
           setState(() {
-            video = value.first;
+            video = (value.isEmpty) ? null : value.first;
             image = null;
           });
         });

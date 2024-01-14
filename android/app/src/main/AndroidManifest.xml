@@ -6,7 +6,8 @@
         android:label="Anti Fakebook"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
-        android:largeHeap="true">
+        android:largeHeap="true"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

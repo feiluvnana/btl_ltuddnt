@@ -47,6 +47,7 @@ extension Extension on HLImagePickerAndroid {
     var usedPermission = ((await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32)
         ? Permission.storage
         : Permission.photos;
+
     var status = await usedPermission.status.then((value) async {
       if (value == PermissionStatus.permanentlyDenied) {
         await openAppSettings();

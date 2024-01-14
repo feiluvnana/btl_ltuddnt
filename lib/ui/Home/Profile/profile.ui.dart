@@ -275,8 +275,7 @@ class _ProfileUIState extends ConsumerState<ProfileUI> {
                         title: userinfo?.country ?? "Không có quốc gia..."),
                     AFBBottomSheetListTile(
                         onTap: () {
-                          Fluttertoast.showToast(
-                              msg: "Hiện tại việc mua coins vẫn đang trong quá trình phát triển!");
+                          ref.read(profileControllerProvider.notifier).buyCoins();
                         },
                         leading: Icons.currency_bitcoin,
                         title: "${userinfo?.coins.toString()}")

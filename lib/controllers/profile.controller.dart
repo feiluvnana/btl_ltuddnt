@@ -223,4 +223,20 @@ class ProfileController extends _$ProfileController {
             ?.map((e) => e.id == post.id ? e.copyWith(isFelt: FeelType.none, feel: e.feel - 1) : e)
             .toList()));
   }
+
+  Future<void> buyCoins() async {
+    await Api().buyCoin().then((value) {
+      if (value == null) {
+        Fluttertoast.showToast(msg: "Có lỗi với máy chủ. Hãy thử lại sau.");
+      } else if (value["code"] == "9998") {
+        ref.reset();
+      } else if (value["code"] != "1000") {
+        Fluttertoast.showToast(
+            msg: resCode[value["code"]] ?? value["message"] ?? "Lỗi không xác định.");
+      } else {
+        state = AsyncValue.data(state.value!
+            .copyWith(profile: state.value!.profile?.copyWith(coins: value["data"]["coins"])));
+      }
+    });
+  }
 }
